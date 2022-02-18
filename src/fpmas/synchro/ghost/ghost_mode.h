@@ -210,14 +210,23 @@ namespace fpmas { namespace synchro {
 
 
 		/**
-		 * GhostMode SyncLinker implementation.
+		 * Base GhostMode SyncLinker implementation.
 		 *
-		 * Link, unlink and node removal requests are buffered until the next
-		 * graph synchronization. All operations are then committed across
-		 * processes.
+		 * Link, unlink and node removal requests involving \DISTANT nodes are
+		 * buffered until synchronize_links() is called.
+		 *
+		 * This class defines everything required to implement an
+		 * api::synchro::SyncLinker that only commits link, unlink and node
+		 * removal requests using collective communications. The commit
+		 * operations can notably be performed using the simple
+		 * synchronize_links() method. The only method not implemented is
+		 * synchronize(), so that custom api::synchro::SyncLinker
+		 * implementations can be defined extending this class.
+		 * Notice that the synchronize() implementation can be as simple as a
+		 * call to synchronize_links(), as performed by the GhostSyncLinker.
 		 */
 		template<typename T>
-			class GhostSyncLinker : public api::synchro::SyncLinker<T> {
+			class GhostSyncLinkerBase : public api::synchro::SyncLinker<T> {
 				public:
 					/**
 					 * DistributedEdge API
@@ -241,7 +250,6 @@ namespace fpmas { namespace synchro {
 					typedef api::communication::TypedMpi<DistributedId> IdMpi;
 				private:
 					std::vector<EdgePtr> link_buffer;
-					//std::vector<DistributedId> unlink_buffer;
 					std::unordered_map<int, std::vector<DistributedId>> unlink_migration;
 					std::unordered_map<int, std::vector<DistributedId>> remove_node_buffer;
 					std::vector<NodeApi*> local_nodes_to_remove;
@@ -249,6 +257,13 @@ namespace fpmas { namespace synchro {
 					EdgeMpi& edge_mpi;
 					IdMpi& id_mpi;
 					api::graph::DistributedGraph<T>& graph;
+
+				protected:
+					/**
+					 * Commits currently buffered link, unlink and node removal
+					 * operations.
+					 */
+					void synchronize_links();
 
 				public:
 					/**
@@ -259,7 +274,7 @@ namespace fpmas { namespace synchro {
 					 * @param graph reference to the associated
 					 * DistributedGraph
 					 */
-					GhostSyncLinker(
+					GhostSyncLinkerBase(
 							EdgeMpi& edge_mpi, IdMpi& id_mpi,
 							api::graph::DistributedGraph<T>& graph)
 						: edge_mpi(edge_mpi), id_mpi(id_mpi), graph(graph) {}
@@ -284,55 +299,12 @@ namespace fpmas { namespace synchro {
 					void unlink(EdgeApi* edge) override;
 
 					void removeNode(NodeApi* node) override;
-
-					/**
-					 * Commits currently buffered link, unlink and node removal
-					 * operations.
-					 */
-					void synchronize() override;
 			};
 
 		template<typename T>
-			void GhostSyncLinker<T>::link(EdgeApi * edge) {
-				if(edge->state() == LocationState::DISTANT) {
-					link_buffer.push_back(const_cast<EdgeApi*>(edge));
-				}
-			}
-
-		template<typename T>
-			void GhostSyncLinker<T>::unlink(EdgeApi * edge) {
-				if(edge->state() == LocationState::DISTANT) {
-					link_buffer.erase(
-							std::remove(link_buffer.begin(), link_buffer.end(), edge),
-							link_buffer.end()
-							);
-					auto src = edge->getSourceNode();
-					if(src->state() == LocationState::DISTANT) {
-						unlink_migration[src->location()].push_back(edge->getId());
-					}
-					auto tgt = edge->getTargetNode();
-					if(tgt->state() == LocationState::DISTANT) {
-						unlink_migration[tgt->location()].push_back(edge->getId());
-					}
-				}
-			}
-
-		template<typename T>
-			void GhostSyncLinker<T>::removeNode(NodeApi* node) {
-				if(node->state() == LocationState::DISTANT) {
-					remove_node_buffer[node->location()].push_back(node->getId());
-				} else {
-					for(auto edge : node->getOutgoingEdges())
-						graph.unlink(edge);
-					for(auto edge : node->getIncomingEdges())
-						graph.unlink(edge);
-				}
-				local_nodes_to_remove.push_back(node);
-			}
-
-		template<typename T>
-			void GhostSyncLinker<T>::synchronize() {
-				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Synchronizing graph links...", "");
+			void GhostSyncLinkerBase<T>::synchronize_links() {
+				FPMAS_LOGI(graph.getMpiCommunicator().getRank(),
+						"GHOST_MODE", "Synchronizing graph links...", "");
 				/*
 				 * Migrate links
 				 */
@@ -402,7 +374,68 @@ namespace fpmas { namespace synchro {
 				}
 				local_nodes_to_remove.clear();
 
-				FPMAS_LOGI(graph.getMpiCommunicator().getRank(), "GHOST_MODE", "Graph links synchronized.", "");
+				FPMAS_LOGI(graph.getMpiCommunicator().getRank(),
+						"GHOST_MODE", "Graph links synchronized.", "");
+			}
+
+		template<typename T>
+			void GhostSyncLinkerBase<T>::link(EdgeApi * edge) {
+				if(edge->state() == LocationState::DISTANT) {
+					link_buffer.push_back(const_cast<EdgeApi*>(edge));
+				}
+			}
+
+		template<typename T>
+			void GhostSyncLinkerBase<T>::unlink(EdgeApi * edge) {
+				if(edge->state() == LocationState::DISTANT) {
+					link_buffer.erase(
+							std::remove(link_buffer.begin(), link_buffer.end(), edge),
+							link_buffer.end()
+							);
+					auto src = edge->getSourceNode();
+					if(src->state() == LocationState::DISTANT) {
+						unlink_migration[src->location()].push_back(edge->getId());
+					}
+					auto tgt = edge->getTargetNode();
+					if(tgt->state() == LocationState::DISTANT) {
+						unlink_migration[tgt->location()].push_back(edge->getId());
+					}
+				}
+			}
+
+		template<typename T>
+			void GhostSyncLinkerBase<T>::removeNode(NodeApi* node) {
+				if(node->state() == LocationState::DISTANT) {
+					remove_node_buffer[node->location()].push_back(node->getId());
+				} else {
+					for(auto edge : node->getOutgoingEdges())
+						graph.unlink(edge);
+					for(auto edge : node->getIncomingEdges())
+						graph.unlink(edge);
+				}
+				local_nodes_to_remove.push_back(node);
+			}
+
+		/**
+		 * GhostMode SyncLinker implementation.
+		 *
+		 * Link, unlink and node removal requests are buffered until the next
+		 * graph synchronization.
+		 *
+		 * All operations are then committed across processes when
+		 * synchronize() is called.
+		 */
+		template<typename T>
+			class GhostSyncLinker : public GhostSyncLinkerBase<T> {
+				public:
+					using GhostSyncLinkerBase<T>::GhostSyncLinkerBase;
+
+					void synchronize() override;
+			};
+
+		template<typename T>
+			void GhostSyncLinker<T>::synchronize() {
+				this->synchronize_links();
 			}
 
 		/**

@@ -1,61 +1,13 @@
-#include "fpmas/synchro/hard/hard_sync_mode.h"
-#include "fpmas/graph/distributed_graph.h"
-#include "fpmas/graph/distributed_edge.h"
-#include "fpmas/graph/distributed_node.h"
+#include "fpmas/synchro/hard/hard_sync_linker.h"
 
-#include "fpmas/communication/communication.h"
 #include "communication/mock_communication.h"
-#include "graph/mock_distributed_edge.h"
-#include "graph/mock_distributed_node.h"
-#include "graph/mock_distributed_graph.h"
-#include "graph/mock_location_manager.h"
-#include "graph/mock_load_balancing.h"
-#include "synchro/mock_mutex.h"
 #include "synchro/hard/mock_client_server.h"
+#include "graph/mock_distributed_graph.h"
 
 using namespace testing;
 
-using fpmas::graph::DistributedGraph;
-using fpmas::synchro::HardSyncMode;
-using fpmas::synchro::hard::HardDataSync;
-using fpmas::synchro::hard::HardSyncLinker;
 using fpmas::synchro::hard::ServerPack;
-
-class HardDataSyncTest : public Test {
-	protected:
-		MockMpiCommunicator<2, 4> comm;
-		NiceMock<MockMutexServer<int>> mutex_server;
-		NiceMock<MockLinkServer> link_server;
-		
-		MockTerminationAlgorithm termination {comm};
-		ServerPack<int> server_pack {comm, termination, mutex_server, link_server};
-		MockDistributedGraph<int, MockDistributedNode<int>, MockDistributedEdge<int>> mock_graph;
-		HardDataSync<int> data_sync {comm, server_pack, mock_graph};
-};
-
-TEST_F(HardDataSyncTest, synchronize) {
-	EXPECT_CALL(termination, terminate(Ref(server_pack)));
-	data_sync.synchronize();
-}
-
-TEST_F(HardDataSyncTest, partial_synchronize) {
-	// There is no need to make particular assumptions about the specified
-	// nodes, since this is not relevant in the case of HardDataSync
-	// synchronization. Indeed, data exchanges in this mode occur only when
-	// required, when read() or acquire() method are called, but not directly
-	// when the termination algorithm is performed.
-	// So we can consider that all nodes are synchronized in any case when
-	// HardDataSync::synchronize() is called.
-
-	auto node1 = new MockDistributedNode<int, NiceMock>;
-	auto node2 = new MockDistributedNode<int, NiceMock>;
-
-	EXPECT_CALL(termination, terminate(Ref(server_pack)));
-	data_sync.synchronize({node1, node2});
-
-	delete node1;
-	delete node2;
-}
+using fpmas::synchro::hard::hard_link::HardSyncLinker;
 
 class HardSyncLinkerTest : public Test {
 	protected:
@@ -66,7 +18,10 @@ class HardSyncLinkerTest : public Test {
 		MockLinkClient<int> client;
 		MockTerminationAlgorithm termination {comm};
 
-		ServerPack<int> server_pack {comm, termination, mutex_server, server};
+		ServerPack<
+			fpmas::synchro::hard::api::MutexServer<int>,
+			fpmas::synchro::hard::api::LinkServer
+				> server_pack {comm, termination, mutex_server, server};
 		MockDistributedGraph<int, MockDistributedEdge<int, NiceMock>, MockDistributedNode<int, NiceMock>> graph;
 		HardSyncLinker<int> sync_linker {graph, client, server_pack};
 

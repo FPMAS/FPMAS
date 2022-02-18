@@ -24,7 +24,8 @@ set(SOURCES
 	synchro/hard/mutex_client.cpp
 	synchro/hard/mutex_server.cpp
 	synchro/hard/termination.cpp
-	synchro/hard/hard_sync_mode.cpp
+	synchro/hard/hard_data_sync.cpp
+	synchro/hard/hard_sync_linker.cpp
 	synchro/hard/link_client.cpp
 	synchro/hard/link_server.cpp
 	# Scheduler

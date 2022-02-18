@@ -205,7 +205,7 @@ namespace fpmas { namespace synchro { namespace hard { namespace api {
 	 * TerminationAlgorithm.
 	 */
 	template<typename T>
-		class MutexServer : public virtual Server {
+		class MutexServer : public Server {
 			friend HardSyncMutex<T>;
 			protected:
 			/**
@@ -376,7 +376,6 @@ namespace fpmas { namespace synchro { namespace hard { namespace api {
 	 *
 	 * Adds nothing to the Server API.
 	 */
-	//typedef Server LinkServer;
 	class LinkServer : public Server {
 		public:
 			/**

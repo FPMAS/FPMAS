@@ -14,8 +14,7 @@ using namespace testing;
 using fpmas::graph::EdgePtrWrapper;
 using fpmas::synchro::hard::api::Epoch;
 using fpmas::synchro::hard::api::Tag;
-using fpmas::synchro::hard::ServerPack;
-using fpmas::synchro::hard::LinkServer;
+using fpmas::synchro::hard::hard_link::LinkServer;
 
 class LinkServerTest : public Test {
 	private:
@@ -48,11 +47,10 @@ class LinkServerTest : public Test {
 
 		MockTerminationAlgorithm mock_termination;
 		MockMutexServer<int> mock_mutex_server;
-		ServerPack<int> server_pack;
 
 		LinkServerTest() :
-			link_server(comm, mock_graph, mock_sync_linker, id_mpi, edge_mpi),
-			server_pack(comm, mock_termination, mock_mutex_server, link_server) {}
+			link_server(comm, mock_graph, id_mpi, edge_mpi) {
+			}
 
 		void SetUp() override {
 			ON_CALL(id_mpi, Iprobe).WillByDefault(Return(false));

@@ -9,7 +9,7 @@ using namespace testing;
 
 using fpmas::graph::EdgePtrWrapper;
 using fpmas::synchro::hard::api::Tag;
-using fpmas::synchro::hard::LinkClient;
+using fpmas::synchro::hard::hard_link::LinkClient;
 
 class LinkClientTest : public Test {
 	protected:
@@ -22,8 +22,9 @@ class LinkClientTest : public Test {
 		MockTerminationAlgorithm mock_termination;
 		MockMutexServer<int> mock_mutex_server;
 		MockLinkServer mock_link_server;
-		fpmas::synchro::hard::ServerPack<int> server_pack {
-			comm, mock_termination, mock_mutex_server, mock_link_server};
+		fpmas::synchro::hard::ServerPackBase server_pack {
+			comm, mock_termination, mock_mutex_server, mock_link_server
+		};
 		LinkClient<int> link_client {comm, id_mpi, edge_mpi, server_pack};
 
 		DistributedId src_id {3, 6};

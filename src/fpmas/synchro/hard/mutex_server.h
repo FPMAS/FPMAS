@@ -38,7 +38,7 @@ namespace fpmas { namespace synchro { namespace hard {
 				IdMpi& id_mpi;
 				DataMpi& data_mpi;
 				DataUpdateMpi& data_update_mpi;
-				api::LinkServer& link_server;
+				api::Server& link_server;
 
 				void handleIncomingReadAcquireLock();
 
@@ -73,11 +73,12 @@ namespace fpmas { namespace synchro { namespace hard {
 				 * @param id_mpi IdMpi instance
 				 * @param data_mpi DataMpi instance
 				 * @param data_update_mpi DataUpdateMpi instance
-				 * @param link_server associated LinkServer
+				 * @param link_server associated LinkServer. Might be a
+				 * VoidServer if the HardSyncLinker is not used.
 				 */
 				MutexServer(
 						MpiComm& comm, IdMpi& id_mpi, DataMpi& data_mpi, DataUpdateMpi& data_update_mpi,
-						api::LinkServer& link_server
+						api::Server& link_server
 						) :
 					comm(comm), id_mpi(id_mpi), data_mpi(data_mpi), data_update_mpi(data_update_mpi),
 					link_server(link_server)

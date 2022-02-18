@@ -168,15 +168,27 @@ class SpatialModelTestBase : public ::testing::Test {
 };
 
 template<int MaxStep>
-using SpatialModelTest_GhostMode = SpatialModelTestBase<fpmas::synchro::GhostMode, MaxStep>;
+using SpatialModelTest_GhostMode
+= SpatialModelTestBase<fpmas::synchro::GhostMode, MaxStep>;
 
 template<int MaxStep>
-using SpatialModelTest_HardSyncMode = SpatialModelTestBase<fpmas::synchro::HardSyncMode, MaxStep>;
+using SpatialModelTest_HardSyncMode
+= SpatialModelTestBase<fpmas::synchro::hard::hard_link::HardSyncMode, MaxStep>;
+
+template<int MaxStep>
+using SpatialModelTest_HardSyncModeWithGhostLink
+= SpatialModelTestBase<fpmas::synchro::hard::ghost_link::HardSyncMode, MaxStep>;
 
 typedef SpatialModelTest_GhostMode<1> SpatialModelTest_GhostMode_SimpleRange;
 typedef SpatialModelTest_GhostMode<2> SpatialModelTest_GhostMode_ComplexRange;
+
 typedef SpatialModelTest_HardSyncMode<1> SpatialModelTest_HardSyncMode_SimpleRange;
 typedef SpatialModelTest_HardSyncMode<2> SpatialModelTest_HardSyncMode_ComplexRange;
+
+typedef SpatialModelTest_HardSyncModeWithGhostLink<1>
+SpatialModelTest_HardSyncModeWithGhostLink_SimpleRange;
+typedef SpatialModelTest_HardSyncModeWithGhostLink<2>
+SpatialModelTest_HardSyncModeWithGhostLink_ComplexRange;
 
 TEST_F(SpatialModelTest_GhostMode_SimpleRange, init_location_test) {
 	testInit();
@@ -191,6 +203,14 @@ TEST_F(SpatialModelTest_HardSyncMode_SimpleRange, init_location_test) {
 }
 
 TEST_F(SpatialModelTest_HardSyncMode_SimpleRange, distributed_move_algorithm) {
+	testDistributedMoveAlgorithm();
+}
+
+TEST_F(SpatialModelTest_HardSyncModeWithGhostLink_SimpleRange, init_location_test) {
+	testInit();
+}
+
+TEST_F(SpatialModelTest_HardSyncModeWithGhostLink_SimpleRange, distributed_move_algorithm) {
 	testDistributedMoveAlgorithm();
 }
 
@@ -209,6 +229,15 @@ TEST_F(SpatialModelTest_HardSyncMode_ComplexRange, init_location_test) {
 TEST_F(SpatialModelTest_HardSyncMode_ComplexRange, distributed_move_algorithm) {
 	testDistributedMoveAlgorithm();
 }
+
+TEST_F(SpatialModelTest_HardSyncModeWithGhostLink_ComplexRange, init_location_test) {
+	testInit();
+}
+
+TEST_F(SpatialModelTest_HardSyncModeWithGhostLink_ComplexRange, distributed_move_algorithm) {
+	testDistributedMoveAlgorithm();
+}
+
 
 class SpatialModelTest_DynamicAgentInsertion : public SpatialModelTest_GhostMode_SimpleRange {
 	protected:

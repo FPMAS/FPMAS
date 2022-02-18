@@ -34,7 +34,7 @@ namespace fpmas { namespace synchro { namespace hard {
 				IdMpi& id_mpi;
 				DataMpi& data_mpi;
 				DataUpdateMpi& data_update_mpi;
-				ServerPack<T>& server_pack;
+				ServerPackBase& server_pack;
 
 				public:
 				/**
@@ -47,9 +47,11 @@ namespace fpmas { namespace synchro { namespace hard {
 				 * @param server_pack associated server pack
 				 */
 				MutexClient(
-						MpiCommunicator& comm, IdMpi& id_mpi, DataMpi& data_mpi, DataUpdateMpi& data_update_mpi,
-						ServerPack<T>& server_pack)
-					: comm(comm), id_mpi(id_mpi), data_mpi(data_mpi), data_update_mpi(data_update_mpi),
+						MpiCommunicator& comm,
+						IdMpi& id_mpi, DataMpi& data_mpi, DataUpdateMpi& data_update_mpi,
+						ServerPackBase& server_pack) :
+					comm(comm),
+					id_mpi(id_mpi), data_mpi(data_mpi), data_update_mpi(data_update_mpi),
 					server_pack(server_pack) {}
 
 				T read(DistributedId, int location) override;

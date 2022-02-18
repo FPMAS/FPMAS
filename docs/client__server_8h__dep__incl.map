@@ -1,13 +1,13 @@
 <map id="src/fpmas/synchro/hard/api/client_server.h" name="src/fpmas/synchro/hard/api/client_server.h">
-<area shape="rect" id="node1" title=" " alt="" coords="371,5,529,47"/>
+<area shape="rect" id="node1" title=" " alt="" coords="188,5,347,47"/>
 <area shape="rect" id="node2" href="$api_2hard__sync__mode_8h.html" title=" " alt="" coords="188,95,347,136"/>
 <area shape="rect" id="node9" href="$server__pack_8h.html" title=" " alt="" coords="371,95,529,136"/>
-<area shape="rect" id="node11" href="$termination_8h.html" title=" " alt="" coords="637,273,796,315"/>
-<area shape="rect" id="node3" href="$hard__sync__linker_8h.html" title=" " alt="" coords="371,184,529,225"/>
-<area shape="rect" id="node6" href="$mutex__client_8h.html" title=" " alt="" coords="188,184,347,225"/>
-<area shape="rect" id="node8" href="$mutex__server_8h.html" title=" " alt="" coords="5,184,164,225"/>
-<area shape="rect" id="node4" href="$hard__sync__mode_8h.html" title=" " alt="" coords="396,363,555,404"/>
-<area shape="rect" id="node5" href="$fpmas_8h.html" title=" " alt="" coords="430,452,521,479"/>
-<area shape="rect" id="node7" href="$hard__sync__mutex_8h.html" title=" " alt="" coords="188,273,347,315"/>
-<area shape="rect" id="node10" href="$hard__data__sync_8h.html" title=" " alt="" coords="455,273,613,315"/>
+<area shape="rect" id="node11" href="$termination_8h.html" title=" " alt="" coords="5,95,164,136"/>
+<area shape="rect" id="node3" href="$hard__sync__linker_8h.html" title=" " alt="" coords="5,184,164,225"/>
+<area shape="rect" id="node6" href="$mutex__client_8h.html" title=" " alt="" coords="371,184,529,225"/>
+<area shape="rect" id="node8" href="$mutex__server_8h.html" title=" " alt="" coords="188,184,347,225"/>
+<area shape="rect" id="node4" href="$hard__sync__mode_8h.html" title=" " alt="" coords="217,363,376,404"/>
+<area shape="rect" id="node5" href="$fpmas_8h.html" title=" " alt="" coords="251,452,342,479"/>
+<area shape="rect" id="node7" href="$hard__sync__mutex_8h.html" title=" " alt="" coords="217,273,376,315"/>
+<area shape="rect" id="node10" href="$hard__data__sync_8h.html" title=" " alt="" coords="459,273,617,315"/>
 </map>

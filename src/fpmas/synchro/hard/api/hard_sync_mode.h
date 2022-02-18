@@ -60,7 +60,7 @@ namespace fpmas { namespace synchro { namespace hard { namespace api {
 			public:
 				/**
 				 * Registers a local node to be removed at the next
-				 * synchronize() called.
+				 * synchronize() call.
 				 *
 				 * This should be called when the MutexServer receives a
 				 * REMOVE_NODE request. Indeed, the node can't be erased when

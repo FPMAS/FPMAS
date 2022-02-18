@@ -96,8 +96,8 @@ Collaboration diagram for fpmas::synchro::hard::HardDataSync&lt; T &gt;:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a0152b2f985fd854e2da41761d7837b48"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardDataSync.html#a0152b2f985fd854e2da41761d7837b48">HardDataSync</a> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">fpmas::api::communication::MpiCommunicator</a> &amp;comm, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPack.html">ServerPack</a>&lt; T &gt; &amp;server_pack, <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt; &amp;graph)</td></tr>
-<tr class="separator:a0152b2f985fd854e2da41761d7837b48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae97b3ece97a0de2771ac88564920c2db"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardDataSync.html#ae97b3ece97a0de2771ac88564920c2db">HardDataSync</a> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">fpmas::api::communication::MpiCommunicator</a> &amp;comm, <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPackBase.html">ServerPackBase</a> &amp;server_pack, <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt; &amp;graph)</td></tr>
+<tr class="separator:ae97b3ece97a0de2771ac88564920c2db"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0eb71e13088fcd1e898fd82fe6b2e5c2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardDataSync.html#a0eb71e13088fcd1e898fd82fe6b2e5c2">synchronize</a> () override</td></tr>
 <tr class="separator:a0eb71e13088fcd1e898fd82fe6b2e5c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a95155464b428b856eda038ed654784fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardDataSync.html#a95155464b428b856eda038ed654784fa">synchronize</a> (std::unordered_set&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">fpmas::api::graph::DistributedNode</a>&lt; T &gt; * &gt;) override</td></tr>
@@ -110,11 +110,11 @@ Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
-class fpmas::synchro::hard::HardDataSync&lt; T &gt;</div><p ><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMode.html">HardSyncMode</a> <a class="el" href="classfpmas_1_1api_1_1synchro_1_1DataSync.html">fpmas::api::synchro::DataSync</a> implementation.</p>
+class fpmas::synchro::hard::HardDataSync&lt; T &gt;</div><p >HardSyncMode <a class="el" href="classfpmas_1_1api_1_1synchro_1_1DataSync.html">fpmas::api::synchro::DataSync</a> implementation.</p>
 <p >Since data is always fetched directly from distance processes by the <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMutex.html">HardSyncMutex</a>, no real data synchronization is required in this implementation. However, a termination algorithm must be applied in the synchronization process to handle incoming requests from other processes until global termination (i.e. global synchronization) is determined. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a0152b2f985fd854e2da41761d7837b48" name="a0152b2f985fd854e2da41761d7837b48"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0152b2f985fd854e2da41761d7837b48">&#9670;&nbsp;</a></span>HardDataSync()</h2>
+<a id="ae97b3ece97a0de2771ac88564920c2db" name="ae97b3ece97a0de2771ac88564920c2db"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae97b3ece97a0de2771ac88564920c2db">&#9670;&nbsp;</a></span>HardDataSync()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -133,7 +133,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPack.html">ServerPack</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPackBase.html">ServerPackBase</a> &amp;&#160;</td>
           <td class="paramname"><em>server_pack</em>, </td>
         </tr>
         <tr>
@@ -191,7 +191,7 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Synchronizes all the processes using <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPack.html#a29290c0b789b4fb1fbbc046f910483ad">ServerPack::terminate()</a>.</p>
+<p >Synchronizes all the processes using <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPackBase.html#a156ed1edc8deccc3e81191c9f64bea8d">ServerPack::terminate()</a>.</p>
 <p >Notice that, since <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPack.html">ServerPack</a> is used, not only <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMutex.html">HardSyncMutex</a> requests (i.e. data related requests) but also SyncLinker requests will be handled until termination.</p>
 <p >This is required to avoid the following deadlock situation : </p><table class="markdownTable">
 <tr class="markdownTableHead">
@@ -238,7 +238,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p >Same as <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardDataSync.html#a0eb71e13088fcd1e898fd82fe6b2e5c2">synchronize()</a>.</p>
-<p >Indeed, partial synchronization is not really relevant in the case of <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMode.html">HardSyncMode</a>, since data exchanges in this mode occur only when required, when read() or acquire() method are called, but not directly when the termination algorithm is performed.</p>
+<p >Indeed, partial synchronization is not really relevant in the case of HardSyncMode, since data exchanges in this mode occur only when required, when read() or acquire() method are called, but not directly when the termination algorithm is performed.</p>
 <p >So we can consider that all nodes are synchronized in any case when this method is called. </p>
 
 </div>

@@ -24,34 +24,18 @@
  */
 #include "fpmas/synchro/hard/mutex_client.h"
 
-#include "communication/mock_communication.h"
-#include "synchro/hard/mock_hard_sync_mode.h"
-#include "synchro/hard/mock_client_server.h"
+#include "../../../mocks/communication/mock_communication.h"
+#include "../../../mocks/synchro/hard/mock_hard_sync_mode.h"
+#include "../../../mocks/synchro/hard/mock_client_server.h"
 
-using ::testing::A;
-using ::testing::AllOf;
-using ::testing::Assign;
-using ::testing::AtLeast;
-using ::testing::DoAll;
-using ::testing::Expectation;
-using ::testing::Field;
-using ::testing::InSequence;
-using ::testing::Invoke;
-using ::testing::Not;
-using ::testing::Pointee;
-using ::testing::ReturnRef;
-using ::testing::SaveArg;
-using ::testing::SaveArgPointee;
-using ::testing::Sequence;
-using ::testing::SetArgReferee;
-using ::testing::_;
+using namespace testing;
 
 using fpmas::synchro::hard::api::Epoch;
 using fpmas::synchro::hard::api::Tag;
 using fpmas::synchro::hard::MutexClient;
 using fpmas::synchro::DataUpdatePack;
 
-class MutexClientTest : public ::testing::Test {
+class MutexClientTest : public Test {
 	protected:
 		MockMpiCommunicator<3, 16> comm;
 		MockMpi<DistributedId> id_mpi {comm};
@@ -61,7 +45,9 @@ class MutexClientTest : public ::testing::Test {
 		MockTerminationAlgorithm mock_termination;
 		MockMutexServer<int> mock_mutex_server;
 		MockLinkServer mock_link_server;
-		fpmas::synchro::hard::ServerPack<int> server_pack {comm, mock_termination, mock_mutex_server, mock_link_server};
+		fpmas::synchro::hard::ServerPackBase server_pack {
+			comm, mock_termination, mock_mutex_server, mock_link_server
+		};
 		MutexClient<int> mutex_client {comm, id_mpi, data_mpi, data_update_mpi, server_pack};
 
 		MockHardSyncMutex<int> distantHardSyncMutex;

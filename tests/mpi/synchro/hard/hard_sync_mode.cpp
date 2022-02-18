@@ -3,11 +3,11 @@
 #include <random>
 
 #include "fpmas/graph/distributed_graph.h"
-#include "graph/mock_distributed_node.h"
-#include "graph/mock_load_balancing.h"
-#include "synchro/hard/mock_client_server.h"
+#include "../../../mocks/graph/mock_distributed_node.h"
+#include "../../../mocks/graph/mock_load_balancing.h"
+#include "../../../mocks/synchro/hard/mock_client_server.h"
 
-#include "utils/test.h"
+#include "../../utils/test.h"
 
 using namespace testing;
 
@@ -39,8 +39,12 @@ class HardSyncMutexSelfReadTest : public Test {
 		int location = comm.getRank();
 
 		MockLinkServer mock_link_server;
-		MutexServer<int> mutex_server {comm, id_mpi, data_mpi, data_update_mpi, mock_link_server};
-		fpmas::synchro::hard::ServerPack<int> server_pack {comm, termination, mutex_server, mock_link_server};
+		MutexServer<int> mutex_server {
+			comm, id_mpi, data_mpi, data_update_mpi, mock_link_server
+		};
+		fpmas::synchro::hard::ServerPackBase server_pack {
+			comm, termination, mutex_server, mock_link_server
+		};
 		MutexClient<int> client {comm, id_mpi, data_mpi, data_update_mpi, server_pack};
 		HardSyncMutex<int> mutex {&node, client, mutex_server};
 
@@ -83,7 +87,9 @@ class MutexServerRaceCondition : public Test {
 
 		MockLinkServer mock_link_server;
 		MutexServer<int> mutex_server {comm, id_mpi, data_mpi, data_update_mpi, mock_link_server};
-		fpmas::synchro::hard::ServerPack<int> server_pack {comm, termination, mutex_server, mock_link_server};
+		fpmas::synchro::hard::ServerPackBase server_pack {
+			comm, termination, mutex_server, mock_link_server
+		};
 		MutexClient<int> client {comm, id_mpi, data_mpi, data_update_mpi, server_pack};
 		HardSyncMutex<int> mutex {&node, client, mutex_server};
 

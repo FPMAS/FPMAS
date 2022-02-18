@@ -224,6 +224,14 @@ namespace fpmas {
 /** \namespace fpmas::synchro::hard
  * HardSyncMode implementation.
  */
+/** \namespace fpmas::synchro::hard::hard_link
+ * HardSyncMode implementation, with link operations managed on the fly using
+ * point to point communications.
+ */
+/** \namespace fpmas::synchro::hard::ghost_link
+ * HardSyncMode implementation, with link operations managed using collective
+ * communications.
+ */
 /** \namespace fpmas::synchro::hard::api
  * Defines generic API used to handle HardSyncMode.
  */

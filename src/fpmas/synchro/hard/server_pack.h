@@ -12,6 +12,17 @@
 namespace fpmas { namespace synchro { namespace hard {
 
 	/**
+	 * An api::Server implementation that does not handle any request.
+	 */
+	class VoidServer : public api::Server {
+		void setEpoch(api::Epoch) override {};
+		api::Epoch getEpoch() const override {
+			return {};
+		};
+		void handleIncomingRequests() override {};
+	};
+
+	/**
 	 * A Server implementation wrapping an api::MutexServer and an
 	 * api::LinkServer.
 	 *
@@ -19,132 +30,137 @@ namespace fpmas { namespace synchro { namespace hard {
 	 * simultaneously. More precisely, when applying the termination algorithm
 	 * to this server, the system is still able to answer to mutex AND link
 	 * requests, to completely determine global termination.
+	 *
+	 * The wait*() methods also allows to easily wait for point-to-point
+	 * communications initiated by either server without deadlock, by ensuring
+	 * progression on both servers.
 	 */
-	template<typename T>
-		class ServerPack : public api::Server {
-			typedef api::Epoch Epoch;
-			typedef api::TerminationAlgorithm TerminationAlgorithm;
+	class ServerPackBase : public api::Server {
+		typedef api::Epoch Epoch;
 
-			private:
-			fpmas::api::communication::MpiCommunicator& comm;
-			TerminationAlgorithm& termination;
-			api::MutexServer<T>& mutex_server;
-			api::LinkServer& link_server;
-			Epoch epoch;
+		private:
+		fpmas::api::communication::MpiCommunicator& comm;
+		api::TerminationAlgorithm& termination;
+		api::Server& mutex_server;
+		api::Server& link_server;
+		Epoch epoch;
 
-			public:
-			/**
-			 * ServerPack constructor.
-			 *
-			 * @param comm MPI communicator
-			 * @param termination termination algorithm
-			 * @param mutex_server Mutex server to terminate
-			 * @param link_server Link server to terminate
-			 */
-			ServerPack(
-					fpmas::api::communication::MpiCommunicator& comm,
-					TerminationAlgorithm& termination,
-					api::MutexServer<T>& mutex_server,
-					api::LinkServer& link_server)
-				: comm(comm), termination(termination), mutex_server(mutex_server), link_server(link_server) {
-					setEpoch(Epoch::EVEN);
-				}
-
-			/**
-			 * Reference to the internal api::MutexServer instance.
-			 */
-			api::MutexServer<T>& mutexServer() {
-				return mutex_server;
+		public:
+		/**
+		 * ServerPackBase constructor.
+		 *
+		 * @param comm MPI communicator
+		 * @param termination termination algorithm used to terminated
+		 * this server, terminating both mutex_server and link_server
+		 * at once.
+		 * @param mutex_server Mutex server
+		 * @param link_server Link server
+		 */
+		ServerPackBase(
+				fpmas::api::communication::MpiCommunicator& comm,
+				api::TerminationAlgorithm& termination,
+				api::Server& mutex_server,
+				api::Server& link_server)
+			: comm(comm), termination(termination), mutex_server(mutex_server), link_server(link_server) {
+				setEpoch(Epoch::EVEN);
 			}
 
-			/**
-			 * Reference to the internal api::LinkServer instance.
-			 */
-			api::LinkServer& linkServer() {
-				return link_server;
+		/**
+		 * Reference to the internal api::MutexServer instance.
+		 */
+		virtual api::Server& mutexServer() {
+			return mutex_server;
+		}
+
+		/**
+		 * Reference to the internal api::LinkServer instance.
+		 */
+		virtual api::Server& linkServer() {
+			return link_server;
+		}
+
+		/**
+		 * Performs a reception cycle on the api::MutexServer AND on the
+		 * api::LinkServer.
+		 */
+		void handleIncomingRequests() override {
+			mutex_server.handleIncomingRequests();
+			link_server.handleIncomingRequests();
+		}
+
+		/**
+		 * Sets the Epoch of the api::MutexServer AND the
+		 * api::LinkServer.
+		 *
+		 * @param epoch new epoch
+		 */
+		void setEpoch(Epoch epoch) override {
+			this->epoch = epoch;
+			mutex_server.setEpoch(epoch);
+			link_server.setEpoch(epoch);
+		}
+
+		/**
+		 * Gets the common epoch of the api::MutexServer and the
+		 * api::LinkServer.
+		 *
+		 * @return current Epoch
+		 */
+		Epoch getEpoch() const override {
+			return epoch;
+		}
+
+		/**
+		 * Applies the termination algorithm to this ServerPack.
+		 */
+		void terminate() {
+			termination.terminate(*this);
+		}
+
+		/**
+		 * Method used to wait for an MPI_Request to be sent.
+		 *
+		 * The request might be performed by the api::MutexServer OR the
+		 * api::LinkServer. In any case, this methods handles incoming
+		 * requests (see api::MutexServer::handleIncomingRequests() and
+		 * api::LinkServer::handleIncomingRequests()) until the MPI_Request
+		 * is complete, in order to avoid deadlock.
+		 *
+		 * @param req MPI request to complete
+		 */
+		void waitSendRequest(fpmas::api::communication::Request& req) {
+			FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "wait for send...", "");
+			bool sent = comm.test(req);
+
+			while(!sent) {
+				handleIncomingRequests();
+				sent = comm.test(req);
 			}
+			FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "Request sent.", "");
+		}
 
-			/**
-			 * Performs a reception cycle on the api::MutexServer AND on the
-			 * api::LinkServer.
-			 */
-			void handleIncomingRequests() override {
-				mutex_server.handleIncomingRequests();
-				link_server.handleIncomingRequests();
-			}
-
-			/**
-			 * Sets the Epoch of the api::MutexServer AND the
-			 * api::LinkServer.
-			 *
-			 * @param epoch new epoch
-			 */
-			void setEpoch(Epoch epoch) override {
-				this->epoch = epoch;
-				mutex_server.setEpoch(epoch);
-				link_server.setEpoch(epoch);
-			}
-
-			/**
-			 * Gets the common epoch of the api::MutexServer and the
-			 * api::LinkServer.
-			 *
-			 * @return current Epoch
-			 */
-			Epoch getEpoch() const override {
-				return epoch;
-			}
-
-			/**
-			 * Applies the termination algorithm to this ServerPack.
-			 */
-			void terminate() {
-				termination.terminate(*this);
-			}
-
-			/**
-			 * Method used to wait for an MPI_Request to be sent.
-			 *
-			 * The request might be performed by the api::MutexServer OR the
-			 * api::LinkServer. In any case, this methods handles incoming
-			 * requests (see api::MutexServer::handleIncomingRequests() and
-			 * api::LinkServer::handleIncomingRequests()) until the MPI_Request
-			 * is complete, in order to avoid deadlock.
-			 *
-			 * @param req MPI request to complete
-			 */
-			void waitSendRequest(fpmas::api::communication::Request& req) {
-				FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "wait for send...", "");
-				bool sent = comm.test(req);
-
-				while(!sent) {
-					handleIncomingRequests();
-					sent = comm.test(req);
-				}
-				FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "Request sent.", "");
-			}
-
-			/**
-			 * Method used to wait for request responses with data (e.g. to
-			 * READ, ACQUIRE) from the specified `mpi` instance to be
-			 * available.
-			 *
-			 * The request might be performed by the api::MutexServer OR the
-			 * api::LinkServer. In any case, this methods handles incoming
-			 * requests (see api::MutexServer::handleIncomingRequests() and
-			 * api::LinkServer::handleIncomingRequests()) until a response
-			 * is available, in order to avoid deadlock.
-			 *
-			 * Upon return, it is safe to receive the response with
-			 * api::communication::MpiCommunicator::recv() using the same source and tag.
-			 *
-			 * @param mpi TypedMpi instance to probe
-			 * @param source rank of the process from which the response should
-			 * be received
-			 * @param tag response tag (READ_RESPONSE, ACQUIRE_RESPONSE, etc)
-			 * @param status pointer to MPI_Status, passed to
-			 * api::communication::MpiCommunicator::Iprobe
-			 */
+		/**
+		 * Method used to wait for request responses with data (e.g. to
+		 * READ, ACQUIRE) from the specified `mpi` instance to be
+		 * available.
+		 *
+		 * The request might be performed by the api::MutexServer OR the
+		 * api::LinkServer. In any case, this methods handles incoming
+		 * requests (see api::MutexServer::handleIncomingRequests() and
+		 * api::LinkServer::handleIncomingRequests()) until a response
+		 * is available, in order to avoid deadlock.
+		 *
+		 * Upon return, it is safe to receive the response with
+		 * api::communication::MpiCommunicator::recv() using the same source and tag.
+		 *
+		 * @param mpi TypedMpi instance to probe
+		 * @param source rank of the process from which the response should
+		 * be received
+		 * @param tag response tag (READ_RESPONSE, ACQUIRE_RESPONSE, etc)
+		 * @param status pointer to MPI_Status, passed to
+		 * api::communication::MpiCommunicator::Iprobe
+		 */
+		template<typename T>
 			void waitResponse(
 					fpmas::api::communication::TypedMpi<T>& mpi,
 					int source, api::Tag tag,
@@ -158,44 +174,85 @@ namespace fpmas { namespace synchro { namespace hard {
 				}
 				FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "Response available.", "");
 			}
-			/**
-			 * Method used to wait for request responses without data (e.g. to
-			 * LOCK, UNLOCK) from the specified `comm` instance to be
-			 * available.
-			 *
-			 * The request might be performed by the api::MutexServer OR the
-			 * api::LinkServer. In any case, this methods handles incoming
-			 * requests (see api::MutexServer::handleIncomingRequests() and
-			 * api::LinkServer::handleIncomingRequests()) until a response
-			 * is available, in order to avoid deadlock.
-			 *
-			 * Upon return, it is safe to receive the response with
-			 * api::communication::MpiCommunicator::recv() using the same source and tag.
-			 *
-			 * @param comm MpiCommunicator instance to probe
-			 * @param source rank of the process from which the response should
-			 * be received
-			 * @param tag response tag (READ_RESPONSE, ACQUIRE_RESPONSE, etc)
-			 * @param status pointer to MPI_Status, passed to
-			 * api::communication::MpiCommunicator::Iprobe
-			 */
-			void waitVoidResponse(
-					fpmas::api::communication::MpiCommunicator& comm,
-					int source, api::Tag tag,
-					fpmas::api::communication::Status& status) {
-				FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "wait for response...", "");
-				bool response_available = comm.Iprobe(
-						fpmas::api::communication::MpiCommunicator::IGNORE_TYPE,
-						source, getEpoch() | tag, status);
 
-				while(!response_available) {
-					handleIncomingRequests();
-					response_available = comm.Iprobe(
+		/**
+		 * Method used to wait for request responses without data (e.g. to
+		 * LOCK, UNLOCK) from the specified `comm` instance to be
+		 * available.
+		 *
+		 * The request might be performed by the api::MutexServer OR the
+		 * api::LinkServer. In any case, this methods handles incoming
+		 * requests (see api::MutexServer::handleIncomingRequests() and
+		 * api::LinkServer::handleIncomingRequests()) until a response
+		 * is available, in order to avoid deadlock.
+		 *
+		 * Upon return, it is safe to receive the response with
+		 * api::communication::MpiCommunicator::recv() using the same source and tag.
+		 *
+		 * @param comm MpiCommunicator instance to probe
+		 * @param source rank of the process from which the response should
+		 * be received
+		 * @param tag response tag (READ_RESPONSE, ACQUIRE_RESPONSE, etc)
+		 * @param status pointer to MPI_Status, passed to
+		 * api::communication::MpiCommunicator::Iprobe
+		 */
+		void waitVoidResponse(
+				fpmas::api::communication::MpiCommunicator& comm,
+				int source, api::Tag tag,
+				fpmas::api::communication::Status& status) {
+			FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "wait for response...", "");
+			bool response_available = comm.Iprobe(
+					fpmas::api::communication::MpiCommunicator::IGNORE_TYPE,
+					source, getEpoch() | tag, status);
+
+			while(!response_available) {
+				handleIncomingRequests();
+				response_available = comm.Iprobe(
 						fpmas::api::communication::MpiCommunicator::IGNORE_TYPE,
 						source, getEpoch() | tag, status);
-				}
-				FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "Response available.", "");
 			}
+			FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "Response available.", "");
+		}
+
+	};
+
+	
+	/**
+	 * A ServerPackBase extension that enforces MutexServer and LinkServer
+	 * types.
+	 */
+	template<typename MutexServer, typename LinkServer>
+		class ServerPack : public ServerPackBase {
+			private:
+				MutexServer& mutex_server;
+				LinkServer& link_server;
+
+			public:
+				/**
+				 * ServerPack constructor.
+				 *
+				 * @param comm MPI communicator
+				 * @param termination termination algorithm used to terminated
+				 * this server, terminating both mutex_server and link_server
+				 * at once.
+				 * @param mutex_server Mutex server
+				 * @param link_server Link server
+				 */
+				ServerPack(
+						fpmas::api::communication::MpiCommunicator& comm,
+						api::TerminationAlgorithm& termination,
+						MutexServer& mutex_server, LinkServer& link_server) :
+					ServerPackBase(comm, termination, mutex_server, link_server),
+					mutex_server(mutex_server), link_server(link_server) {
+					}
+
+				MutexServer& mutexServer() override {
+					return mutex_server;
+				}
+
+				LinkServer& linkServer() override {
+					return link_server;
+				}
 		};
 }}}
 #endif

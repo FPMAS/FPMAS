@@ -25,7 +25,7 @@ namespace fpmas { namespace synchro { namespace hard {
 			typedef api::TerminationAlgorithm TerminationAlgorithm;
 
 			fpmas::api::communication::MpiCommunicator& comm;
-			ServerPack<T>& server_pack;
+			ServerPackBase& server_pack;
 			fpmas::api::graph::DistributedGraph<T>& graph;
 
 			public:
@@ -38,7 +38,7 @@ namespace fpmas { namespace synchro { namespace hard {
 			 */
 			HardDataSync(
 					fpmas::api::communication::MpiCommunicator& comm,
-					ServerPack<T>& server_pack,
+					ServerPackBase& server_pack,
 					fpmas::api::graph::DistributedGraph<T>& graph)
 				: comm(comm), server_pack(server_pack), graph(graph) {
 				}
