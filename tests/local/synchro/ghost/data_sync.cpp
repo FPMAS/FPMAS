@@ -44,8 +44,14 @@ class GhostDataSyncTest : public Test {
 			new NodeType(DistributedId(6, 2), 10, 0.4),
 			new NodeType(DistributedId(7, 1), 5, 2.3),
 		};
+		std::array<MockMutex<int>*, 4> node_mutexes;
 
 		void SetUp() override {
+			for(std::size_t i = 0; i < 4; i++) {
+				node_mutexes[i] = new MockMutex<int>;
+				nodes[i]->setMutex(node_mutexes[i]);
+			}
+
 			ON_CALL(mocked_graph, getLocationManager())
 				.WillByDefault(ReturnRef(location_manager));
 			ON_CALL(Const(mocked_graph), getLocationManager())
@@ -56,6 +62,7 @@ class GhostDataSyncTest : public Test {
 
 		void TearDown() override {
 			for(auto node : nodes)
+				// Implicitly deletes mutexes
 				delete node;
 
 		}
@@ -101,6 +108,9 @@ TEST_F(GhostDataSyncTest, export_test) {
 		);
 	EXPECT_CALL(data_mpi, migrate(export_node_matcher));
 
+	EXPECT_CALL(*node_mutexes[0], synchronize);
+	EXPECT_CALL(*node_mutexes[2], synchronize);
+	EXPECT_CALL(*node_mutexes[3], synchronize);
 	data_sync.synchronize();
 }
 
@@ -144,6 +154,10 @@ TEST_F(GhostDataSyncTest, import_test) {
 	EXPECT_CALL(*nodes[2], setWeight(7.2));
 	EXPECT_CALL(*nodes[3], setWeight(2.2));
 
+	EXPECT_CALL(*node_mutexes[0], synchronize);
+	EXPECT_CALL(*node_mutexes[1], synchronize);
+	EXPECT_CALL(*node_mutexes[2], synchronize);
+	EXPECT_CALL(*node_mutexes[3], synchronize);
 	data_sync.synchronize();
 
 	ASSERT_EQ(nodes[1]->data(), 12);
@@ -200,6 +214,9 @@ TEST_F(GhostDataSyncTest, partial_import_test) {
 	// Updates local data
 	nodes[0]->data() = 4;
 	// Synchronizes only 3 nodes, including 1 LOCAL node and 2 DISTANT nodes
+	EXPECT_CALL(*node_mutexes[1], synchronize);
+	EXPECT_CALL(*node_mutexes[0], synchronize);
+	EXPECT_CALL(*node_mutexes[3], synchronize);
 	data_sync.synchronize({nodes[1], nodes[0], nodes[3]});
 
 	ASSERT_EQ(nodes[0]->data(), 4);

@@ -4,6 +4,7 @@
 #include "graph/mock_distributed_node.h"
 #include "graph/mock_distributed_graph.h"
 #include "synchro/mock_mutex.h"
+#include "fpmas/graph/distributed_graph.h"
 
 using namespace testing;
 

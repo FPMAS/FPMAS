@@ -39,6 +39,8 @@ class MockMutex : public virtual fpmas::api::synchro::Mutex<T> {
 		MOCK_METHOD(void, lockShared, (), (override));
 		MOCK_METHOD(void, unlockShared, (), (override));
 		MOCK_METHOD(int, sharedLockCount, (), (const, override));
+
+		MOCK_METHOD(void, synchronize, (), (override));
 };
 
 #endif

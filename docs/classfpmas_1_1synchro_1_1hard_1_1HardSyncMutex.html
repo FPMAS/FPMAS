@@ -128,6 +128,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a9f57903eeb12f2bfd6787b2eccbcf396"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a503a488a7bb794289e67a0107e5c051e"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMutex.html#a503a488a7bb794289e67a0107e5c051e">sharedLockCount</a> () const override</td></tr>
 <tr class="separator:a503a488a7bb794289e67a0107e5c051e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f213d60d89846f173d49929b0e0a399"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMutex.html#a7f213d60d89846f173d49929b0e0a399">synchronize</a> () override</td></tr>
+<tr class="separator:a7f213d60d89846f173d49929b0e0a399"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ab06fe23e238b08a97768f771ff6013"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1HardSyncMutex.html#a0ab06fe23e238b08a97768f771ff6013">pushRequest</a> (<a class="el" href="structfpmas_1_1synchro_1_1hard_1_1api_1_1MutexRequest.html">MutexRequest</a> request)=0</td></tr>
 <tr class="separator:a0ab06fe23e238b08a97768f771ff6013"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d3c3592af943db66e9cba7459f39074"><td class="memItemLeft" align="right" valign="top">virtual std::queue&lt; <a class="el" href="structfpmas_1_1synchro_1_1hard_1_1api_1_1MutexRequest.html">MutexRequest</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1api_1_1HardSyncMutex.html#a1d3c3592af943db66e9cba7459f39074">requestsToProcess</a> ()=0</td></tr>
@@ -156,6 +158,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a76fa230afbc2d5f837fd336fac7d8640"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a88eb37a3a4cda19240ec05fc6280c7db"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html#a88eb37a3a4cda19240ec05fc6280c7db">sharedLockCount</a> () const =0</td></tr>
 <tr class="separator:a88eb37a3a4cda19240ec05fc6280c7db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac0dccdd2777bbda3ad4ab18050b8f200"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html#ac0dccdd2777bbda3ad4ab18050b8f200">synchronize</a> ()=0</td></tr>
+<tr class="separator:ac0dccdd2777bbda3ad4ab18050b8f200"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -710,6 +714,37 @@ template&lt;typename T &gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>shared lock count </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html#a88eb37a3a4cda19240ec05fc6280c7db">fpmas::api::synchro::Mutex&lt; T &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a7f213d60d89846f173d49929b0e0a399" name="a7f213d60d89846f173d49929b0e0a399"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7f213d60d89846f173d49929b0e0a399">&#9670;&nbsp;</a></span>synchronize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1HardSyncMutex.html">fpmas::synchro::hard::HardSyncMutex</a>&lt; T &gt;::synchronize </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Method eventually called when data synchronization is performed on this Mutex.</p>
+<p >The behavior of this method depends on the currently implemented SynchronizationMode. </p>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1synchro_1_1Mutex.html#ac0dccdd2777bbda3ad4ab18050b8f200">fpmas::api::synchro::Mutex&lt; T &gt;</a>.</p>
 
 </div>
 </div>

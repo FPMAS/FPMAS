@@ -20,6 +20,7 @@ set(SOURCES
 	synchro/data_update_pack.cpp
 	synchro/ghost/data_sync.cpp
 	synchro/ghost/sync_linker.cpp
+	synchro/ghost/global_ghost_mode.cpp
 	synchro/hard/hard_sync_mutex.cpp
 	synchro/hard/mutex_client.cpp
 	synchro/hard/mutex_server.cpp

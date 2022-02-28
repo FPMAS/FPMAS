@@ -88,6 +88,8 @@ namespace fpmas { namespace synchro { namespace hard {
 				 * \copydoc fpmas::api::synchro::Mutex::sharedLockCount()
 				 */
 				int sharedLockCount() const override {return _locked_shared;}
+
+				void synchronize() override {};
 		};
 
 	/**

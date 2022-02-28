@@ -1,10 +1,11 @@
 <map id="src/fpmas/synchro/data_update_pack.h" name="src/fpmas/synchro/data_update_pack.h">
-<area shape="rect" id="node1" title=" " alt="" coords="196,5,355,47"/>
-<area shape="rect" id="node2" href="$ghost__mode_8h.html" title=" " alt="" coords="5,95,172,136"/>
-<area shape="rect" id="node6" href="$mutex__client_8h.html" title=" " alt="" coords="196,95,355,136"/>
-<area shape="rect" id="node8" href="$mutex__server_8h.html" title=" " alt="" coords="379,95,537,136"/>
-<area shape="rect" id="node3" href="$fpmas_8h.html" title=" " alt="" coords="46,363,137,389"/>
-<area shape="rect" id="node4" href="$hard__sync__linker_8h.html" title=" " alt="" coords="71,184,229,225"/>
-<area shape="rect" id="node5" href="$hard__sync__mode_8h.html" title=" " alt="" coords="71,273,229,315"/>
-<area shape="rect" id="node7" href="$hard__sync__mutex_8h.html" title=" " alt="" coords="253,184,412,225"/>
+<area shape="rect" id="node1" title=" " alt="" coords="252,5,411,47"/>
+<area shape="rect" id="node2" href="$ghost__mode_8h.html" title=" " alt="" coords="61,95,228,136"/>
+<area shape="rect" id="node7" href="$mutex__client_8h.html" title=" " alt="" coords="252,95,411,136"/>
+<area shape="rect" id="node9" href="$mutex__server_8h.html" title=" " alt="" coords="435,95,593,136"/>
+<area shape="rect" id="node3" href="$global__ghost__mode_8h_source.html" title=" " alt="" coords="5,273,172,315"/>
+<area shape="rect" id="node5" href="$hard__sync__linker_8h.html" title=" " alt="" coords="127,184,285,225"/>
+<area shape="rect" id="node4" href="$fpmas_8h.html" title=" " alt="" coords="137,363,227,389"/>
+<area shape="rect" id="node6" href="$hard__sync__mode_8h.html" title=" " alt="" coords="196,273,355,315"/>
+<area shape="rect" id="node8" href="$hard__sync__mutex_8h.html" title=" " alt="" coords="309,184,468,225"/>
 </map>

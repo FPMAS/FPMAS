@@ -1,60 +1,37 @@
-#ifndef BASIC_GHOST_MODE_H
-#define BASIC_GHOST_MODE_H
+#ifndef FPMAS_GHOST_MODE_H
+#define FPMAS_GHOST_MODE_H
 
 /** \file src/fpmas/synchro/ghost/ghost_mode.h
  * GhostMode implementation.
  */
 
 #include "fpmas/communication/communication.h"
-#include "fpmas/graph/distributed_graph.h"
+#include "fpmas/api/graph/distributed_graph.h"
+#include "fpmas/utils/macros.h"
 #include "../data_update_pack.h"
+#include "single_thread_mutex.h"
 
 namespace fpmas { namespace synchro {
 	namespace ghost {
 
 		using api::graph::LocationState;
-
 		/**
 		 * GhostMode Mutex implementation.
 		 *
-		 * Currently, the GhostMode is defined such that a unique thread is
-		 * allowed to access to each node. In consequence, there is literally
-		 * no need for concurrency management.
+		 * read() and acquire() methods return a reference to the local data.
 		 *
-		 * In the future, this might be improved to handle multi-threading.
+		 * @see fpmas::synchro::GhostMode
 		 */
 		template<typename T>
-			class SingleThreadMutex : public api::synchro::Mutex<T> {
-				private:
-					T& _data;
-					void _lock() override {};
-					void _lockShared() override {};
-					void _unlock() override {};
-					void _unlockShared() override {};
-
+			class GhostMutex : public SingleThreadMutex<T> {
 				public:
-					/**
-					 * SingleThreadMutex constructor.
-					 *
-					 * @param data reference to node data
-					 */
-					SingleThreadMutex(T& data) : _data(data) {}
+					using SingleThreadMutex<T>::SingleThreadMutex;
 
-					T& data() override {return _data;}
-					const T& data() const override {return _data;}
-
-					const T& read() override {return _data;};
+					const T& read() override {return this->data();};
 					void releaseRead() override {};
-					T& acquire() override {return _data;};
+					T& acquire() override {return this->data();};
 					void releaseAcquire() override {};
-
-					void lock() override {};
-					void unlock() override {};
-					bool locked() const override {return false;}
-
-					void lockShared() override {};
-					void unlockShared() override {};
-					int sharedLockCount() const override {return 0;};
+					void synchronize() override {};
 			};
 
 		/**
@@ -180,6 +157,8 @@ namespace fpmas { namespace synchro {
 				std::unordered_map<int, std::vector<DistributedId>> requests
 					= buildRequests(nodes);
 				_synchronize(requests);
+				for(auto node : nodes)
+					node->mutex()->synchronize();
 			}
 
 		template<typename T>
@@ -206,6 +185,8 @@ namespace fpmas { namespace synchro {
 				std::unordered_map<int, std::vector<DistributedId>> requests
 					= buildRequests();
 				_synchronize(requests);
+				for(auto node : graph.getNodes())
+					node.second->mutex()->synchronize();
 			}
 
 
@@ -239,7 +220,7 @@ namespace fpmas { namespace synchro {
 					/**
 					 * DistributedEdge pointer wrapper
 					 */
-					typedef graph::EdgePtrWrapper<T> EdgePtr;
+					typedef api::utils::PtrWrapper<EdgeApi> EdgePtr;
 					/**
 					 * TypedMpi used to transmit Edges with MPI.
 					 */
@@ -460,11 +441,11 @@ namespace fpmas { namespace synchro {
 		 * are committed "at the end of each time step" by the GhostSyncLinker
 		 * instance, i.e. at each graph synchronization.
 		 */
-		template<typename T>
+		template<typename T, template<typename> class Mutex>
 			class GhostMode : public api::synchro::SyncMode<T> {
 				communication::TypedMpi<DistributedId> id_mpi;
 				communication::TypedMpi<NodeUpdatePack<T>> data_mpi;
-				communication::TypedMpi<graph::EdgePtrWrapper<T>> edge_mpi;
+				communication::TypedMpi<api::utils::PtrWrapper<api::graph::DistributedEdge<T>>> edge_mpi;
 
 				GhostDataSync<T> data_sync;
 				GhostSyncLinker<T> sync_linker;
@@ -487,8 +468,8 @@ namespace fpmas { namespace synchro {
 				 *
 				 * @param node node to which the built mutex will be associated
 				 */
-				SingleThreadMutex<T>* buildMutex(api::graph::DistributedNode<T>* node) override {
-					return new SingleThreadMutex<T>(node->data());
+				Mutex<T>* buildMutex(api::graph::DistributedNode<T>* node) override {
+					return new Mutex<T>(node->data());
 				};
 
 				/**
@@ -506,6 +487,53 @@ namespace fpmas { namespace synchro {
 				GhostSyncLinker<T>& getSyncLinker() override {return sync_linker;}
 			};
 	}
-	using ghost::GhostMode;
+
+	/**
+	 * Regular GhostMode implementation, based on the GhostMutex.
+	 *
+	 * Data synchronization can be described as follows:
+	 * - \LOCAL nodes: read and acquires are performed directly on the local
+	 *   data
+	 * - \DISTANT nodes: read and acquires are performed on a local copy,
+	 *   imported from the origin process at each DataSync::synchronize() call.
+	 *   Local modifications are overridden at each synchronization.
+	 *
+	 * In the \Agent context, this means that modifications on \LOCAL agents are
+	 * immediately perceived by \LOCAL agents, even if they are only exported at
+	 * the end of the time step to distant processes.
+	 *
+	 * Since modifications on \DISTANT agents are erased at each
+	 * synchronization, modifications between agents is likely to produce
+	 * unexpected behaviors in this mode. However, each \LOCAL agent is allowed
+	 * to modify its own state.
+	 *
+	 * In consequence, even in a read-only model, the state of perceived agents
+	 * depends on the execution order **and** on the \LOCAL or \DISTANT state
+	 * of each agent:
+	 * - the state of a \LOCAL agent not executed yet corresponds to its state
+	 *   at the previous time step
+	 * - the state of an already executed \LOCAL agent corresponds to its state
+	 *   at the current time step
+	 * - the state of a \DISTANT agent always corresponds to its state at the
+	 *   previous time step
+	 *
+	 * The results of a read-only model is hence reproducible only considering
+	 * that the agents execution order and distribution are the same.
+	 *
+	 * @note
+	 * The fpmas::seed() method can be used to enforce those constraints.
+	 * 
+	 * A more consistent and reproducible behavior can be obtained using the
+	 * fpmas::synchro::GlobalGhostMode.
+	 *
+	 *
+	 * This synchronization policy is inspired from
+	 * [RepastHPC](https://repast.github.io/hpc_tutorial/RepastHPC_Demo_01_Step_09.html).
+	 *
+	 * @see fpmas::synchro::GlobalGhostMode
+	 * @see fpmas::synchro::HardSyncMode
+	 */
+	template<typename T>
+		using GhostMode = ghost::GhostMode<T, ghost::GhostMutex>;
 }}
 #endif

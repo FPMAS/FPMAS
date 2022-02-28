@@ -148,6 +148,15 @@ namespace fpmas { namespace api { namespace synchro {
 			 */
 			virtual int sharedLockCount() const = 0;
 
+			/**
+			 * Method eventually called when data synchronization is performed
+			 * on this Mutex.
+			 *
+			 * The behavior of this method depends on the currently implemented
+			 * SynchronizationMode.
+			 */
+			virtual void synchronize() = 0;
+
 			virtual ~Mutex() {}
 	};
 }}}

@@ -1,6 +1,7 @@
 <map id="src/fpmas/synchro/ghost/ghost_mode.h" name="src/fpmas/synchro/ghost/ghost_mode.h">
-<area shape="rect" id="node1" title=" " alt="" coords="5,5,172,47"/>
-<area shape="rect" id="node2" href="$fpmas_8h.html" title=" " alt="" coords="43,273,134,300"/>
-<area shape="rect" id="node3" href="$hard__sync__linker_8h.html" title=" " alt="" coords="68,95,227,136"/>
-<area shape="rect" id="node4" href="$hard__sync__mode_8h.html" title=" " alt="" coords="68,184,227,225"/>
+<area shape="rect" id="node1" title=" " alt="" coords="99,5,265,47"/>
+<area shape="rect" id="node2" href="$global__ghost__mode_8h_source.html" title=" " alt="" coords="5,184,172,225"/>
+<area shape="rect" id="node4" href="$hard__sync__linker_8h.html" title=" " alt="" coords="179,95,337,136"/>
+<area shape="rect" id="node3" href="$fpmas_8h.html" title=" " alt="" coords="137,273,227,300"/>
+<area shape="rect" id="node5" href="$hard__sync__mode_8h.html" title=" " alt="" coords="196,184,355,225"/>
 </map>

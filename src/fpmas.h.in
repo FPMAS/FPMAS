@@ -2,7 +2,7 @@
 #define FPMAS_H
 
 #include "fpmas/model/serializer.h"
-#include "fpmas/synchro/ghost/ghost_mode.h"
+#include "fpmas/synchro/ghost/global_ghost_mode.h"
 #include "fpmas/synchro/hard/hard_sync_mode.h"
 #include "fpmas/graph/graph_builder.h"
 #include "fpmas/random/random.h"
