@@ -19,10 +19,11 @@ find_package(Zoltan 3.81 REQUIRED)
 # nlohmann_json Config.cmake.
 find_package(nlohmann_json 3.7 REQUIRED)
 
-set(CMAKE_CXX_FLAGS_DEBUG
-	"${CMAKE_CXX_FLAGS_DEBUG} -std=c++11 -O3\
-	-Wall -Wextra -Wpedantic -Werror -Wno-error=pedantic\
-	-Woverloaded-virtual -Wnon-virtual-dtor")
+set(CMAKE_CXX_FLAGS_DEBUG "\
+${CMAKE_CXX_FLAGS_DEBUG} -std=c++11 \
+-Wall -Wextra -Wpedantic -Werror -Wno-error=pedantic \
+-Woverloaded-virtual -Wnon-virtual-dtor\
+")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall")
 
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
