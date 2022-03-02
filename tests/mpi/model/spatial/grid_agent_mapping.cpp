@@ -16,7 +16,7 @@ class AgentMappingTest : public Test {
 		std::array<fpmas::model::GridCell, grid_width*grid_height> cells;
 
 		AgentMappingTest() {
-			fpmas::seed(fpmas::default_seed);
+			fpmas::seed(fpmas::random::default_seed);
 		}
 
 		void SetUp() override {

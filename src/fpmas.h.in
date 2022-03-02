@@ -36,10 +36,6 @@
 #define FPMAS_VERSION_PATCH @fpmas_VERSION_PATCH@
 
 namespace fpmas {
-	/**
-	 * The default seed passed to fpmas::seed() when fpmas::init() is called.
-	 */
-	const std::mt19937::result_type default_seed {std::mt19937::default_seed};
 
 	/**
 	 * Initializes FPMAS.
@@ -92,10 +88,21 @@ namespace fpmas {
 	 * - fpmas::runtime::Runtime::seed()
 	 * - fpmas::model::RandomNeighbors::seed()
 	 * - fpmas::model::RandomMapping::seed()
-	 * - fpmas::random::rd_choices.seed()
+	 * - \ref fpmas::random::rd_choices "fpmas::random::rd_choices.seed()"
 	 *
 	 * Those are currently the only static random generators used internally in
 	 * an FPMAS simulation, so seeding them ensures reproducibility.
+	 *
+	 * The provided `seed` is not passed directly to the generators: distinct
+	 * seeds are generated using a deterministic method for each generator (if
+	 * the same seed was provided to all generators, they would produce exactly
+	 * the same sequence. Even if their use case is different, this might
+	 * introduce some bias).
+	 *
+	 * This method does not directly affect user defined random generators, but
+	 * the provided seed is stored in the `fpmas::random::seed` static
+	 * variable, so that it can be used by user defined generators while
+	 * controlling them with this fpmas::seed() method.
 	 *
 	 * @warning
 	 * Even if this ensures that random number sequences are the same for each
@@ -107,14 +114,6 @@ namespace fpmas {
 	 * simulations executed using the fpmas::synchro::ghost::GhostMode will be
 	 * deterministic.
 	 *
-	 *
-	 * The provided `seed` is not passed directly to the generators: distinct
-	 * seeds are generated using a deterministic method for each generator (if
-	 * the same seed was provided to both generators, they would produce
-	 * exactly the same sequence. Even if their use case is completely
-	 * different, this might introduce some bias).
-	 *
-	 * This method does not affect user defined random generators.
 	 *
 	 * @param seed random seed
 	 */

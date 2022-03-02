@@ -82,7 +82,7 @@ class AgentMappingTest : public Test {
 		std::array<fpmas::model::GridCell, grid_width*grid_height> cells;
 
 		AgentMappingTest() {
-			fpmas::seed(fpmas::default_seed);
+			fpmas::seed(fpmas::random::default_seed);
 		}
 
 		void SetUp() override {
@@ -101,7 +101,7 @@ class UniformGridAgentMappingTest : public AgentMappingTest {
 // Notice that an mpi test (in mpi/model/grid.cpp) checks the consistency of
 // the map across processes. Then its enough to check reproducibility locally.
 TEST_F(UniformGridAgentMappingTest, reproducibility) {
-	fpmas::seed(fpmas::default_seed);
+	fpmas::seed(fpmas::random::default_seed);
 	UniformGridAgentMapping other_mapping(grid_width, grid_height, num_agent);
 	for(auto& cell : cells)
 		ASSERT_EQ(mapping.countAt(&cell), other_mapping.countAt(&cell));
@@ -126,7 +126,7 @@ TEST_F(ConstrainedGridAgentMappingTest, test) {
 // Notice that an mpi test (in mpi/model/grid.cpp) checks the consistency of
 // the map across processes. Then its enough to check reproducibility locally.
 TEST_F(ConstrainedGridAgentMappingTest, reproducibility) {
-	fpmas::seed(fpmas::default_seed);
+	fpmas::seed(fpmas::random::default_seed);
 	ConstrainedGridAgentMapping other_mapping(grid_width, grid_height, num_agent, 2);
 	for(auto& cell : cells)
 		ASSERT_EQ(mapping.countAt(&cell), other_mapping.countAt(&cell));

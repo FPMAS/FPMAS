@@ -44,6 +44,8 @@ set(SOURCES
 	model/spatial/grid_load_balancing.cpp
 	model/spatial/grid_agent_mapping.cpp
 	model/spatial/test_agents.cpp
+	# Random
+	random/random.cpp
 	# Output
 	io/fake_data.cpp
 	io/output.cpp
