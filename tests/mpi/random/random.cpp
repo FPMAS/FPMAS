@@ -1,7 +1,9 @@
 #include "fpmas/random/random.h"
 #include "fpmas/communication/communication.h"
+#include "fpmas/random/distribution.h"
 #include "fpmas/utils/functional.h"
 #include "fpmas/utils/macros.h"
+#include "graph/mock_distributed_node.h"
 #include <algorithm>
 #include <gmock/gmock-matchers.h>
 #include <numeric>
@@ -329,6 +331,97 @@ TEST(Random, distributed_sample_n_sup_size) {
 	ASSERT_THAT(sample_set, ElementsAreArray(expected_total_items));
 }
 
+TEST(Random, sample_indexes) {
+	static const std::size_t SAMPLE_SIZE = 20;
+	static const std::size_t NUM_VALUES = 100;
+	static const std::size_t NUM_ROUNDS = 1000;
+
+	std::vector<std::size_t> histogram(NUM_VALUES);
+	fpmas::random::mt19937_64 gen;
+	for(std::size_t i = 0; i < NUM_ROUNDS; i++) {
+		std::vector<std::size_t> sample = fpmas::random::sample_indexes(
+				0ul, NUM_VALUES, SAMPLE_SIZE, gen);
+		ASSERT_THAT(sample, SizeIs(SAMPLE_SIZE));
+
+		std::set<std::size_t> sample_set(sample.begin(), sample.end());
+
+		ASSERT_THAT(sample_set, SizeIs(SAMPLE_SIZE));
+		for(auto item : sample)
+			histogram[item]++;
+	}
+	for(auto item : histogram)
+		ASSERT_NEAR((float) item / NUM_ROUNDS, (float) SAMPLE_SIZE / NUM_VALUES, 0.1); 
+}
+
+namespace fpmas { namespace random {
+	void to_json(nlohmann::json &j, const DistributedIndex &index) {
+		j = {index.p, index.offset};
+	}
+
+	void from_json(const nlohmann::json& j, DistributedIndex& index) {
+		index.p = j[0].get<int>();
+		index.offset = j[1].get<std::size_t>();
+	}
+
+}}
+
+struct dist_index_cmp {
+	bool operator()(
+			const fpmas::random::DistributedIndex& i1,
+			const fpmas::random::DistributedIndex& i2) const {
+		if(i1.p == i2.p)
+			return i1.offset < i2.offset;
+		return i1.p < i2.p;
+	}
+};
+
+TEST(Random, sample_distributed_indexes) {
+	using fpmas::random::DistributedIndex;
+
+	static const std::size_t N_LOCAL_ITEMS = 20;
+	static const std::size_t N_CHOICES = N_LOCAL_ITEMS;
+	static const std::size_t NUM_ROUNDS = 1000;
+
+	fpmas::random::mt19937_64 gen;
+	fpmas::random::UniformIntDistribution<int> rd_count(-9, 10);
+	std::vector<std::size_t> num_items(fpmas::communication::WORLD.getSize());
+	std::size_t n_items = 0;
+	for(int i = 0; i < fpmas::communication::WORLD.getSize(); i++) {
+		num_items[i] = N_LOCAL_ITEMS+rd_count(gen);
+		n_items+=num_items[i];
+	}
+
+	std::vector<std::size_t> histogram(n_items);
+	for(std::size_t i = 0; i < NUM_ROUNDS; i++) {
+		// Randomly choses 50000 items on each process from all processes
+		auto local_sample = fpmas::random::sample_indexes(
+				DistributedIndex::begin(num_items),
+				DistributedIndex::end(num_items),
+				N_CHOICES, gen);
+
+		ASSERT_THAT(local_sample, SizeIs(N_CHOICES));
+
+
+		// Ensures all items are unique
+		std::set<DistributedIndex, dist_index_cmp> sample_set(
+				local_sample.begin(), local_sample.end()
+				);
+		ASSERT_THAT(sample_set, SizeIs(N_CHOICES));
+		for(auto item : sample_set) {
+			// Ensures that selected items are valid
+			ASSERT_THAT(item.p, AllOf(Ge(0), Lt(fpmas::communication::WORLD.getSize())));
+			ASSERT_THAT(item.offset, AllOf(Ge(0), Lt(num_items[item.p])));
+		}
+
+		// Ensures item are selected from all processes
+		const DistributedIndex begin = DistributedIndex::begin(num_items);
+		for(auto item : sample_set)
+			histogram[DistributedIndex::distance(begin, item)]++;
+	}
+	for(auto item : histogram)
+		ASSERT_NEAR((float) item / NUM_ROUNDS, (float) N_CHOICES / n_items, 0.1);
+}
+
 TEST(Random, split_sample) {
 	static const std::size_t N_LOCAL_ITEMS = 100000;
 	static const std::size_t N_CHOICES = N_LOCAL_ITEMS;
@@ -358,6 +451,7 @@ TEST(Random, split_sample) {
 			global_samples.begin(), global_samples.end(),
 			std::vector<std::pair<int, int>>(),
 			fpmas::utils::Concat());
+	ASSERT_THAT(samples, SizeIs(N_CHOICES));
 
 
 	// Ensures all items are unique

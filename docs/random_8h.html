@@ -68,6 +68,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">random.h File Reference</div></div>
@@ -144,6 +145,11 @@ This graph shows which files directly or indirectly include this file:</div>
 </div>
 <p><a href="random_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
+Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1DistributedIndex.html">fpmas::random::DistributedIndex</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="namespaces" name="namespaces"></a>
 Namespaces</h2></td></tr>
 <tr class="memitem:namespacefpmas"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas.html">fpmas</a></td></tr>
@@ -171,9 +177,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a7326aae7213f3bfe2d6a088b711fe44c"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a7326aae7213f3bfe2d6a088b711fe44c"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1random.html#a7326aae7213f3bfe2d6a088b711fe44c">fpmas::random::local_sample</a> (const std::vector&lt; T &gt; &amp;local_items, std::size_t n)</td></tr>
 <tr class="separator:a7326aae7213f3bfe2d6a088b711fe44c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6677275e1692610ea33f81e3e0c92f46"><td class="memTemplParams" colspan="2">template&lt;typename Generator_t &gt; </td></tr>
-<tr class="memitem:a6677275e1692610ea33f81e3e0c92f46"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; std::pair&lt; int, std::size_t &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1random.html#a6677275e1692610ea33f81e3e0c92f46">fpmas::random::sample_indexes</a> (api::communication::MpiCommunicator &amp;comm, std::size_t local_items_count, std::size_t n, Generator_t &amp;gen)</td></tr>
-<tr class="separator:a6677275e1692610ea33f81e3e0c92f46"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc67dc7b65da9322e89c6ac8da75febc"><td class="memTemplParams" colspan="2">template&lt;typename Index_t , typename Generator_t &gt; </td></tr>
+<tr class="memitem:acc67dc7b65da9322e89c6ac8da75febc"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; Index_t &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1random.html#acc67dc7b65da9322e89c6ac8da75febc">fpmas::random::sample_indexes</a> (Index_t begin, Index_t end, std::size_t n, Generator_t &amp;gen)</td></tr>
+<tr class="separator:acc67dc7b65da9322e89c6ac8da75febc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a02009daa8da6c8833e06a0a46764bc4d"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a02009daa8da6c8833e06a0a46764bc4d"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; T &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1random.html#a02009daa8da6c8833e06a0a46764bc4d">fpmas::random::distributed_sample</a> (api::communication::MpiCommunicator &amp;comm, const std::vector&lt; T &gt; &amp;local_items, std::size_t n)</td></tr>
 <tr class="separator:a02009daa8da6c8833e06a0a46764bc4d"><td class="memSeparator" colspan="2">&#160;</td></tr>

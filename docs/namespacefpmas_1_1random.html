@@ -86,6 +86,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator_3_01random__device_01_4.html">DistributedGenerator&lt; random_device &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1DistributedIndex.html">DistributedIndex</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1Distribution.html">Distribution</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1Generator.html">Generator</a></td></tr>
@@ -143,9 +145,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a7326aae7213f3bfe2d6a088b711fe44c"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a7326aae7213f3bfe2d6a088b711fe44c"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1random.html#a7326aae7213f3bfe2d6a088b711fe44c">local_sample</a> (const std::vector&lt; T &gt; &amp;local_items, std::size_t n)</td></tr>
 <tr class="separator:a7326aae7213f3bfe2d6a088b711fe44c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6677275e1692610ea33f81e3e0c92f46"><td class="memTemplParams" colspan="2">template&lt;typename Generator_t &gt; </td></tr>
-<tr class="memitem:a6677275e1692610ea33f81e3e0c92f46"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; std::pair&lt; int, std::size_t &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1random.html#a6677275e1692610ea33f81e3e0c92f46">sample_indexes</a> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;comm, std::size_t local_items_count, std::size_t n, Generator_t &amp;gen)</td></tr>
-<tr class="separator:a6677275e1692610ea33f81e3e0c92f46"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc67dc7b65da9322e89c6ac8da75febc"><td class="memTemplParams" colspan="2">template&lt;typename Index_t , typename Generator_t &gt; </td></tr>
+<tr class="memitem:acc67dc7b65da9322e89c6ac8da75febc"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; Index_t &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1random.html#acc67dc7b65da9322e89c6ac8da75febc">sample_indexes</a> (Index_t begin, Index_t end, std::size_t n, Generator_t &amp;gen)</td></tr>
+<tr class="separator:acc67dc7b65da9322e89c6ac8da75febc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a02009daa8da6c8833e06a0a46764bc4d"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a02009daa8da6c8833e06a0a46764bc4d"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; std::vector&lt; T &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1random.html#a02009daa8da6c8833e06a0a46764bc4d">distributed_sample</a> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;comm, const std::vector&lt; T &gt; &amp;local_items, std::size_t n)</td></tr>
 <tr class="separator:a02009daa8da6c8833e06a0a46764bc4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -590,25 +592,25 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a6677275e1692610ea33f81e3e0c92f46" name="a6677275e1692610ea33f81e3e0c92f46"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6677275e1692610ea33f81e3e0c92f46">&#9670;&nbsp;</a></span>sample_indexes()</h2>
+<a id="acc67dc7b65da9322e89c6ac8da75febc" name="acc67dc7b65da9322e89c6ac8da75febc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acc67dc7b65da9322e89c6ac8da75febc">&#9670;&nbsp;</a></span>sample_indexes()</h2>
 
 <div class="memitem">
 <div class="memproto">
 <div class="memtemplate">
-template&lt;typename Generator_t &gt; </div>
+template&lt;typename Index_t , typename Generator_t &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt; std::pair&lt; int, std::size_t &gt; &gt; fpmas::random::sample_indexes </td>
+          <td class="memname">std::vector&lt; Index_t &gt; fpmas::random::sample_indexes </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;&#160;</td>
-          <td class="paramname"><em>comm</em>, </td>
+          <td class="paramtype">Index_t&#160;</td>
+          <td class="paramname"><em>begin</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">std::size_t&#160;</td>
-          <td class="paramname"><em>local_items_count</em>, </td>
+          <td class="paramtype">Index_t&#160;</td>
+          <td class="paramname"><em>end</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -629,21 +631,33 @@ template&lt;typename Generator_t &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Distributed algorithms used to build a sample of indexes, without replacement.</p>
-<p >Returned indexes are pairs of <code>(process_rank, local_offset)</code>, where <code>local_offset</code> is included in <code>[0, local_items_count)</code> for each process, so that the local offset can be used as an index in a local vector for example.</p>
-<p >Indexes are randomly selected from all the possible <code>(process_rank, local_offset)</code> pairs, depending on the MPI communicator size and the provided local item counts. If <code>n</code> is greater than the number of possible indexes (i.e. the sum of all local item counts), all indexes are returned.</p>
-<p >This method performs collective communications within the specified MPI communicator. In consequence, the method must be called from all processes.</p>
-<p >The same sample is generated on all processes if <code>n</code> is the same on all processes and the specified random number generator is in the same state on all processes.</p>
+<p >Algorithm used to build a sample of generic indexes, without replacement.</p>
+<p ><code>Index_t</code> can be anything that fulfill the following requirements:</p><ul>
+<li><code>Index_t</code> is <a href="https://en.cppreference.com/w/cpp/named_req/CopyConstructible">CopyConstructible</a></li>
+<li>Given an instance <code>index</code>, <code>index++</code> and <code>++index</code> are valid expressions and correspond to the expected behaviors.</li>
+<li>Given instances <code>i1</code> and <code>i2</code>, <code>i1!=i2</code> and <code>i1==i2</code> is valid.</li>
+<li>Considering <code>index=begin</code>, successively applying <code>index++</code> necessarily reaches a point were <code>index!=end</code> is <code>false</code> (and <code>index==end</code> is <code>true</code>). The behavior of applying index++ when <code>index==end</code> is however not specified.</li>
+</ul>
+<p >Indexes are randomly selected in the range <code>[begin, end)</code>. <code>n</code> is assumed to be less than or equal to the number of items in the <code>[begin, end)</code> range.</p>
+<p >This algorithm can be used to generate the same sample on all processes if <code>n</code> and the specified <code>[begin, end)</code> range are the same on all processes, and the specified sequential random number generator is in the same state on all processes.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">comm</td><td>MPI communicator </td></tr>
-    <tr><td class="paramname">local_items_count</td><td>number of items available in the current process </td></tr>
+    <tr><td class="paramname">begin</td><td>range start, included in the selection </td></tr>
+    <tr><td class="paramname">end</td><td>range end, not included in the selection </td></tr>
     <tr><td class="paramname">n</td><td>sample size (must be the same on all processes) </td></tr>
     <tr><td class="paramname">gen</td><td>random number generator</td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>indexes sample of size <code>n</code> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>indexes sample of size <code>n</code></dd></dl>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Index_t</td><td>(automatically deduced) an abstract index type that support increment. Returned indexes are a sample of indexes selected in <code>[begin, end)</code>. Such indexes can for example be used to retrieve items in a local vector to actually build a sample from the selected indexes. <code>Index_t</code> could also represent some discrete grid coordinates for example. </td></tr>
+    <tr><td class="paramname">Generator_t</td><td>(automatically deduced) type of random generator</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classfpmas_1_1random_1_1DistributedIndex.html">DistributedIndex</a> </dd></dl>
 
 </div>
 </div>
@@ -752,7 +766,7 @@ template&lt;typename T &gt; </div>
 <div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> agent : selected_agents)</div>
 <div class="line">    ((VirusAgent*) agent)-&gt;setState(INFECTED);</div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1Agent_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1Agent.html">fpmas::api::model::Agent</a></div><div class="ttdef"><b>Definition:</b> model.h:154</div></div>
-<div class="ttc" id="anamespacefpmas_1_1random_html_a93b05229a712a47fbfba61f2a7b0d638"><div class="ttname"><a href="namespacefpmas_1_1random.html#a93b05229a712a47fbfba61f2a7b0d638">fpmas::random::split_sample</a></div><div class="ttdeci">std::vector&lt; T &gt; split_sample(api::communication::MpiCommunicator &amp;comm, const std::vector&lt; T &gt; &amp;local_items, std::size_t n)</div><div class="ttdef"><b>Definition:</b> random.h:443</div></div>
+<div class="ttc" id="anamespacefpmas_1_1random_html_a93b05229a712a47fbfba61f2a7b0d638"><div class="ttname"><a href="namespacefpmas_1_1random.html#a93b05229a712a47fbfba61f2a7b0d638">fpmas::random::split_sample</a></div><div class="ttdeci">std::vector&lt; T &gt; split_sample(api::communication::MpiCommunicator &amp;comm, const std::vector&lt; T &gt; &amp;local_items, std::size_t n)</div><div class="ttdef"><b>Definition:</b> random.h:551</div></div>
 </div><!-- fragment --><p >This method performs collective communications within the specified MPI communicator. In consequence, the method must be called from all processes.</p>
 <p >The complete item list is never centralized, in order to limit communications and memory usage.</p>
 <dl class="params"><dt>Parameters</dt><dd>

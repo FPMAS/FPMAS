@@ -246,82 +246,179 @@ namespace fpmas { namespace random {
 			return local_sample(local_items, n, rd_choices);
 		}
 
+	
 	/**
-	 * Distributed algorithms used to build a sample of indexes, without
+	 * Algorithm used to build a sample of generic indexes, without
 	 * replacement.
 	 *
-	 * Returned indexes are pairs of `(process_rank, local_offset)`, where
-	 * `local_offset` is included in `[0, local_items_count)` for each process,
-	 * so that the local offset can be used as an index in a local vector for
-	 * example.
+	 * `Index_t` can be anything that fulfill the following requirements:
+	 * - `Index_t` is
+	 *   [CopyConstructible](https://en.cppreference.com/w/cpp/named_req/CopyConstructible)
+	 * - Given an instance `index`, `index++` and `++index` are valid
+	 *   expressions and correspond to the expected behaviors.
+	 * - Given instances `i1` and `i2`, `i1!=i2` and `i1==i2` is valid.
+	 * - Considering `index=begin`, successively applying `index++` necessarily
+	 *   reaches a point were `index!=end` is `false` (and `index==end` is
+	 *   `true`). The behavior of applying index++ when `index==end` is however
+	 *   not specified.
 	 *
-	 * Indexes are randomly selected from all the possible `(process_rank,
-	 * local_offset)` pairs, depending on the MPI communicator size and the
-	 * provided local item counts. If `n` is greater than the number of
-	 * possible indexes (i.e. the sum of all local item counts), all indexes
-	 * are returned.
+	 * Indexes are randomly selected in the range `[begin, end)`. `n` is
+	 * assumed to be less than or equal to the number of items in the `[begin,
+	 * end)` range.
 	 *
-	 * This method performs collective communications within the specified MPI
-	 * communicator. In consequence, the method must be called from all
-	 * processes.
+	 * This algorithm can be used to generate the same sample on all processes
+	 * if `n` and the specified `[begin, end)` range are the same on all
+	 * processes, and the specified sequential random number generator is in
+	 * the same state on all processes.
 	 *
-	 * The same sample is generated on all processes if `n` is the same on all
-	 * processes and the specified random number generator is in the same state
-	 * on all processes.
-	 *
-	 * @param comm MPI communicator
-	 * @param local_items_count number of items available in the current
-	 * process
+	 * @param begin range start, included in the selection
+	 * @param end range end, not included in the selection
 	 * @param n sample size (must be the same on all processes)
 	 * @param gen random number generator
 	 *
 	 * @return indexes sample of size `n`
+	 *
+	 * @tparam Index_t (automatically deduced) an abstract index type that
+	 * support increment. Returned indexes are a sample of indexes selected in
+	 * `[begin, end)`. Such indexes can for example be used to retrieve items
+	 * in a local vector to actually build a sample from the selected indexes.
+	 * `Index_t` could also represent some discrete grid coordinates for
+	 * example.
+	 * @tparam Generator_t (automatically deduced) type of random generator
+	 *
+	 * @see DistributedIndex
 	 */
-	template<typename Generator_t>
-	std::vector<std::pair<int, std::size_t>> sample_indexes(
-			api::communication::MpiCommunicator& comm,
-			std::size_t local_items_count, std::size_t n,
-			Generator_t& gen
-			) {
-		communication::TypedMpi<std::size_t> int_mpi(comm);
-		// Item count on each process
-		std::vector<std::size_t> item_counts
-			= int_mpi.allGather(local_items_count);
-		std::size_t total_item_count = std::accumulate(
-				item_counts.begin(), item_counts.end(), 0);
-		n = std::min(n, total_item_count);
+	template<typename Index_t, typename Generator_t>
+		std::vector<Index_t> sample_indexes(
+				Index_t begin, Index_t end,
+				std::size_t n,
+				Generator_t& gen
+				) {
+			// (process, local_index)
+			std::vector<Index_t> result_indexes(n);
 
-		// (process, local_index)
-		std::vector<std::pair<int, std::size_t>> result_indexes(n);
-
-		/* Initializes the indexes reservoir */
-		int p = 0;
-		std::size_t local_index = 0;
-		for(std::size_t i = 0; i < n; i++) {
-			if(local_index >= item_counts[p]) {
-				p++;
-				local_index = 0;
+			/* Initializes the indexes reservoir */
+			Index_t p = begin;
+			for(std::size_t i = 0; i < n; i++) {
+				result_indexes[i] = p++;
 			}
-			result_indexes[i] = {p, local_index++};
-		}
-		/**************************************/
+			/**************************************/
 
-		std::size_t i = n;
-		while(p != (int) item_counts.size()) {
-			while(local_index != item_counts[p]) {
-				std::pair<int, std::size_t> index(p, local_index++);
+			std::size_t i = n;
+			while(p != end) {
 				UniformIntDistribution<std::size_t> random_k(0, i);
 				std::size_t k = random_k(gen);
 				if(k < n)
-					result_indexes[k] = index;
+					result_indexes[k] = p;
 				++i;
+				++p;
 			}
-			p++;
-			local_index=0;
+
+			return result_indexes;
 		}
 
-		return result_indexes;
-	}
+	/**
+	 * Represents a continuous index distributed across processes.
+	 *
+	 * A distributed index is represented as a `(process, local_offset)` pair.
+	 * Processes are indexed from `0` to `p-1`.
+	 * Each process is assigned to a given number of items `n_p`.
+	 *
+	 * The sequence of values iterated by the index is as all processes items
+	 * were iterated in a single sequence, from process `0` to `p-1`:
+	 * ```
+	 * (0, 0) (0, 1) ... (0, n_0-1) (1, 0) ... (1, n_1-1) ... (p-1, 0) ... (p-1, n_(p-1)-1) (p, 0)
+	 * ```
+	 *
+	 * The interest of this structure is that local offsets associated to a
+	 * process `p` can for exemple be used as indexes in a vector hosted by the
+	 * process `p`.
+	 */
+	class DistributedIndex {
+		private:
+			std::vector<std::size_t> item_counts;
+		public:
+			/**
+			 * Process index.
+			 */
+			int p;
+			/**
+			 * Local offset.
+			 */
+			std::size_t offset;
+
+			DistributedIndex() = default;
+
+			/**
+			 * DistributedIndex constructor.
+			 *
+			 * `item_counts` is such that processes `p` owns `item_counts[p]`
+			 * items. The number of processes is set to `item_counts.size()`.
+			 *
+			 * @param item_counts counts of items on each process
+			 * @param p process index (in `[0, item_counts.size())`)
+			 * @param offset local offset (in `[0, item_counts[p])`)
+			 */
+			DistributedIndex(
+					const std::vector<std::size_t>& item_counts,
+					int p, std::size_t offset)
+				: item_counts(item_counts), p(p), offset(offset) {
+				}
+
+			/**
+			 * Begin of the distributed index associated to `item_counts`, i.e.
+			 * `(p0, 0)` where `p0` is the first process that owns at least one
+			 * item.
+			 */
+			static DistributedIndex begin(const std::vector<std::size_t>& item_counts);
+
+			/**
+			 * End of the distributed index associated to `item_counts`, i.e.
+			 * (p, 0).
+			 */
+			static DistributedIndex end(const std::vector<std::size_t>& item_counts);
+
+			/**
+			 * Increments the current DistributedIndex.
+			 */
+			DistributedIndex& operator++();
+
+			/**
+			 * Increments the current DistributedIndex and returns the index
+			 * value before the increment.
+			 */
+			DistributedIndex operator++(int);
+
+			/**
+			 * Returns a copy of the current DistributedIndex incremented by
+			 * `n`.
+			 */
+			DistributedIndex operator+(std::size_t n) const;
+			
+			/**
+			 * Returns the distance between `i1` and `i2`, i.e. the number of
+			 * increments to reach `i2` from `i1`. The behavior is undefined if
+			 * `i2` cannot be reached from `i1`.
+			 *
+			 * `distance(begin(item_counts), end(item_counts))` notably returns
+			 * the total number of items owned by all processes.
+			 */
+			static std::size_t distance(
+					const DistributedIndex& i1, const DistributedIndex& i2);
+
+			/**
+			 * Returns true iff `index` is equal to this, i.e. iff their
+			 * processes and local offsets are equal.
+			 *
+			 * `item_counts` are not taken into account in the comparison
+			 * process.
+			 */
+			bool operator==(const DistributedIndex& index) const;
+			/**
+			 * Equivalent to `!(*this==index)`.
+			 */
+			bool operator!=(const DistributedIndex& index) const;
+	};
 
 	/**
 	 * Randomly selects `n` items from **all** `local_items` specified on all
@@ -365,15 +462,26 @@ namespace fpmas { namespace random {
 				api::communication::MpiCommunicator &comm,
 				const std::vector<T> &local_items, std::size_t n
 				) {
+
+			communication::TypedMpi<std::size_t> int_mpi(comm);
+			std::vector<std::size_t> item_counts
+				= int_mpi.allGather(local_items.size());
+
 			// index = (process, local_offset)
-			std::vector<std::pair<int, std::size_t>> result_indexes
-				= sample_indexes(comm, local_items.size(), n, rd_choices);
+			std::vector<DistributedIndex> result_indexes
+				= sample_indexes(
+						DistributedIndex::begin(item_counts),
+						DistributedIndex::end(item_counts),
+						std::min(
+							n,
+							std::accumulate(item_counts.begin(), item_counts.end(), 0ul)
+							), rd_choices);
 			
 			// Requests required items
 			communication::TypedMpi<std::vector<std::size_t>> request_mpi(comm);
 			std::unordered_map<int, std::vector<std::size_t>> requests;
 			for(auto item : result_indexes)
-				requests[item.first].push_back(item.second);
+				requests[item.p].push_back(item.offset);
 			requests = request_mpi.allToAll(requests);
 
 			// Exchange items
@@ -448,16 +556,27 @@ namespace fpmas { namespace random {
 			// processes
 			static mt19937_64 gen(seed);
 
+			communication::TypedMpi<std::size_t> int_mpi(comm);
+			std::vector<std::size_t> item_counts
+				= int_mpi.allGather(local_items.size());
+
 			// index = (process, local_offset)
-			std::vector<std::pair<int, std::size_t>> result_indexes
-				= sample_indexes(comm, local_items.size(), n, gen);
+			std::vector<DistributedIndex> result_indexes
+				= sample_indexes(
+						DistributedIndex::begin(item_counts),
+						DistributedIndex::end(item_counts),
+						std::min(
+							n,
+							std::accumulate(item_counts.begin(), item_counts.end(), 0ul)
+							), gen);
+
 			// Because gen is sequential, the same result_indexes list is built
 			// on all processes
 			
 			std::vector<T> result;
 			for(auto item : result_indexes)
-				if(item.first == comm.getRank())
-					result.push_back(local_items[item.second]);
+				if(item.p == comm.getRank())
+					result.push_back(local_items[item.offset]);
 			return result;
 		}
 }}
