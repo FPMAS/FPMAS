@@ -82,6 +82,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a6ee526b5d7080fd554ab3a1b289e2a6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85b9885cb10ed059d6c40bca79905f22"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1random_1_1Generator.html#a85b9885cb10ed059d6c40bca79905f22">seed</a> (T seed)=0</td></tr>
 <tr class="separator:a85b9885cb10ed059d6c40bca79905f22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9405f516801eb1e5f2397bbbe1dbd90e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1random_1_1Generator.html#a9405f516801eb1e5f2397bbbe1dbd90e">discard</a> (unsigned long long z)=0</td></tr>
+<tr class="separator:a9405f516801eb1e5f2397bbbe1dbd90e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
@@ -159,6 +161,43 @@ template&lt;typename T &gt; </div>
 </dl>
 
 <p>Implemented in <a class="el" href="classfpmas_1_1random_1_1Generator.html#a871c6e546b64e09e6693959b0b90f078">fpmas::random::Generator&lt; Generator_t &gt;</a>, and <a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#a2ece1165a00a337b910dd482c17642a1">fpmas::random::DistributedGenerator&lt; Generator_t &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a9405f516801eb1e5f2397bbbe1dbd90e" name="a9405f516801eb1e5f2397bbbe1dbd90e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9405f516801eb1e5f2397bbbe1dbd90e">&#9670;&nbsp;</a></span>discard()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void <a class="el" href="classfpmas_1_1api_1_1random_1_1Generator.html">fpmas::api::random::Generator</a>&lt; T &gt;::discard </td>
+          <td>(</td>
+          <td class="paramtype">unsigned long long&#160;</td>
+          <td class="paramname"><em>z</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Advances the generator internal state as if operator() was called z times.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">z</td><td>number of values to discard </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1random_1_1Generator.html#ac66a99fc20c570a1cda1e7d1d6cf8bfb">fpmas::random::Generator&lt; Generator_t &gt;</a>, and <a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#a54cdfabee54ef2c9d9a1fe7327202c4a">fpmas::random::DistributedGenerator&lt; Generator_t &gt;</a>.</p>
 
 </div>
 </div>

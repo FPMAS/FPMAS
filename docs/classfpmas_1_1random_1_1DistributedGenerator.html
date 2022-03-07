@@ -111,10 +111,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ace59c13f208ae1806962d9911375c956"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2ece1165a00a337b910dd482c17642a1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#a2ece1165a00a337b910dd482c17642a1">seed</a> (<a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#ac6cad7d2d743f3f00f47bd0326a7da4a">result_type</a> seed) override</td></tr>
 <tr class="separator:a2ece1165a00a337b910dd482c17642a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54cdfabee54ef2c9d9a1fe7327202c4a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#a54cdfabee54ef2c9d9a1fe7327202c4a">discard</a> (unsigned long long z) override</td></tr>
+<tr class="separator:a54cdfabee54ef2c9d9a1fe7327202c4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ee526b5d7080fd554ab3a1b289e2a6b"><td class="memItemLeft" align="right" valign="top">virtual Generator_t::result_type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1random_1_1Generator.html#a6ee526b5d7080fd554ab3a1b289e2a6b">operator()</a> ()=0</td></tr>
 <tr class="separator:a6ee526b5d7080fd554ab3a1b289e2a6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85b9885cb10ed059d6c40bca79905f22"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1random_1_1Generator.html#a85b9885cb10ed059d6c40bca79905f22">seed</a> (Generator_t::result_type seed)=0</td></tr>
 <tr class="separator:a85b9885cb10ed059d6c40bca79905f22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9405f516801eb1e5f2397bbbe1dbd90e"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1random_1_1Generator.html#a9405f516801eb1e5f2397bbbe1dbd90e">discard</a> (unsigned long long z)=0</td></tr>
+<tr class="separator:a9405f516801eb1e5f2397bbbe1dbd90e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -285,6 +289,43 @@ template&lt;typename Generator_t  = mt19937_64&gt; </div>
 </dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1random_1_1Generator.html#a85b9885cb10ed059d6c40bca79905f22">fpmas::api::random::Generator&lt; Generator_t::result_type &gt;</a>.</p>
+
+</div>
+</div>
+<a id="a54cdfabee54ef2c9d9a1fe7327202c4a" name="a54cdfabee54ef2c9d9a1fe7327202c4a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a54cdfabee54ef2c9d9a1fe7327202c4a">&#9670;&nbsp;</a></span>discard()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Generator_t  = mt19937_64&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html">fpmas::random::DistributedGenerator</a>&lt; Generator_t &gt;::discard </td>
+          <td>(</td>
+          <td class="paramtype">unsigned long long&#160;</td>
+          <td class="paramname"><em>z</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Advances the generator internal state as if operator() was called z times.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">z</td><td>number of values to discard </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1random_1_1Generator.html#a9405f516801eb1e5f2397bbbe1dbd90e">fpmas::api::random::Generator&lt; Generator_t::result_type &gt;</a>.</p>
 
 </div>
 </div>

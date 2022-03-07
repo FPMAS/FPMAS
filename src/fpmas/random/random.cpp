@@ -22,7 +22,7 @@ namespace fpmas { namespace random {
 				offset=0;
 				++p;
 				// Skips processes without items
-				while(item_counts[p] == 0)
+				while(p != (int) item_counts.size() && item_counts[p] == 0)
 					++p;
 			} else {
 				++offset;

@@ -16,7 +16,6 @@ namespace fpmas { namespace api { namespace random {
 	 *
 	 * @tparam T generated integer type
 	 */
-	//TODO v2: refactor random api?
 	template<typename T>
 		class Generator {
 			public:
@@ -33,6 +32,14 @@ namespace fpmas { namespace api { namespace random {
 				 * @param seed seed value
 				 */
 				virtual void seed(T seed) = 0;
+
+				/**
+				 * Advances the generator internal state as if operator() was
+				 * called z times.
+				 *
+				 * @param z number of values to discard
+				 */
+				virtual void discard(unsigned long long z) = 0;
 
 				virtual ~Generator() {}
 		};

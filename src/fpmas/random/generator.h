@@ -6,6 +6,7 @@
  */
 
 #include <cstdint>
+#include <nlohmann/adl_serializer.hpp>
 #include <random>
 #include "fpmas/api/random/generator.h"
 #include "fpmas/communication/communication.h"
@@ -65,16 +66,55 @@ namespace fpmas { namespace random {
 				return gen();
 			}
 		};
+
+	template<typename Generator_t>
+		class Generator;
+
+	/**
+	 * Serializes the specified generator to an output stream.
+	 *
+	 * The implementation is directly based on the C++11 standard
+	 * [RandomNumberEngine
+	 * operator<<](https://en.cppreference.com/w/cpp/named_req/RandomNumberEngine)
+	 * specification.
+	 */
+	template<typename Gen, class CharT, class Traits>
+		std::basic_ostream<CharT, Traits>& operator<<(
+				std::basic_ostream<CharT,Traits>& ost, const Generator<Gen>& g ) {
+			return ost << g.gen;
+		}
+
+	/**
+	 * Unserializes a generator from an input stream.
+	 *
+	 * The produced generator continues to generate its random number sequence
+	 * from the state it had when serialized.
+	 *
+	 * The implementation is directly based on the C++11 standard
+	 * [RandomNumberEngine
+	 * operator>>](https://en.cppreference.com/w/cpp/named_req/RandomNumberEngine)
+	 * specification.
+	 */
+	template<typename Gen, class CharT, class Traits>
+		std::basic_istream<CharT,Traits>&
+		operator>>(std::basic_istream<CharT,Traits>& ost, Generator<Gen>& g ) {
+			return ost >> g.gen;
+		}
+
 	/**
 	 * api::random::Generator implementation.
 	 *
 	 * Any specialization of this class meets the requirements of
 	 * _UniformRandomBitGenerator_.
 	 * 
+	 * @see fpmas::random::operator<<()
+	 * @see fpmas::random::operator>>()
+	 *
 	 * @tparam Generator_t cpp standard random number generator
 	 */
 	template<typename Generator_t>
 		class Generator : public UniformRandomBitGenerator<Generator_t> {
+
 			public:
 				/**
 				 * Integer type used by the generator.
@@ -99,6 +139,35 @@ namespace fpmas { namespace random {
 				void seed(result_type seed) override {
 					this->gen.seed(seed);
 				}
+
+				void discard(unsigned long long z) override {
+					this->gen.discard(z);
+				}
+
+				/**
+				 * Returns true iff the internal state of the generator `g` is
+				 * equal to the state of this generator, i.e. the two
+				 * generators are guaranteed to generate the same random
+				 * numbers sequence.
+				 */
+				bool operator==(const Generator<Generator_t>& g) const {
+					return this->gen == g.gen;
+				};
+
+				/**
+				 * Equivalent to `!(*this == g)`.
+				 */
+				bool operator!=(const Generator<Generator_t>& g) const {
+					return this->gen != g.gen;
+				};
+
+				template<typename Gen, class CharT, class Traits>
+					friend std::basic_ostream<CharT,Traits>&
+					operator<<(std::basic_ostream<CharT,Traits>& ost, const Generator<Gen>& g );
+
+				template<typename Gen, class CharT, class Traits>
+					friend std::basic_istream<CharT,Traits>&
+					operator>>(std::basic_istream<CharT,Traits>& ost, Generator<Gen>& g );
 		};
 
 	/**
@@ -232,6 +301,13 @@ namespace fpmas { namespace random {
 					init();
 				}
 
+				void discard(unsigned long long z) override {
+					if(!_init)
+						init();
+					local_generator.discard(z);
+				}
+
+
 				/**
 				 * Minimum value that can be generated.
 				 *
@@ -254,6 +330,92 @@ namespace fpmas { namespace random {
 	template<>
 		class DistributedGenerator<random_device> : public random_device {
 		};
-
 }}
+
+namespace nlohmann {
+	/**
+	 * Json serialization rules for fpmas::random::Generator.
+	 */
+	template<typename Generator_t>
+		struct adl_serializer<fpmas::random::Generator<Generator_t>> {
+
+			/**
+			 * Serializes `gen` into `j` using the fpmas::random::operator<<().
+			 *
+			 * @param j output json
+			 * @param gen input generator
+			 */
+			template<typename JsonType>
+				static void to_json(JsonType& j, const fpmas::random::Generator<Generator_t>& gen) {
+					std::stringstream str_buf;
+					str_buf << gen;
+					j = str_buf.str();
+				}
+
+			/**
+			 * Unserializes `gen` from `j` using the fpmas::random::operator>>().
+			 *
+			 * @param j input json
+			 * @param gen output generator
+			 */
+			template<typename JsonType>
+				static void from_json(const JsonType& j, fpmas::random::Generator<Generator_t>& gen) {
+					std::stringstream str_buf(j.template get<std::string>());
+					str_buf >> gen;
+				}
+		};
+}
+
+namespace fpmas { namespace io { namespace datapack {
+	/**
+	 * ObjectPack serialization rules for fpmas::random::Generator.
+	 */
+	template<typename Generator_t>
+		struct Serializer<fpmas::random::Generator<Generator_t>> {
+			/**
+			 * Serializes `gen` into a output string stream using the
+			 * fpmas::random::operator<<(), and returns the size required to
+			 * serialize the output string to `pack`.
+			 *
+			 * @param pack output ObjectPack
+			 * @param gen input generator
+			 */
+			template<typename PackType>
+				static std::size_t size(
+						const PackType& pack,
+						const fpmas::random::Generator<Generator_t>& gen) {
+					std::ostringstream str;
+					str << gen;
+					return pack.size(str.str());
+				}
+
+			/**
+			 * Serializes `gen` into `pack` using the fpmas::random::operator<<().
+			 *
+			 * @param pack output ObjectPack
+			 * @param gen input generator
+			 */
+			template<typename PackType>
+				static void to_datapack(PackType& pack, const fpmas::random::Generator<Generator_t>& gen) {
+					std::ostringstream str;
+					str<<gen;
+					pack.template put(str.str());
+				}
+
+			/**
+			 * Unserializes `gen` from `j` using the fpmas::random::operator<<().
+			 *
+			 * @param pack input ObjectPack
+			 * @return unserialized generator
+			 */
+			template<typename PackType>
+				static fpmas::random::Generator<Generator_t> from_datapack(
+						const PackType& pack) {
+					std::istringstream str(pack.template get<std::string>());
+					fpmas::random::Generator<Generator_t> gen;
+					str>>gen;
+					return gen;
+				}
+		};
+}}}
 #endif

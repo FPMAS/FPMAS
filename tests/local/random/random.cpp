@@ -7,6 +7,35 @@
 
 using namespace testing;
 
+TEST(Random, generator_iostream) {
+	fpmas::random::mt19937_64 gen(624);
+
+	std::stringstream str_stream;
+	str_stream << gen << std::endl;
+
+	fpmas::random::mt19937_64 unserial_gen;
+	str_stream >> unserial_gen;
+
+	ASSERT_EQ(gen, unserial_gen);
+}
+
+TEST(Random, generator_json) {
+	fpmas::random::mt19937_64 gen(624);
+
+	nlohmann::json j = gen;
+	fpmas::random::mt19937_64 unserial_gen = j.get<fpmas::random::mt19937_64>();
+
+	ASSERT_EQ(gen, unserial_gen);
+}
+
+TEST(Random, generator_datapack) {
+	fpmas::random::mt19937_64 gen(624);
+
+	fpmas::io::datapack::ObjectPack pack = gen;
+	fpmas::random::mt19937_64 unserial_gen = pack.get<fpmas::random::mt19937_64>();
+
+	ASSERT_EQ(gen, unserial_gen);
+}
 
 /*
  * See tests/mpi/random/random.cpp for more relevant tests.
@@ -50,6 +79,9 @@ TEST(Random, distributed_index) {
 		total_count-=sizes[i];
 		sizes[i] = 0;
 	}
+	// Sets last item to 0
+	total_count-=sizes[29];
+	sizes[29] = 0;
 
 	DistributedIndex dist_index_begin = DistributedIndex::begin(sizes);
 	DistributedIndex dist_index_end = DistributedIndex::end(sizes);
