@@ -105,6 +105,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a468f196372d207e6a113d039ad9a418c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a28073fd6a730c8093091a8c7720ccf9f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1Generator_3_01std_1_1random__device_01_4.html#a28073fd6a730c8093091a8c7720ccf9f">seed</a> (<a class="el" href="classfpmas_1_1random_1_1Generator.html#a9cec58f8ed1e886a42d0ff2f2c70dfcd">std::random_device::result_type</a>) override</td></tr>
 <tr class="separator:a28073fd6a730c8093091a8c7720ccf9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abddcc001f5dfb9913bec775b0360fd36"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1Generator_3_01std_1_1random__device_01_4.html#abddcc001f5dfb9913bec775b0360fd36">discard</a> (unsigned long long) override</td></tr>
+<tr class="separator:abddcc001f5dfb9913bec775b0360fd36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classfpmas_1_1random_1_1UniformRandomBitGenerator"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classfpmas_1_1random_1_1UniformRandomBitGenerator')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classfpmas_1_1random_1_1UniformRandomBitGenerator.html">fpmas::random::UniformRandomBitGenerator&lt; std::random_device &gt;</a></td></tr>
 <tr class="memitem:aab1c8020f6a2219351ab62f7d28265ee inherit pub_methods_classfpmas_1_1random_1_1UniformRandomBitGenerator"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1random_1_1UniformRandomBitGenerator.html#a1c0b32c02792715f14f13baad4e0cce8">result_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1UniformRandomBitGenerator.html#aab1c8020f6a2219351ab62f7d28265ee">operator()</a> () override</td></tr>
 <tr class="separator:aab1c8020f6a2219351ab62f7d28265ee inherit pub_methods_classfpmas_1_1random_1_1UniformRandomBitGenerator"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -211,7 +213,36 @@ Additional Inherited Members</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Seed method: no effect in this case. </p>
+<p >No effect in the case of the random_device generator. </p>
+
+</div>
+</div>
+<a id="abddcc001f5dfb9913bec775b0360fd36" name="abddcc001f5dfb9913bec775b0360fd36"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abddcc001f5dfb9913bec775b0360fd36">&#9670;&nbsp;</a></span>discard()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1random_1_1Generator.html">fpmas::random::Generator</a>&lt; std::random_device &gt;::discard </td>
+          <td>(</td>
+          <td class="paramtype">unsigned long long&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >No effect in the case of the random_device generator. </p>
+
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1random_1_1Generator.html#a9405f516801eb1e5f2397bbbe1dbd90e">fpmas::api::random::Generator&lt; Generator_t::result_type &gt;</a>.</p>
 
 </div>
 </div>

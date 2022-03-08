@@ -192,9 +192,15 @@ namespace fpmas { namespace random {
 				}
 
 				/**
-				 * Seed method: no effect in this case.
+				 * No effect in the case of the random_device generator.
 				 */
 				void seed(std::random_device::result_type) override {
+				}
+
+				/**
+				 * No effect in the case of the random_device generator.
+				 */
+				void discard(unsigned long long) override {
 				}
 		};
 
