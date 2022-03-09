@@ -50,6 +50,14 @@ namespace fpmas { namespace api { namespace model {
 	float euclidian_distance(const DiscretePoint& p1, const DiscretePoint& p2);
 
 	/**
+	 * Default DiscretePoint comparison operator.
+	 *
+	 * `p1` and `p2` are first compared againt the x coordinate, and compared
+	 * againt the y coordinate iff `p1.x == p2.x`.
+	 */
+	bool operator<(const DiscretePoint& p1, const DiscretePoint& p2);
+
+	/**
 	 * Cell API extension to represent a Cell in a Grid.
 	 *
 	 * Contrary to base \Cells that do not need to be explicitly situated,
@@ -64,6 +72,13 @@ namespace fpmas { namespace api { namespace model {
 			 */
 			virtual DiscretePoint location() const = 0;
 	};
+
+	/**
+	 * Default GridCell comparison operator.
+	 *
+	 * Effectively compares GridCell::location().
+	 */
+	bool operator<(const GridCell& c1, const GridCell& c2);
 
 	/**
 	 * A non-templated GridAgent base class.

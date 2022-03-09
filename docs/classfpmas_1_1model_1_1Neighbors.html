@@ -100,11 +100,20 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a3cc40a6cc7793b1d9998793ee2bf91fb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae7704cdc88bcbe5b1a6b149e52877680"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classfpmas_1_1model_1_1Neighbor.html">Neighbor</a>&lt; AgentType &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#ae7704cdc88bcbe5b1a6b149e52877680">operator[]</a> (std::size_t i) const</td></tr>
 <tr class="separator:ae7704cdc88bcbe5b1a6b149e52877680"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41a06128c94c129f4c3359718835bf31"><td class="memTemplParams" colspan="2">template&lt;typename Gen &gt; </td></tr>
+<tr class="memitem:a41a06128c94c129f4c3359718835bf31"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html">Neighbors</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#a41a06128c94c129f4c3359718835bf31">shuffle</a> (Gen &amp;gen)</td></tr>
+<tr class="separator:a41a06128c94c129f4c3359718835bf31"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae756f9cbd9a192daff2875ad93c811d3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html">Neighbors</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#ae756f9cbd9a192daff2875ad93c811d3">shuffle</a> ()</td></tr>
 <tr class="separator:ae756f9cbd9a192daff2875ad93c811d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae2cf36df6fb8f0b62d94926dfba427a2"><td class="memTemplParams" colspan="2">template&lt;typename Compare  = std::less&lt;AgentType&gt;&gt; </td></tr>
+<tr class="memitem:ae2cf36df6fb8f0b62d94926dfba427a2"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html">Neighbors</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#ae2cf36df6fb8f0b62d94926dfba427a2">sort</a> (Compare comp=Compare())</td></tr>
+<tr class="separator:ae2cf36df6fb8f0b62d94926dfba427a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0e1124a213bbddf88949c0e3a945797"><td class="memTemplParams" colspan="2">template&lt;typename Filter &gt; </td></tr>
 <tr class="memitem:af0e1124a213bbddf88949c0e3a945797"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html">Neighbors</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#af0e1124a213bbddf88949c0e3a945797">filter</a> (Filter _filter)</td></tr>
 <tr class="separator:af0e1124a213bbddf88949c0e3a945797"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab07c220174e5dc045a80efb94609dea8"><td class="memTemplParams" colspan="2">template&lt;typename Gen &gt; </td></tr>
+<tr class="memitem:ab07c220174e5dc045a80efb94609dea8"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1model_1_1Neighbor.html">Neighbor</a>&lt; AgentType &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#ab07c220174e5dc045a80efb94609dea8">random</a> (Gen &amp;gen)</td></tr>
+<tr class="separator:ab07c220174e5dc045a80efb94609dea8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a88579a08d4336bab7acc9767abcac5b9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1model_1_1Neighbor.html">Neighbor</a>&lt; AgentType &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#a88579a08d4336bab7acc9767abcac5b9">random</a> ()</td></tr>
 <tr class="separator:a88579a08d4336bab7acc9767abcac5b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -486,8 +495,41 @@ template&lt;typename AgentType &gt; </div>
 
 </div>
 </div>
+<a id="a41a06128c94c129f4c3359718835bf31" name="a41a06128c94c129f4c3359718835bf31"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a41a06128c94c129f4c3359718835bf31">&#9670;&nbsp;</a></span>shuffle() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename AgentType &gt; </div>
+<div class="memtemplate">
+template&lt;typename Gen &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html">Neighbors</a> &amp; <a class="el" href="classfpmas_1_1model_1_1Neighbors.html">fpmas::model::Neighbors</a>&lt; AgentType &gt;::shuffle </td>
+          <td>(</td>
+          <td class="paramtype">Gen &amp;&#160;</td>
+          <td class="paramname"><em>gen</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Internally shuffles the neighbors list using <a href="https://en.cppreference.com/w/cpp/algorithm/random_shuffle">std::shuffle</a> and the provided random number generator.</p>
+<p >Can be used to iterate randomly over the neighbors set.</p>
+<dl class="section return"><dt>Returns</dt><dd>reference to this <a class="el" href="classfpmas_1_1model_1_1Neighbors.html">Neighbors</a> instance </dd></dl>
+
+</div>
+</div>
 <a id="ae756f9cbd9a192daff2875ad93c811d3" name="ae756f9cbd9a192daff2875ad93c811d3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae756f9cbd9a192daff2875ad93c811d3">&#9670;&nbsp;</a></span>shuffle()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae756f9cbd9a192daff2875ad93c811d3">&#9670;&nbsp;</a></span>shuffle() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -510,9 +552,61 @@ template&lt;typename AgentType &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Internally shuffles the neighbors list using <a href="https://en.cppreference.com/w/cpp/algorithm/random_shuffle">std::shuffle</a>.</p>
-<p >Can be used to iterate randomly over the neighbors set.</p>
+<p >Shuffles agent using the distributed <a class="el" href="structfpmas_1_1model_1_1RandomNeighbors.html#a29721b68c3a7df97f6835bea8b73d8db">RandomNeighbors::rd</a> random number generator.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#a41a06128c94c129f4c3359718835bf31">shuffle(Gen&amp;)</a></dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>reference to this <a class="el" href="classfpmas_1_1model_1_1Neighbors.html">Neighbors</a> instance </dd></dl>
+
+</div>
+</div>
+<a id="ae2cf36df6fb8f0b62d94926dfba427a2" name="ae2cf36df6fb8f0b62d94926dfba427a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae2cf36df6fb8f0b62d94926dfba427a2">&#9670;&nbsp;</a></span>sort()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename AgentType &gt; </div>
+<div class="memtemplate">
+template&lt;typename Compare  = std::less&lt;AgentType&gt;&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html">Neighbors</a> &amp; <a class="el" href="classfpmas_1_1model_1_1Neighbors.html">fpmas::model::Neighbors</a>&lt; AgentType &gt;::sort </td>
+          <td>(</td>
+          <td class="paramtype">Compare&#160;</td>
+          <td class="paramname"><em>comp</em> = <code>Compare()</code></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Sorts the neighbor list using the specified comparator.</p>
+<p >By default, the comparison is performed on neighbors agents using the <code>operator&lt;</code> on <code>AgentType</code>, that can be user defined.</p>
+<p >In consequence, neighbors are sorted is ascending order by default. A custom comparator based on the <code>operator&gt;</code> can be specified to sort neighbros in descending order.</p>
+<p >En efficient way of defining other comparison functions is the usage of lambda functions: </p><div class="fragment"><div class="line"><span class="keywordtype">void</span> agent_behavior() {</div>
+<div class="line">    <span class="keyword">auto</span> neighbors = this-&gt;outNeighbors&lt;UserAgent&gt;();</div>
+<div class="line">    neighbors.sort([] (<span class="keyword">const</span> UserAgent&amp; a1, <span class="keyword">const</span> UserAgent&amp; a2) {</div>
+<div class="line">        <span class="keywordflow">return</span> a1.getField() &lt; a2.getField();</div>
+<div class="line">    });</div>
+<div class="line">}</div>
+</div><!-- fragment --><p >More generally, <code>Compare</code> must be a type that defines a method with the following signature: </p><div class="fragment"><div class="line"><span class="keywordtype">bool</span> operator()(<span class="keyword">const</span> AgentType&amp; a1, <span class="keyword">const</span> AgentType&amp; a2) <span class="keyword">const</span>;</div>
+</div><!-- fragment --><dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Compare</td><td>comparator type </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">comp</td><td>comparator instance </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -555,8 +649,40 @@ template&lt;typename Filter &gt; </div>
 
 </div>
 </div>
+<a id="ab07c220174e5dc045a80efb94609dea8" name="ab07c220174e5dc045a80efb94609dea8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab07c220174e5dc045a80efb94609dea8">&#9670;&nbsp;</a></span>random() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename AgentType &gt; </div>
+<div class="memtemplate">
+template&lt;typename Gen &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1model_1_1Neighbor.html">Neighbor</a>&lt; AgentType &gt; <a class="el" href="classfpmas_1_1model_1_1Neighbors.html">fpmas::model::Neighbors</a>&lt; AgentType &gt;::random </td>
+          <td>(</td>
+          <td class="paramtype">Gen &amp;&#160;</td>
+          <td class="paramname"><em>gen</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Selects a random element of this neighbors list, using the specified random number generator.</p>
+<dl class="section return"><dt>Returns</dt><dd>random neighbor </dd></dl>
+
+</div>
+</div>
 <a id="a88579a08d4336bab7acc9767abcac5b9" name="a88579a08d4336bab7acc9767abcac5b9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a88579a08d4336bab7acc9767abcac5b9">&#9670;&nbsp;</a></span>random()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a88579a08d4336bab7acc9767abcac5b9">&#9670;&nbsp;</a></span>random() <span class="overload">[2/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -579,7 +705,8 @@ template&lt;typename AgentType &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Returns a random element of this neighbors list.</p>
+<p >Selects a ramdom element of this neighbors list, using the distributed <a class="el" href="structfpmas_1_1model_1_1RandomNeighbors.html#a29721b68c3a7df97f6835bea8b73d8db">RandomNeighbors::rd</a> random number generator.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#ab07c220174e5dc045a80efb94609dea8">random(Gen&amp;)</a></dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>random neighbor </dd></dl>
 
 </div>

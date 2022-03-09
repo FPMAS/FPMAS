@@ -127,6 +127,65 @@ namespace fpmas { namespace model {
 		};
 
 	/**
+	 * Default Neighbor comparison function object.
+	 *
+	 * @tparam AgentType Type of neighbor agents
+	 * @tparam Compare a comparator that can compare two `AgentType` instance.
+	 * The comparator must defined a method with the following signature:
+	 * ```cpp
+	 * bool operator()(const AgentType&, const AgentType&) const;
+	 * ```
+	 * By default, `AgentTypes` are compared using the `operator<`, that can be
+	 * user defined.
+	 */
+	template<typename AgentType, typename Compare = std::less<AgentType>>
+		class CompareNeighbors {
+			private:
+				Compare compare;
+			public:
+				CompareNeighbors() = default;
+
+				/**
+				 * Compares agents using the specified function object.
+				 */
+				CompareNeighbors(const Compare& compare) : compare(compare) {
+				}
+
+				/**
+				 * Compares neighbors' agents using the a Compare instance.
+				 */
+				bool operator()(
+						const Neighbor<AgentType>& n1,
+						const Neighbor<AgentType>& n2) const {
+					return compare(*n1.agent(), *n2.agent());
+				}
+		};
+
+	/**
+	 * Default Neighbor comparison operator.
+	 *
+	 * This can only compare agents using the `operator<`, contrary to the
+	 * generic CompareNeighbors implementation.
+	 *
+	 * However, this definition might be useful to use external sorting
+	 * algorithm or any other method requiring a Neighbor comparison using the
+	 * `operator<`.
+	 *
+	 * @par Example
+	 * From a \SpatialAgent behavior:
+	 * ```cpp
+	 * auto mobility_field = this->mobilityField();
+	 * std::sort(mobility_field.begin(), mobility_field.end());
+	 * ```
+	 * This is just for the example purpose, `mobility_field.sort()` can be
+	 * used directly to produce the same behavior.
+	 */
+	template<typename AgentType>
+		bool operator<(const Neighbor<AgentType>& n1, const Neighbor<AgentType>& n2) {
+			return *n1.agent() < *n2.agent();
+		}
+
+	/**
 	 * Helper class that defines a static random::DistributedGenerator used by
 	 * the Neighbors class (for any `AgentType`).
 	 *
@@ -169,6 +228,8 @@ namespace fpmas { namespace model {
 				std::vector<Neighbor<AgentType>> neighbors;
 
 			public:
+				Neighbors() = default;
+
 				/**
 				 * Neighbors constructor.
 				 *
@@ -276,16 +337,70 @@ namespace fpmas { namespace model {
 
 				/**
 				 * Internally shuffles the neighbors list using
-				 * [std::shuffle](https://en.cppreference.com/w/cpp/algorithm/random_shuffle).
+				 * [std::shuffle](https://en.cppreference.com/w/cpp/algorithm/random_shuffle)
+				 * and the provided random number generator.
 				 *
 				 * Can be used to iterate randomly over the neighbors set.
 				 *
 				 * @return reference to this Neighbors instance
 				 */
+				template<typename Gen>
+					Neighbors& shuffle(Gen& gen) {
+						std::shuffle(neighbors.begin(), neighbors.end(), gen);
+						return *this;
+					}
+
+				/**
+				 * Shuffles agent using the distributed RandomNeighbors::rd
+				 * random number generator.
+				 *
+				 * @see shuffle(Gen&)
+				 *
+				 * @return reference to this Neighbors instance
+				 */
 				Neighbors& shuffle() {
-					std::shuffle(neighbors.begin(), neighbors.end(), RandomNeighbors::rd);
-					return *this;
+					return shuffle(RandomNeighbors::rd);
 				}
+
+				/**
+				 * Sorts the neighbor list using the specified comparator.
+				 *
+				 * By default, the comparison is performed on neighbors agents
+				 * using the `operator<` on `AgentType`, that can be user
+				 * defined.
+				 *
+				 * In consequence, neighbors are sorted is ascending order by
+				 * default. A custom comparator based on the `operator>` can be
+				 * specified to sort neighbros in descending order.
+				 *
+				 * En efficient way of defining other comparison functions is
+				 * the usage of lambda functions:
+				 * ```cpp
+				 * void agent_behavior() {
+				 * 	auto neighbors = this->outNeighbors<UserAgent>();
+				 * 	neighbors.sort([] (const UserAgent& a1, const UserAgent& a2) {
+				 * 		return a1.getField() < a2.getField();
+				 * 	});
+				 * }
+				 * ```
+				 *
+				 * More generally, `Compare` must be a type that defines a
+				 * method with the following signature:
+				 * ```
+				 * bool operator()(const AgentType& a1, const AgentType& a2) const;
+				 * ```
+				 *
+				 * @tparam Compare comparator type
+				 * @param comp comparator instance
+				 */
+				template<typename Compare = std::less<AgentType>>
+					Neighbors& sort(Compare comp = Compare()) {
+						std::sort(
+								neighbors.begin(), neighbors.end(),
+								CompareNeighbors<AgentType, Compare>(comp)
+								);
+						return *this;
+					}
 
 				/**
 				 * Filters the neighbor list.
@@ -309,13 +424,28 @@ namespace fpmas { namespace model {
 				}
 
 				/**
-				 * Returns a random element of this neighbors list.
+				 * Selects a random element of this neighbors list, using the
+				 * specified random number generator.
+				 *
+				 * @return random neighbor
+				 */
+				template<typename Gen>
+					Neighbor<AgentType> random(Gen& gen) {
+						random::UniformIntDistribution<std::size_t> index(
+								0, this->count()-1);
+						return neighbors.at(index(gen));
+					}
+
+				/**
+				 * Selects a ramdom element of this neighbors list, using the
+				 * distributed RandomNeighbors::rd random number generator.
+				 *
+				 * @see random(Gen&)
 				 *
 				 * @return random neighbor
 				 */
 				Neighbor<AgentType> random() {
-					random::UniformIntDistribution<std::size_t> index(0, this->count()-1);
-					return neighbors.at(index(RandomNeighbors::rd));
+					return random(RandomNeighbors::rd);
 				}
 		};
 

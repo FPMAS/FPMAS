@@ -99,6 +99,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1ChebyshevDistance.html">ChebyshevDistance</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1CompareNeighbors.html">CompareNeighbors</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1ConstrainedGridAgentMapping.html">ConstrainedGridAgentMapping</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1DefaultBehavior.html">DefaultBehavior</a></td></tr>
@@ -260,6 +262,9 @@ Functions</h2></td></tr>
 <tr class="separator:a92c99b08ddf417cd93cfb56c83ce2bbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e3a5b8ed49aaacfb850b4de5d0074ac"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#a3e3a5b8ed49aaacfb850b4de5d0074ac">is_agent_in_group</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">api::model::Agent</a> *agent, <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html">api::model::AgentGroup</a> &amp;group)</td></tr>
 <tr class="separator:a3e3a5b8ed49aaacfb850b4de5d0074ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b9d92e1aac6741c6f97567681bef3c0"><td class="memTemplParams" colspan="2">template&lt;typename AgentType &gt; </td></tr>
+<tr class="memitem:a3b9d92e1aac6741c6f97567681bef3c0"><td class="memTemplItemLeft" align="right" valign="top">bool&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model.html#a3b9d92e1aac6741c6f97567681bef3c0">operator&lt;</a> (const <a class="el" href="classfpmas_1_1model_1_1Neighbor.html">Neighbor</a>&lt; AgentType &gt; &amp;n1, const <a class="el" href="classfpmas_1_1model_1_1Neighbor.html">Neighbor</a>&lt; AgentType &gt; &amp;n2)</td></tr>
+<tr class="separator:a3b9d92e1aac6741c6f97567681bef3c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p ><a class="el" href="namespacefpmas_1_1api_1_1model.html">fpmas::api::model</a> implementations. </p>
@@ -687,6 +692,42 @@ template&lt;typename <a class="el" href="structfpmas_1_1model_1_1GridConfig.html
       </table>
 </div><div class="memdoc">
 <p >Checks if <code>agent</code> is currently in <code>group</code>. </p>
+
+</div>
+</div>
+<a id="a3b9d92e1aac6741c6f97567681bef3c0" name="a3b9d92e1aac6741c6f97567681bef3c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3b9d92e1aac6741c6f97567681bef3c0">&#9670;&nbsp;</a></span>operator&lt;()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename AgentType &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">bool fpmas::model::operator&lt; </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classfpmas_1_1model_1_1Neighbor.html">Neighbor</a>&lt; AgentType &gt; &amp;&#160;</td>
+          <td class="paramname"><em>n1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classfpmas_1_1model_1_1Neighbor.html">Neighbor</a>&lt; AgentType &gt; &amp;&#160;</td>
+          <td class="paramname"><em>n2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Default <a class="el" href="classfpmas_1_1model_1_1Neighbor.html">Neighbor</a> comparison operator.</p>
+<p >This can only compare agents using the <code>operator&lt;</code>, contrary to the generic <a class="el" href="classfpmas_1_1model_1_1CompareNeighbors.html">CompareNeighbors</a> implementation.</p>
+<p >However, this definition might be useful to use external sorting algorithm or any other method requiring a <a class="el" href="classfpmas_1_1model_1_1Neighbor.html">Neighbor</a> comparison using the <code>operator&lt;</code>.</p>
+<dl class="section user"><dt>Example</dt><dd>From a <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> behavior: <div class="fragment"><div class="line"><span class="keyword">auto</span> mobility_field = this-&gt;mobilityField();</div>
+<div class="line">std::sort(mobility_field.begin(), mobility_field.end());</div>
+</div><!-- fragment --> This is just for the example purpose, <code>mobility_field.sort()</code> can be used directly to produce the same behavior. </dd></dl>
 
 </div>
 </div>

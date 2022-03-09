@@ -38,6 +38,7 @@ set(SOURCES
 	# Model
 	model/model.cpp
 	model/behavior.cpp
+	model/neighbors.cpp
 	model/spatial/spatial_model.cpp
 	model/spatial/grid.cpp
 	model/spatial/graph.cpp
