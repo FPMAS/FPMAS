@@ -993,12 +993,8 @@ namespace fpmas { namespace model {
 				}
 		};
 
-
-	/**
-	 * api::model::SpatialAgentBuilder implementation.
-	 */
-	template<typename CellType, typename MappingCellType = api::model::Cell>
-		class SpatialAgentBuilder : public api::model::SpatialAgentBuilder<CellType, MappingCellType>{
+	template<typename CellType, typename MappingCellType>
+		class SpatialAgentBuilderBase : public api::model::SpatialAgentBuilder<CellType, MappingCellType> {
 			public:
 				/**
 				 * FPMAS reserved group id used by the SpatialAgentBuilder
@@ -1006,39 +1002,34 @@ namespace fpmas { namespace model {
 				 */
 				static const api::model::GroupId TEMP_GROUP_ID = -2;
 
-				/**
-				 * \copydoc api::model::SpatialAgentBuilder::build(SpatialModel<CellType>&, GroupList, SpatialAgentFactory<CellType>&, SpatialAgentMapping<MappingCellType>&)
-				 */
-				void build(
+			protected:
+				void build_agents(
 						api::model::SpatialModel<CellType>& model,
 						api::model::GroupList groups,
 						api::model::SpatialAgentFactory<CellType>& factory,
 						api::model::SpatialAgentMapping<MappingCellType>& agent_mapping
-						) override;
+						);
 
-				/**
-				 * \copydoc api::model::SpatialAgentBuilder::build(SpatialModel<CellType>&, GroupList, std::function<SpatialAgent<CellType>*()>, SpatialAgentMapping<MappingCellType>&)
-				 */
-				void build(
+				void build_agents(
 						api::model::SpatialModel<CellType>& model,
 						api::model::GroupList groups,
 						std::function<api::model::SpatialAgent<CellType>*()> factory,
 						api::model::SpatialAgentMapping<MappingCellType>& agent_mapping
-						) override;
+						);
 		};
 
 	template<typename CellType, typename MappingCellType>
-		void SpatialAgentBuilder<CellType, MappingCellType>::build(
+		void SpatialAgentBuilderBase<CellType, MappingCellType>::build_agents(
 				api::model::SpatialModel<CellType>& model,
 				api::model::GroupList groups,
 				api::model::SpatialAgentFactory<CellType>& factory,
 				api::model::SpatialAgentMapping<MappingCellType>& agent_mapping
 				) {
-			build(model, groups, [&factory] () {return factory.build();}, agent_mapping);
+			build_agents(model, groups, [&factory] () {return factory.build();}, agent_mapping);
 		}
 
 	template<typename CellType, typename MappingCellType>
-		void SpatialAgentBuilder<CellType, MappingCellType>::build(
+		void SpatialAgentBuilderBase<CellType, MappingCellType>::build_agents(
 				api::model::SpatialModel<CellType>& model,
 				api::model::GroupList groups,
 				std::function<api::model::SpatialAgent<CellType>*()> factory,
@@ -1064,6 +1055,37 @@ namespace fpmas { namespace model {
 					);
 			model.removeGroup(temp_group);
 		}
+
+	/**
+	 * api::model::SpatialAgentBuilder implementation.
+	 */
+	template<typename CellType, typename MappingCellType = api::model::Cell>
+		class SpatialAgentBuilder : public SpatialAgentBuilderBase<CellType, MappingCellType> {
+			public:
+				/**
+				 * \copydoc api::model::SpatialAgentBuilder::build(SpatialModel<CellType>&, GroupList, SpatialAgentFactory<CellType>&, SpatialAgentMapping<MappingCellType>&)
+				 */
+				void build(
+						api::model::SpatialModel<CellType>& model,
+						api::model::GroupList groups,
+						api::model::SpatialAgentFactory<CellType>& factory,
+						api::model::SpatialAgentMapping<MappingCellType>& agent_mapping
+						) override {
+					this->build_agents(model, groups, factory, agent_mapping);
+				}
+
+				/**
+				 * \copydoc api::model::SpatialAgentBuilder::build(SpatialModel<CellType>&, GroupList, std::function<SpatialAgent<CellType>*()>, SpatialAgentMapping<MappingCellType>&)
+				 */
+				void build(
+						api::model::SpatialModel<CellType>& model,
+						api::model::GroupList groups,
+						std::function<api::model::SpatialAgent<CellType>*()> factory,
+						api::model::SpatialAgentMapping<MappingCellType>& agent_mapping
+						) override {
+					this->build_agents(model, groups, factory, agent_mapping);
+				}
+		};
 }}
 
 namespace nlohmann {

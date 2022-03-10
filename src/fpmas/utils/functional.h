@@ -7,8 +7,48 @@
 
 #include <utility>
 #include <functional>
+#include <vector>
+#include <unordered_map>
+#include <map>
 
 namespace fpmas { namespace utils {
+
+	namespace detail {
+		template<typename Container>
+			struct Concat {
+			};
+
+		template<typename T>
+			struct Concat<std::vector<T>> {
+				static std::vector<T> concat(std::vector<T>& init, const std::vector<T>& c) {
+					init.insert(init.end(), c.begin(), c.end());
+					return std::move(init);
+				}
+			};
+
+		template<typename K, typename T, typename Comp, typename Alloc>
+			struct Concat<std::map<K, T, Comp, Alloc>> {
+				static std::map<K, T, Comp, Alloc> concat(
+						std::map<K, T, Comp, Alloc>& init,
+						const std::map<K, T, Comp, Alloc>& c
+						) {
+					init.insert(c.begin(), c.end());
+					return std::move(init);
+				}
+			};
+
+		template<typename K, typename T, typename Hash, typename KeyEq, typename Alloc>
+			struct Concat<std::unordered_map<K, T, Hash, KeyEq, Alloc>> {
+				static std::unordered_map<K, T, Hash, KeyEq, Alloc> concat(
+						std::unordered_map<K, T, Hash, KeyEq, Alloc>& init,
+						const std::unordered_map<K, T, Hash, KeyEq, Alloc>& c
+						) {
+					init.insert(c.begin(), c.end());
+					return std::move(init);
+				}
+			};
+	}
+
 	/**
 	 * A function object that can be used to concatenate two containers.
 	 */
@@ -30,8 +70,7 @@ namespace fpmas { namespace utils {
 		 */
 		template<typename Container>
 			Container operator()(Container& init, const Container& c) const {
-				init.insert(init.end(), c.begin(), c.end());
-				return std::move(init);
+				return detail::Concat<Container>::concat(init, c);
 			}
 	};
 
