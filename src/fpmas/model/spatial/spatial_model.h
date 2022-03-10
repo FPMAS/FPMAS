@@ -715,6 +715,7 @@ namespace fpmas { namespace model {
 				private:
 				mutable CellType* location_cell_buffer = nullptr;
 				DistributedId location_id;
+				random::mt19937_64 _rd;
 
 				protected:
 				/**
@@ -791,6 +792,14 @@ namespace fpmas { namespace model {
 				 * \copydoc fpmas::api::model::SpatialAgent::locationCell
 				 */
 				CellType* locationCell() const override;
+
+				void seed(random::mt19937_64::result_type seed) override {
+					_rd.seed(seed);
+				}
+
+				random::mt19937_64& rd() override {
+					return _rd;
+				}
 			};
 
 	template<typename SpatialAgentInterface, typename AgentType, typename CellType, typename Derived>
@@ -1118,6 +1127,7 @@ namespace nlohmann {
 				j[0] = fpmas::api::utils::PtrWrapper<Derived>(
 						const_cast<Derived*>(static_cast<const Derived*>(ptr.get())));
 				j[1] = ptr->location_id;
+				j[2] = ptr->_rd;
 			}
 
 			/**
@@ -1145,6 +1155,7 @@ namespace nlohmann {
 					= j[0].get<fpmas::api::utils::PtrWrapper<Derived>>();
 
 				derived_ptr->location_id = j[1].get<fpmas::api::graph::DistributedId>();
+				derived_ptr->_rd = j[2].get<fpmas::random::mt19937_64>();
 				return derived_ptr.get();
 			}
 		};
@@ -1245,7 +1256,8 @@ namespace fpmas { namespace io { namespace datapack {
 			static std::size_t size(const ObjectPack& p, const Ptr& ptr) {
 				PtrWrapper<Derived> derived = PtrWrapper<Derived>(
 						const_cast<Derived*>(static_cast<const Derived*>(ptr.get())));
-				return p.template size(derived) + p.template size<DistributedId>();
+				return p.template size(derived) + p.template size<DistributedId>()
+					+ p.template size(ptr->_rd);
 			}
 
 			/**
@@ -1261,6 +1273,7 @@ namespace fpmas { namespace io { namespace datapack {
 						const_cast<Derived*>(static_cast<const Derived*>(ptr.get())));
 				pack.put(derived);
 				pack.put(ptr->locationId());
+				pack.put(ptr->_rd);
 			}
 
 			/**
@@ -1287,6 +1300,7 @@ namespace fpmas { namespace io { namespace datapack {
 					.get<PtrWrapper<Derived>>();
 
 				derived_ptr->location_id = pack.get<fpmas::api::graph::DistributedId>();
+				derived_ptr->_rd = pack.get<fpmas::random::mt19937_64>();
 				return derived_ptr.get();
 			}
 		};

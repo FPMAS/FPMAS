@@ -1114,7 +1114,7 @@ namespace fpmas { namespace io { namespace datapack {
 		};
 
 	/**
-	 * std::unordered_map Serializer specialization.
+	 * std::map Serializer specialization.
 	 *
 	 * | Serialization scheme ||||||||
 	 * |----------------------||||||||
@@ -1123,15 +1123,17 @@ namespace fpmas { namespace io { namespace datapack {
 	 * @tparam K key type
 	 * @tparam T value type
 	 */
-	template<typename K, typename T>
-		struct Serializer<std::unordered_map<K, T>> {
+	template<typename K, typename T, typename Comp, typename Alloc>
+		struct Serializer<std::map<K, T, Comp, Alloc>> {
 			/**
 			 * Returns the buffer size required to serialize the specified map,
 			 * i.e. `p.size<std::size_t>()+N` where `N` is the sum of
 			 * `p.size(item)` for each item in `map`.
 			 */
 			template<typename PackType>
-				static std::size_t size(const PackType& p, const std::unordered_map<K, T>& map) {
+				static std::size_t size(
+						const PackType& p,
+						const std::map<K, T, Comp, Alloc>& map) {
 					std::size_t n = p.template size<std::size_t>();
 					for(auto& item : map)
 						n += p.template size(item);
@@ -1149,7 +1151,8 @@ namespace fpmas { namespace io { namespace datapack {
 			 */
 			template<typename PackType>
 				static void to_datapack(
-						PackType& pack, const std::unordered_map<K, T>& map) {
+						PackType& pack,
+						const std::map<K, T, Comp, Alloc>& map) {
 					pack.template put(map.size());
 					// Items are written in order
 					for(auto& item : map)
@@ -1166,7 +1169,75 @@ namespace fpmas { namespace io { namespace datapack {
 			 * @return unserialized map
 			 */
 			template<typename PackType>
-				static std::unordered_map<K, T> from_datapack(const PackType& pack) {
+				static std::map<K, T, Comp, Alloc> from_datapack(
+						const PackType& pack) {
+					std::size_t size = pack.template get<std::size_t>();
+					std::map<K, T> map;
+					for(std::size_t i = 0; i < size; i++)
+						map.emplace_hint(
+								map.end(), pack.template get<std::pair<K, T>>());
+					return map;
+				}
+		};
+
+	/**
+	 * std::unordered_map Serializer specialization.
+	 *
+	 * | Serialization scheme ||||||||
+	 * |----------------------||||||||
+	 * | map.size() | item_1.key | item_1.value | item_2.key | item_2.value | ... | item_n.key | item_n.value |
+	 *
+	 * @tparam K key type
+	 * @tparam T value type
+	 */
+	template<typename K, typename T, typename Hash, typename KeyEq, typename Alloc>
+		struct Serializer<std::unordered_map<K, T, Hash, KeyEq, Alloc>> {
+			/**
+			 * Returns the buffer size required to serialize the specified map,
+			 * i.e. `p.size<std::size_t>()+N` where `N` is the sum of
+			 * `p.size(item)` for each item in `map`.
+			 */
+			template<typename PackType>
+				static std::size_t size(
+						const PackType& p,
+						const std::unordered_map<K, T, Hash, KeyEq, Alloc>& map) {
+					std::size_t n = p.template size<std::size_t>();
+					for(auto& item : map)
+						n += p.template size(item);
+					return n;
+				}
+
+			/**
+			 * Serializes `map` to `pack`.
+			 * 
+			 * Each item is serialized using the
+			 * PackType::put(const std::pair<K, T>&) method.
+			 *
+			 * @param pack destination BasicObjectPack
+			 * @param map map to serialize
+			 */
+			template<typename PackType>
+				static void to_datapack(
+						PackType& pack,
+						const std::unordered_map<K, T, Hash, KeyEq, Alloc>& map) {
+					pack.template put(map.size());
+					// Items are written in order
+					for(auto& item : map)
+						pack.template put(item);
+				}
+
+			/**
+			 * Unserializes a map from `pack`.
+			 *
+			 * Each item of the map is unserialized using the
+			 * PackType::get<std::pair<K, T>>() method.
+			 *
+			 * @param pack source BasicObjectPack
+			 * @return unserialized map
+			 */
+			template<typename PackType>
+				static std::unordered_map<K, T, Hash, KeyEq, Alloc> from_datapack(
+						const PackType& pack) {
 					std::size_t size = pack.template get<std::size_t>();
 					std::unordered_map<K, T> map;
 					for(std::size_t i = 0; i < size; i++)

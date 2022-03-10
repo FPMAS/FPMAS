@@ -6,6 +6,8 @@
  */
 
 #include "fpmas/api/model/spatial/grid.h"
+#include "fpmas/communication/communication.h"
+#include "fpmas/random/random.h"
 #include "spatial_model.h"
 #include "fpmas/random/distribution.h"
 
@@ -197,7 +199,89 @@ namespace fpmas { namespace model {
 	 * RandomGridAgentMapping might be used. 
 	 */
 	template<typename CellType = GridCell>
-	using GridAgentBuilder = SpatialAgentBuilder<CellType, api::model::GridCell>;
+		class GridAgentBuilder : public SpatialAgentBuilderBase<CellType, api::model::GridCell> {
+			private:
+				random::DistributedIndex agent_begin;
+				random::DistributedIndex agent_end;
+
+			public:
+				/**
+				 * \copydoc api::model::SpatialAgentBuilder::build(SpatialModel<CellType>&, GroupList, SpatialAgentFactory<CellType>&, SpatialAgentMapping<MappingCellType>&)
+				 */
+				void build(
+						api::model::SpatialModel<CellType>& model,
+						api::model::GroupList groups,
+						api::model::SpatialAgentFactory<CellType>& factory,
+						api::model::SpatialAgentMapping<api::model::GridCell>& agent_mapping
+						) override;
+
+				/**
+				 * \copydoc api::model::SpatialAgentBuilder::build(SpatialModel<CellType>&, GroupList, std::function<SpatialAgent<CellType>*()>, SpatialAgentMapping<MappingCellType>&)
+				 */
+				void build(
+						api::model::SpatialModel<CellType>& model,
+						api::model::GroupList groups,
+						std::function<api::model::SpatialAgent<CellType>*()> factory,
+						api::model::SpatialAgentMapping<api::model::GridCell>& agent_mapping
+						) override;
+		};
+
+	template<typename CellType>
+		void GridAgentBuilder<CellType>::build(
+				api::model::SpatialModel<CellType>& model,
+				api::model::GroupList groups,
+				api::model::SpatialAgentFactory<CellType>& factory,
+				api::model::SpatialAgentMapping<api::model::GridCell>& agent_mapping
+				) {
+			this->build(model, groups, [&factory] () {return factory.build();}, agent_mapping);
+		}
+
+	template<typename CellType>
+		void GridAgentBuilder<CellType>::build(
+				api::model::SpatialModel<CellType>& model,
+				api::model::GroupList groups,
+				std::function<api::model::SpatialAgent<CellType>*()> factory,
+				api::model::SpatialAgentMapping<api::model::GridCell>& agent_mapping
+				) {
+			std::map<DiscretePoint, std::size_t> item_counts_map;
+			for(auto cell : model.cells())
+				item_counts_map[cell->location()]++;
+			communication::TypedMpi<decltype(item_counts_map)> item_counts_mpi(
+					model.getMpiCommunicator());
+			item_counts_map =
+				communication::all_reduce(item_counts_mpi, item_counts_map, utils::Concat());
+			std::map<DiscretePoint, std::size_t> item_counts;
+			// Loop ordered by DiscretePoint
+			std::size_t sum = 0;
+			for(auto item : item_counts_map) {
+				sum+=item.second;
+				item_counts.insert({item.first, sum});
+			}
+			std::map<DiscretePoint, std::size_t> local_counts;
+
+			std::vector<api::model::GridAgent<CellType>*> agents;
+
+			this->build_agents(model, groups, [&agents, &factory] {
+					auto agent = factory();
+					// Keep a reference to built agents
+					agents.push_back((api::model::GridAgent<CellType>*) agent);
+					return agent;
+					}, agent_mapping);
+
+			std::vector<std::mt19937_64::result_type> local_seeds(agents.size());
+			for(std::size_t i = 0; i < agents.size(); i++) {
+				// Generates uniques integers, independently from the current
+				// distribution
+				local_seeds[i] = item_counts[agents[i]->locationPoint()] +
+					local_counts[agents[i]->locationPoint()]++;
+			}
+
+			std::seed_seq seed_generator(local_seeds.begin(), local_seeds.end());
+			seed_generator.generate(local_seeds.begin(), local_seeds.end());
+			for(std::size_t i = 0; i < agents.size(); i++) {
+				agents[i]->seed(local_seeds[i]);
+			}
+		}
 
 
 	/**

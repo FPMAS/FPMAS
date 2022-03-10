@@ -6,6 +6,7 @@
  */
 
 #include "../model.h"
+#include "fpmas/random/generator.h"
 
 namespace fpmas { namespace api { namespace model {
 
@@ -325,6 +326,10 @@ namespace fpmas { namespace api { namespace model {
 			 * @return perception range
 			 */
 			virtual const Range<CellType>& perceptionRange() const = 0;
+
+			virtual void seed(std::mt19937_64::result_type seed) = 0;
+
+			virtual random::Generator<std::mt19937_64::result_type>& rd() = 0;
 
 		protected:
 			/**

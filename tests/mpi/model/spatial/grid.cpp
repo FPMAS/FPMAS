@@ -1,6 +1,9 @@
 #include "fpmas/model/spatial/grid.h"
+#include "fpmas/model/spatial/grid_agent_mapping.h"
+#include "fpmas/model/spatial/spatial_model.h"
 #include "fpmas/model/spatial/von_neumann.h"
 #include "fpmas/model/spatial/moore.h"
+#include "fpmas/model/spatial/von_neumann_grid.h"
 #include "fpmas/synchro/hard/hard_sync_mode.h"
 #include "fpmas/synchro/ghost/ghost_mode.h"
 #include "gmock/gmock.h"
@@ -442,5 +445,43 @@ TEST_F(MooreGridBuilderTest, build_with_groups) {
 		ASSERT_THAT(cell->groups(), Contains(&g2));
 		ASSERT_THAT(g1.localAgents(), Contains(cell));
 		ASSERT_THAT(g2.localAgents(), Contains(cell));
+	}
+}
+
+class GridAgentBuilderTest : public Test {
+	protected:
+		fpmas::model::GridModel<fpmas::synchro::GhostMode> model;
+
+		void SetUp() {
+			auto grid_width = 10*model.getMpiCommunicator().getSize();
+			auto grid_height = 20;
+			auto& agent_group = model.buildGroup(1);
+			fpmas::model::VonNeumannGridBuilder<fpmas::model::GridCell> grid_builder(
+					grid_width, grid_height);
+			grid_builder.build(model);
+
+			fpmas::model::UniformGridAgentMapping agent_mapping(
+					grid_width, grid_height, 20*model.getMpiCommunicator().getSize());
+			fpmas::model::DefaultSpatialAgentFactory<TestGridAgent> agent_factory;
+			fpmas::model::GridAgentBuilder<fpmas::model::GridCell> agent_builder;
+
+			agent_builder.build(
+					model, {agent_group}, agent_factory, agent_mapping);
+		}
+};
+
+TEST_F(GridAgentBuilderTest, test) {
+	std::vector<fpmas::random::mt19937_64> random_generators;
+	for(auto agent : model.getGroup(1).localAgents())
+		random_generators.push_back(((TestGridAgent*) agent)->rd());
+
+	fpmas::communication::TypedMpi<decltype(random_generators)> mpi(
+				model.getMpiCommunicator());
+	random_generators
+		= fpmas::communication::all_reduce(mpi, random_generators, fpmas::utils::Concat());
+	for(std::size_t i = 0; i < random_generators.size()-1; i++) {
+		for(std::size_t j = i+1; j < random_generators.size(); j++) {
+			ASSERT_NE(random_generators[i], random_generators[j]);
+		}
 	}
 }

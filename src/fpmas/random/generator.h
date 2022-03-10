@@ -34,10 +34,7 @@ namespace fpmas { namespace random {
 			Generator_t gen;
 			
 			public:
-			/**
-			 * Integer type used by the generator.
-			 */
-			typedef typename Generator_t::result_type result_type;
+			using typename api::random::Generator<typename Generator_t::result_type>::result_type;
 
 			/**
 			 * Minimum value that can be generated.

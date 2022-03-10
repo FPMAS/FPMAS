@@ -20,6 +20,11 @@ namespace fpmas { namespace api { namespace random {
 		class Generator {
 			public:
 				/**
+				 * Integer type used by the generator.
+				 */
+				typedef T result_type;
+
+				/**
 				 * Returns a randomly generated value in [min(), max()].
 				 *
 				 * @return random integer
