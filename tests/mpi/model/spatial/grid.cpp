@@ -489,6 +489,8 @@ TEST_F(GridAgentBuilderTest, build) {
 }
 
 TEST_F(GridAgentBuilderTest, init_sample) {
+	using namespace fpmas::communication;
+
 	std::size_t num_call = 0;
 	std::set<fpmas::model::DistributedId> agent_ids;
 
@@ -500,13 +502,49 @@ TEST_F(GridAgentBuilderTest, init_sample) {
 				agent_ids.insert(agent->node()->getId());
 			});
 
-	fpmas::communication::TypedMpi<std::size_t> int_mpi(model.getMpiCommunicator());
-	num_call = fpmas::communication::all_reduce(int_mpi, num_call);
+	TypedMpi<std::size_t> int_mpi(model.getMpiCommunicator());
+	num_call = all_reduce(int_mpi, num_call);
 
 	ASSERT_EQ(num_call, sample_size);
 
-	fpmas::communication::TypedMpi<decltype(agent_ids)> id_mpi(model.getMpiCommunicator());
+	TypedMpi<decltype(agent_ids)> id_mpi(model.getMpiCommunicator());
 
-	agent_ids = fpmas::communication::all_reduce(id_mpi, agent_ids, fpmas::utils::Concat());
+	agent_ids = all_reduce(id_mpi, agent_ids, fpmas::utils::Concat());
 	ASSERT_THAT(agent_ids, SizeIs(sample_size));
+}
+
+TEST_F(GridAgentBuilderTest, init_sequence) {
+	using namespace fpmas::communication;
+
+	std::size_t num_call = 0;
+	std::set<fpmas::model::DistributedId> agent_ids;
+	std::set<unsigned long> assigned_items;
+
+	std::size_t num_agents = NUM_AGENT_BY_PROC * model.getMpiCommunicator().getSize();
+	std::vector<unsigned long> items(num_agents);
+	for(std::size_t i = 0; i < num_agents; i++)
+		items[i] = i;
+	agent_builder.init_sequence(
+			items,
+			[&num_call, &agent_ids, &assigned_items] (
+				fpmas::api::model::GridAgent<fpmas::model::GridCell>* agent,
+				const unsigned long& item) {
+				num_call++;
+				agent_ids.insert(agent->node()->getId());
+				assigned_items.insert(item);
+			});
+
+	TypedMpi<std::size_t> int_mpi(model.getMpiCommunicator());
+	num_call = all_reduce(int_mpi, num_call);
+
+	ASSERT_EQ(num_call, num_agents);
+
+	TypedMpi<decltype(agent_ids)> id_mpi(model.getMpiCommunicator());
+
+	agent_ids = all_reduce(id_mpi, agent_ids, fpmas::utils::Concat());
+	ASSERT_THAT(agent_ids, SizeIs(num_agents));
+
+	TypedMpi<std::set<unsigned long>> item_mpi(model.getMpiCommunicator());
+	assigned_items = all_reduce(item_mpi, assigned_items, fpmas::utils::Concat());
+	ASSERT_THAT(assigned_items, SizeIs(num_agents));
 }

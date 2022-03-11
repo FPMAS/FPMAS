@@ -313,11 +313,69 @@ namespace fpmas { namespace model {
 				 * 	}
 				 * );
 				 * ```
+				 *
+				 * @param n sample size
+				 * @param init_function initialization function
 				 */
 				void init_sample(
 						std::size_t n,
 						std::function<void(api::model::GridAgent<CellType>*)> init_function
 						);
+
+				/**
+				 * Sequentially initializes built agents from the input
+				 * `items`.
+				 *
+				 * Each item is assigned to an agent using the specified
+				 * `init_function`.
+				 *
+				 * The item assignment is **deterministic**: it is guaranteed
+				 * that each agent is always initialized with the same item
+				 * independently of the current cell distribution.
+				 *
+				 ** @par Example
+				 * ```cpp
+				 * std::size_t n_agent = 50;
+				 *
+				 * fpmas::model::UniformGridAgentMapping mapping(20, 20, n_agent);
+				 * fpmas::model::GridAgentBuilder<> agent_builder;
+				 * agent_builder.build(
+				 * 	grid_model,
+				 * 	{agent_group},
+				 * 	[] () {return new UserAgent;},
+				 * 	agent_mapping
+				 * );
+				 * // Vector containing n_agent items
+				 * std::vector<unsigned long> items(n_agent);
+				 *
+				 * // items initialization
+				 * ...
+				 *
+				 * // Assign items to agents
+				 * agent_builder.init_sequence(
+				 * 	items, [] (
+				 * 		fpmas::api::model::GridAgent<>* agent,
+				 * 		const unsigned long& item
+				 * 		) {
+				 * 		((UserAgent*) agent)->setData(item);
+				 * 	}
+				 * );
+				 * ```
+				 *
+				 * @param items Items to assign to built agents. The number of
+				 * items must be greater or equal to the total number of built
+				 * agents, `n_agent`. Only the first `n_agent` items are
+				 * assigned, other are ignored.
+				 * @param init_function item assignment function
+				 */
+				template<typename T>
+					void init_sequence(
+							const std::vector<T>& items,
+							std::function<void(
+								api::model::GridAgent<CellType>*,
+								typename std::vector<T>::const_reference
+								)> init_function
+							);
 		};
 
 	template<typename CellType>
@@ -392,12 +450,17 @@ namespace fpmas { namespace model {
 				std::size_t& offset = local_counts[agents[i]->locationPoint()];
 				GridAgentIndex index(item_counts, agents[i]->locationPoint(), offset);
 				agent_index.insert({index, agents[i]});
-				agents[i]->seed(
-						local_seeds[GridAgentIndex::distance(agent_begin, index)]
-						);
+				//agents[i]->seed(
+						//local_seeds[GridAgentIndex::distance(agent_begin, index)]
+						//);
 
 				++offset;
 			}
+			init_sequence(local_seeds, [] (
+						api::model::GridAgent<CellType>* agent,
+						const std::mt19937_64::result_type& seed) {
+					agent->seed(seed);
+					});
 		}
 
 	template<typename CellType>
@@ -411,6 +474,21 @@ namespace fpmas { namespace model {
 				if(it != agent_index.end())
 					init_function(it->second);
 			}
+		}
+
+	template<typename CellType>
+		template<typename T>
+		void GridAgentBuilder<CellType>::init_sequence(
+				const std::vector<T> &items,
+				std::function<void (
+					api::model::GridAgent<CellType> *,
+					typename std::vector<T>::const_reference
+					)> init_function) {
+			for(auto agent : agent_index)
+				init_function(
+						agent.second,
+						items[GridAgentIndex::distance(agent_begin, agent.first)]
+						);
 		}
 
 	/**
