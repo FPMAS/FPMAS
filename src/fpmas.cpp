@@ -36,6 +36,7 @@ namespace fpmas {
 		model::RandomNeighbors::seed(random_seed());
 		model::RandomMapping::seed(random_seed());
 		random::rd_choices.seed(random_seed());
+		model::RandomGridAgentBuilder::seed(random_seed());
 
 		seed_called = true;
 	}

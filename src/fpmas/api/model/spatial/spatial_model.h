@@ -327,10 +327,6 @@ namespace fpmas { namespace api { namespace model {
 			 */
 			virtual const Range<CellType>& perceptionRange() const = 0;
 
-			virtual void seed(std::mt19937_64::result_type seed) = 0;
-
-			virtual random::Generator<std::mt19937_64::result_type>& rd() = 0;
-
 		protected:
 			/**
 			 * Moves to the Cell with the provided `id`.
@@ -672,13 +668,16 @@ namespace fpmas { namespace api { namespace model {
 	 * \SpatialAgents in a distributed way, independently of the current Cell
 	 * network distribution.
 	 *
-	 * The `CellType` is the concrete type of Cell used by the SpatialModel.
-	 * The `MappingCellType` is the type used by the SpatialAgentMapping.
-	 * Those types does not need to be the same. See implementations for
-	 * examples.
+	 * @tparam CellType final \Cell type on which agents are moving
+	 * @tparam MappingCellType \Cell type used by the SpatialAgentMapping.
+	 * MappingCellType must be a base of CellType.
 	 */
 	template<typename CellType, typename MappingCellType>
 	class SpatialAgentBuilder {
+		static_assert(
+				std::is_base_of<MappingCellType, CellType>::value,
+				"MappingCellType must be a base of CellType"
+				);
 		public:
 			/**
 			 * Build \SpatialAgents in the specified `model` in a distributed
@@ -696,6 +695,8 @@ namespace fpmas { namespace api { namespace model {
 			 * `model.distributedMoveAlgorithm()` is executed to complete the
 			 * location initialization of built \SpatialAgents.
 			 *
+			 * Additionnal implementation defined behaviors can be added
+			 * according to the current model type.
 			 *
 			 * @param model model in which agent are initialized. More
 			 * precisely, agents are initialized within the Cell network

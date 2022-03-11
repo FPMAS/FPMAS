@@ -56,9 +56,9 @@ struct dist_index_cmp {
 	bool operator()(
 			const fpmas::random::DistributedIndex& i1,
 			const fpmas::random::DistributedIndex& i2) const {
-		if(i1.p == i2.p)
-			return i1.offset < i2.offset;
-		return i1.p < i2.p;
+		if(i1.key() == i2.key())
+			return i1.offset() < i2.offset();
+		return i1.key() < i2.key();
 	}
 };
 
@@ -95,8 +95,8 @@ TEST(Random, distributed_index) {
 	std::size_t count = 0;
 	while(dist_index_begin != dist_index_end) {
 		value_set.insert(dist_index_begin);
-		ASSERT_THAT(dist_index_begin.offset, AllOf(Ge(0), Lt(sizes[dist_index_begin.p])));
-		ASSERT_EQ(dist_index_begin.offset, expected_offsets[count]);
+		ASSERT_THAT(dist_index_begin.offset(), AllOf(Ge(0), Lt(sizes[dist_index_begin.key()])));
+		ASSERT_EQ(dist_index_begin.offset(), expected_offsets[count]);
 		dist_index_begin++;
 		count++;
 	}
@@ -114,20 +114,20 @@ TEST(Random, distributed_index_random_increment) {
 	DistributedIndex begin = DistributedIndex::begin(item_counts);
 
 	DistributedIndex index = begin+2;
-	ASSERT_EQ(index.p, 1);
-	ASSERT_EQ(index.offset, 2);
+	ASSERT_EQ(index.key(), 1);
+	ASSERT_EQ(index.offset(), 2);
 
 	index = begin+4;
-	ASSERT_EQ(index.p, 2);
-	ASSERT_EQ(index.offset, 1);
+	ASSERT_EQ(index.key(), 2);
+	ASSERT_EQ(index.offset(), 1);
 
 	index = begin+15;
-	ASSERT_EQ(index.p, 5);
-	ASSERT_EQ(index.offset, 3);
+	ASSERT_EQ(index.key(), 5);
+	ASSERT_EQ(index.offset(), 3);
 
 	index = begin+10;
-	ASSERT_EQ(index.p, 4);
-	ASSERT_EQ(index.offset, 0);
+	ASSERT_EQ(index.key(), 4);
+	ASSERT_EQ(index.offset(), 0);
 }
 
 TEST(Random, distributed_index_distance) {

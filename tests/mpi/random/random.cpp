@@ -353,25 +353,13 @@ TEST(Random, sample_indexes) {
 		ASSERT_NEAR((float) item / NUM_ROUNDS, (float) SAMPLE_SIZE / NUM_VALUES, 0.1); 
 }
 
-namespace fpmas { namespace random {
-	void to_json(nlohmann::json &j, const DistributedIndex &index) {
-		j = {index.p, index.offset};
-	}
-
-	void from_json(const nlohmann::json& j, DistributedIndex& index) {
-		index.p = j[0].get<int>();
-		index.offset = j[1].get<std::size_t>();
-	}
-
-}}
-
 struct dist_index_cmp {
 	bool operator()(
 			const fpmas::random::DistributedIndex& i1,
 			const fpmas::random::DistributedIndex& i2) const {
-		if(i1.p == i2.p)
-			return i1.offset < i2.offset;
-		return i1.p < i2.p;
+		if(i1.key() == i2.key())
+			return i1.offset() < i2.offset();
+		return i1.key() < i2.key();
 	}
 };
 
@@ -409,8 +397,8 @@ TEST(Random, sample_distributed_indexes) {
 		ASSERT_THAT(sample_set, SizeIs(N_CHOICES));
 		for(auto item : sample_set) {
 			// Ensures that selected items are valid
-			ASSERT_THAT(item.p, AllOf(Ge(0), Lt(fpmas::communication::WORLD.getSize())));
-			ASSERT_THAT(item.offset, AllOf(Ge(0), Lt(num_items[item.p])));
+			ASSERT_THAT(item.key(), AllOf(Ge(0), Lt(fpmas::communication::WORLD.getSize())));
+			ASSERT_THAT(item.offset(), AllOf(Ge(0), Lt(num_items[item.key()])));
 		}
 
 		// Ensures item are selected from all processes

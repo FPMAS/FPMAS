@@ -10,24 +10,57 @@
 #include <vector>
 #include <unordered_map>
 #include <map>
+#include <set>
 
 namespace fpmas { namespace utils {
 
 	namespace detail {
+		/**
+		 * fpmas::model::Concat implementation.
+		 */
 		template<typename Container>
 			struct Concat {
 			};
 
-		template<typename T>
-			struct Concat<std::vector<T>> {
-				static std::vector<T> concat(std::vector<T>& init, const std::vector<T>& c) {
+		/**
+		 * std::vector concatenation.
+		 */
+		template<typename T, typename Alloc>
+			struct Concat<std::vector<T, Alloc>> {
+				/**
+				 * Appends `c` items at the end of `init`.
+				 */
+				static std::vector<T, Alloc> concat(
+						std::vector<T, Alloc>& init, const std::vector<T, Alloc>& c) {
 					init.insert(init.end(), c.begin(), c.end());
 					return std::move(init);
 				}
 			};
 
+		/**
+		 * std::set concatenation.
+		 */
+		template<typename T, typename Comp, typename Alloc>
+			struct Concat<std::set<T, Comp, Alloc>> {
+				/**
+				 * Inserts `c`'s items into `init`.
+				 */
+				static std::set<T, Comp, Alloc> concat(
+						std::set<T, Comp, Alloc>& init,
+						const std::set<T, Comp, Alloc>& c) {
+					init.insert(c.begin(), c.end());
+					return std::move(init);
+				}
+			};
+
+		/**
+		 * std::map concatenation.
+		 */
 		template<typename K, typename T, typename Comp, typename Alloc>
 			struct Concat<std::map<K, T, Comp, Alloc>> {
+				/**
+				 * Inserts `c`'s items into `init`.
+				 */
 				static std::map<K, T, Comp, Alloc> concat(
 						std::map<K, T, Comp, Alloc>& init,
 						const std::map<K, T, Comp, Alloc>& c
@@ -37,8 +70,14 @@ namespace fpmas { namespace utils {
 				}
 			};
 
+		/**
+		 * std::unordered_map concatenation.
+		 */
 		template<typename K, typename T, typename Hash, typename KeyEq, typename Alloc>
 			struct Concat<std::unordered_map<K, T, Hash, KeyEq, Alloc>> {
+				/**
+				 * Inserts `c`'s items into `init`.
+				 */
 				static std::unordered_map<K, T, Hash, KeyEq, Alloc> concat(
 						std::unordered_map<K, T, Hash, KeyEq, Alloc>& init,
 						const std::unordered_map<K, T, Hash, KeyEq, Alloc>& c

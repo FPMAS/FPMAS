@@ -8,6 +8,12 @@ namespace fpmas { namespace model {
 			+ (hash << 6) + (hash >> 2);
 		return hash;
 	}
+
+	random::mt19937_64 RandomGridAgentBuilder::rd;
+
+	void RandomGridAgentBuilder::seed(random::mt19937_64::result_type seed) {
+		RandomGridAgentBuilder::rd.seed(seed);
+	}
 }}
 
 namespace fpmas { namespace io { namespace datapack {
@@ -40,8 +46,3 @@ namespace std {
 	}
 	const fpmas::model::PointHash hash<fpmas::model::DiscretePoint>::hasher;
 }
-namespace fpmas { namespace api { namespace model {
-	bool operator==(const DiscretePoint& p1, const DiscretePoint& p2) {
-		return p1.x == p2.x && p1.y == p2.y;
-	}
-}}}

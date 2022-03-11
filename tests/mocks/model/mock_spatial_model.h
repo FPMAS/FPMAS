@@ -28,10 +28,6 @@ class MockSpatialAgent :
 			MOCK_METHOD(void, handleNewPerceive, (), (override));
 			MOCK_METHOD(const fpmas::api::model::Range<CellType>&, mobilityRange, (), (const, override));
 			MOCK_METHOD(const fpmas::api::model::Range<CellType>&, perceptionRange, (), (const, override));
-
-			MOCK_METHOD(void, seed, (std::mt19937_64::result_type), (override));
-			MOCK_METHOD(fpmas::api::random::Generator<std::mt19937_64::result_type>&,
-					rd, (), (override));
 	};
 
 

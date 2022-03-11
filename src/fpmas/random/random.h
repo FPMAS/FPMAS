@@ -317,6 +317,315 @@ namespace fpmas { namespace random {
 			return result_indexes;
 		}
 
+	
+	/**
+	 * Implements a generic index that can be used to iterate hover a set of
+	 * items such has an item count is associated to each key.
+	 *
+	 * For exemple:
+	 * - key() might be a process rank, and offset() an index into a local
+	 *   vector of size `item_counts[rank]` (see DistributedIndex)
+	 * - key() might be a grid coordinate, and offset() a local index
+	 *   associated to each agent located in the cell (numbered
+	 *   `item_counts[grid coordinate]`) (see model::GridAgentIndex)
+	 *
+	 * Keys are ordered, so that the same pass is always performed. The index
+	 * starts at the offset 0 from the first key that is assigned to a non null
+	 * item count. The index then increments its offset until reaching the last
+	 * item associated to the key, and then go to the next key.
+	 * Entries associated to 0 items are automatically ignored by the index.
+	 *
+	 * For example, the let's consider the following `item_counts` input:
+	 * ```
+	 * k1: 2
+	 * k2: 1
+	 * k3: 0
+	 * k4: 2
+	 * ```
+	 * An associated index will generate the following sequence, from begin()
+	 * to end():
+	 * ```
+	 * (k1, 0), (k1, 1), (k2, 0), (k4, 0), (k4, 1)
+	 * ```
+	 *
+	 * The Index usage is based on iterator like operations.
+	 *
+	 * @tparam K key type to which objects counts are associated. K must be a
+	 * valid std::map key, i.e. K must implement the `operator<`.
+	 */
+	template<typename K>
+	class Index {
+		private:
+			std::map<K, std::size_t> item_counts;
+			typename std::map<K, std::size_t>::iterator it;
+			std::size_t _offset;
+
+		public:
+			Index() = default;
+
+			/**
+			 * Initializes an index representing `item_counts`, that points to
+			 * `offset` from `key`.
+			 */
+			Index(
+					const std::map<K, std::size_t>& item_counts,
+					K key,
+					std::size_t offset
+					) :
+				item_counts(item_counts),
+				it(this->item_counts.find(key)),
+				_offset(offset) {
+				}
+
+			/**
+			 * Index copy constructor.
+			 */
+			Index(const Index<K>& index)
+				: item_counts(index.item_counts), _offset(index._offset) {
+					if(index.it == index.item_counts.end())
+						it = item_counts.end();
+					else
+						it = item_counts.find(index.key());
+				};
+
+			/**
+			 * Index copy assignment.
+			 */
+			Index<K>& operator=(const Index<K>& index) {
+				item_counts = index.item_counts;
+				_offset = index._offset;
+				if(index.it == index.item_counts.end())
+					it = item_counts.end();
+				else
+					it = item_counts.find(index.key());
+				return *this;
+			};
+
+			/**
+			 * Index move constructor.
+			 */
+			Index(Index<K>&& index) :
+				item_counts(std::move(index.item_counts)),
+				_offset(std::move(index._offset)) {
+					if(index.it == index.item_counts.end())
+						it = item_counts.end();
+					else
+						it = item_counts.find(index.key());
+				}
+
+			/**
+			 * Index move assignment.
+			 */
+			Index<K>& operator=(Index<K>&& index) {
+				item_counts = std::move(index.item_counts);
+				_offset = std::move(index._offset);
+				if(index.it == index.item_counts.end())
+					it = item_counts.end();
+				else
+					it = item_counts.find(index.key());
+				return *this;
+			}
+
+			/**
+			 * Key index.
+			 */
+			K key() const {
+				return it->first;
+			};
+			/**
+			 * Local offset.
+			 */
+			std::size_t offset() const {
+				return _offset;
+			}
+
+			/**
+			 * Begin of the index associated to `item_counts`, i.e. `(k0, 0)`
+			 * where `k0` is the first key that owns at least one item.
+			 */
+			static Index begin(const std::map<K, std::size_t>& item_counts);
+
+			/**
+			 * End of the distributed index associated to `item_counts`.
+			 */
+			static Index end(const std::map<K, std::size_t>& item_counts);
+
+			/**
+			 * Increments the current Index.
+			 */
+			Index& operator++();
+
+			/**
+			 * Increments the current Index and returns the index value before
+			 * the increment.
+			 */
+			Index operator++(int);
+
+			/**
+			 * Returns a copy of the current Index incremented by `n`.
+			 */
+			Index operator+(std::size_t n) const;
+			
+			/**
+			 * Returns the distance between `i1` and `i2`, i.e. the number of
+			 * increments to reach `i2` from `i1`. The behavior is undefined if
+			 * `i2` cannot be reached from `i1`.
+			 *
+			 * `distance(begin(item_counts), end(item_counts))` notably returns
+			 * the total number of items owned by all keys.
+			 */
+			static std::size_t distance(
+					const Index& i1, const Index& i2);
+
+			/**
+			 * Returns true iff `index` is equal to this.
+			 *
+			 * `item_counts` are not taken into account in the comparison
+			 * process.
+			 */
+			bool operator==(const Index& index) const;
+			/**
+			 * Equivalent to `!(*this==index)`.
+			 */
+			bool operator!=(const Index& index) const;
+
+			/**
+			 * Compares two indexes.
+			 */
+			bool operator<(const Index& index) const;
+	};
+
+	template<typename K>
+		Index<K> Index<K>::begin(const std::map<K, std::size_t>& item_counts) { 
+			Index<K> _begin;
+			_begin.item_counts = item_counts;
+			_begin.it = _begin.item_counts.begin();
+			while(_begin.it->second == 0)
+				++_begin.it;
+			_begin._offset = 0;
+			return _begin;
+		}
+
+	template<typename K>
+		Index<K> Index<K>::end(const std::map<K, std::size_t>& item_counts) {
+			Index<K> _end;
+			_end.item_counts = item_counts;
+			_end.it = _end.item_counts.end();
+			return _end;
+		}
+
+	template<typename K>
+		Index<K>& Index<K>::operator++() {
+			if(it != item_counts.end()) {
+				if(_offset >= it->second-1) {
+					_offset=0;
+					++it;
+					// Skips processes without items
+					while(it != item_counts.end() && it->second == 0)
+						++it;
+				} else {
+					++_offset;
+				}
+			}
+			return *this;
+		}
+
+	template<typename K>
+		Index<K> Index<K>::operator++(int) {
+			Index<K> index = *this;
+			++*this;
+			return index;
+		}
+
+	template<typename K>
+	Index<K> Index<K>::operator+(std::size_t n) const {
+		Index<K> index = *this;
+		// index.id->second <=> index.item_counts[index.key()]
+		if(index._offset+n < index.it->second) {
+			// Stay in current process, nothing to do
+			index._offset+=n;
+		} else {
+			// Need to go to next process
+			n -= index.it->second - index.offset();
+			index._offset = 0;
+			++index.it;
+			while(n >= index.it->second) {
+				n-= index.it->second;
+				++index.it;
+			}
+			index._offset = n;
+		}
+		return index;
+	}
+	
+	template<typename K>
+	std::size_t Index<K>::distance(
+			const Index<K>& i1, const Index<K>& i2) {
+		if(i1.it != i1.item_counts.end() && i2.it != i2.item_counts.end()) {
+			if(i1.key() == i2.key()) {
+				return i2.offset() - i1.offset();
+			} else {
+				std::size_t result = i1.it->second - i1.offset();
+				auto it = i1.it;
+				++it;
+				while(it->first != i2.it->first) {
+					result+=it->second;
+					++it;
+				}
+				result+=i2.offset();
+				return result;
+			}
+		}
+		if(i1.it == i1.item_counts.end() && i2.it == i2.item_counts.end())
+			return 0;
+		// Since i2 reachable from i1, only i2 can be end (if i1 is end and not
+		// i2, unexpected result)
+
+		std::size_t result = i1.it->second - i1.offset();
+		auto it = i1.it;
+		++it;
+		while(it != i1.item_counts.end()) {
+			result+=it->second;
+			++it;
+		}
+		return result;
+	}
+
+	template<typename K>
+		bool Index<K>::operator==(const Index<K>& index) const {
+			if(it == item_counts.end() && index.it == index.item_counts.end())
+				return true;
+			if(it != item_counts.end() && index.it != index.item_counts.end())
+				return key() == index.key() && offset() == index.offset();
+			// One is end and other is not
+			return false;
+		}
+
+	template<typename K>
+		bool Index<K>::operator!=(const Index<K>& index) const {
+			return !(*this==index);
+		}
+
+	template<typename K>
+		bool Index<K>::operator<(const Index<K>& index) const {
+			if(this->it == this->item_counts.end()
+					&& index.it != index.item_counts.end())
+				// This is end, index is not
+				return false;
+			if(index.it == index.item_counts.end()
+					&& this->it != this->item_counts.end())
+				// Index is end, this is not
+				return true;
+			if(index.it == index.item_counts.end()
+					&& this->it == this->item_counts.end())
+				// Both end (ie equal)
+				return false;
+			// Index and this are not end
+			if(this->key() == index.key())
+				return this->offset() < index.offset();
+			return this->key() < index.key();
+		}
+
 	/**
 	 * Represents a continuous index distributed across processes.
 	 *
@@ -334,36 +643,39 @@ namespace fpmas { namespace random {
 	 * process `p` can for exemple be used as indexes in a vector hosted by the
 	 * process `p`.
 	 */
-	class DistributedIndex {
+	class DistributedIndex : public Index<int> {
 		private:
-			std::vector<std::size_t> item_counts;
+			static std::map<int, std::size_t> vec_to_map(
+					const std::vector<std::size_t>& item_counts);
 		public:
-			/**
-			 * Process index.
-			 */
-			int p;
-			/**
-			 * Local offset.
-			 */
-			std::size_t offset;
-
 			DistributedIndex() = default;
 
 			/**
-			 * DistributedIndex constructor.
-			 *
-			 * `item_counts` is such that processes `p` owns `item_counts[p]`
-			 * items. The number of processes is set to `item_counts.size()`.
-			 *
-			 * @param item_counts counts of items on each process
-			 * @param p process index (in `[0, item_counts.size())`)
-			 * @param offset local offset (in `[0, item_counts[p])`)
+			 * Builds a distributed index from the corresponding Index.
 			 */
-			DistributedIndex(
-					const std::vector<std::size_t>& item_counts,
-					int p, std::size_t offset)
-				: item_counts(item_counts), p(p), offset(offset) {
-				}
+			DistributedIndex(const Index<int>& index) : Index<int>(index) {
+			}
+			/**
+			 * Builds a distributed index from the corresponding Index.
+			 */
+			DistributedIndex(Index<int>&& index) : Index<int>(std::move(index)) {
+			}
+
+			/**
+			 * Assigns the specified Index to this DistributedIndex.
+			 */
+			DistributedIndex& operator=(const Index<int>& index) {
+				(Index<int>&) *this = index;
+				return *this;
+			}
+
+			/**
+			 * Assigns the specified Index to this DistributedIndex.
+			 */
+			DistributedIndex& operator=(Index<int>&& index) {
+				(Index<int>&) *this = std::move(index);
+				return *this;
+			}
 
 			/**
 			 * Begin of the distributed index associated to `item_counts`, i.e.
@@ -377,47 +689,6 @@ namespace fpmas { namespace random {
 			 * (p, 0).
 			 */
 			static DistributedIndex end(const std::vector<std::size_t>& item_counts);
-
-			/**
-			 * Increments the current DistributedIndex.
-			 */
-			DistributedIndex& operator++();
-
-			/**
-			 * Increments the current DistributedIndex and returns the index
-			 * value before the increment.
-			 */
-			DistributedIndex operator++(int);
-
-			/**
-			 * Returns a copy of the current DistributedIndex incremented by
-			 * `n`.
-			 */
-			DistributedIndex operator+(std::size_t n) const;
-			
-			/**
-			 * Returns the distance between `i1` and `i2`, i.e. the number of
-			 * increments to reach `i2` from `i1`. The behavior is undefined if
-			 * `i2` cannot be reached from `i1`.
-			 *
-			 * `distance(begin(item_counts), end(item_counts))` notably returns
-			 * the total number of items owned by all processes.
-			 */
-			static std::size_t distance(
-					const DistributedIndex& i1, const DistributedIndex& i2);
-
-			/**
-			 * Returns true iff `index` is equal to this, i.e. iff their
-			 * processes and local offsets are equal.
-			 *
-			 * `item_counts` are not taken into account in the comparison
-			 * process.
-			 */
-			bool operator==(const DistributedIndex& index) const;
-			/**
-			 * Equivalent to `!(*this==index)`.
-			 */
-			bool operator!=(const DistributedIndex& index) const;
 	};
 
 	/**
@@ -480,8 +751,8 @@ namespace fpmas { namespace random {
 			// Requests required items
 			communication::TypedMpi<std::vector<std::size_t>> request_mpi(comm);
 			std::unordered_map<int, std::vector<std::size_t>> requests;
-			for(auto item : result_indexes)
-				requests[item.p].push_back(item.offset);
+			for(auto& item : result_indexes)
+				requests[item.key()].push_back(item.offset());
 			requests = request_mpi.allToAll(requests);
 
 			// Exchange items
@@ -574,9 +845,9 @@ namespace fpmas { namespace random {
 			// on all processes
 			
 			std::vector<T> result;
-			for(auto item : result_indexes)
-				if(item.p == comm.getRank())
-					result.push_back(local_items[item.offset]);
+			for(auto& item : result_indexes)
+				if(item.key() == comm.getRank())
+					result.push_back(local_items[item.offset()]);
 			return result;
 		}
 }}

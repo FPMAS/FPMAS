@@ -1,4 +1,5 @@
 #include "fpmas/model/spatial/grid.h"
+#include "fpmas/communication/communication.h"
 #include "fpmas/model/spatial/grid_agent_mapping.h"
 #include "fpmas/model/spatial/spatial_model.h"
 #include "fpmas/model/spatial/von_neumann.h"
@@ -450,7 +451,9 @@ TEST_F(MooreGridBuilderTest, build_with_groups) {
 
 class GridAgentBuilderTest : public Test {
 	protected:
+		static const std::size_t NUM_AGENT_BY_PROC = 20;
 		fpmas::model::GridModel<fpmas::synchro::GhostMode> model;
+		fpmas::model::GridAgentBuilder<fpmas::model::GridCell> agent_builder;
 
 		void SetUp() {
 			auto grid_width = 10*model.getMpiCommunicator().getSize();
@@ -461,16 +464,15 @@ class GridAgentBuilderTest : public Test {
 			grid_builder.build(model);
 
 			fpmas::model::UniformGridAgentMapping agent_mapping(
-					grid_width, grid_height, 20*model.getMpiCommunicator().getSize());
+					grid_width, grid_height, NUM_AGENT_BY_PROC*model.getMpiCommunicator().getSize());
 			fpmas::model::DefaultSpatialAgentFactory<TestGridAgent> agent_factory;
-			fpmas::model::GridAgentBuilder<fpmas::model::GridCell> agent_builder;
 
 			agent_builder.build(
 					model, {agent_group}, agent_factory, agent_mapping);
 		}
 };
 
-TEST_F(GridAgentBuilderTest, test) {
+TEST_F(GridAgentBuilderTest, build) {
 	std::vector<fpmas::random::mt19937_64> random_generators;
 	for(auto agent : model.getGroup(1).localAgents())
 		random_generators.push_back(((TestGridAgent*) agent)->rd());
@@ -484,4 +486,27 @@ TEST_F(GridAgentBuilderTest, test) {
 			ASSERT_NE(random_generators[i], random_generators[j]);
 		}
 	}
+}
+
+TEST_F(GridAgentBuilderTest, init_sample) {
+	std::size_t num_call = 0;
+	std::set<fpmas::model::DistributedId> agent_ids;
+
+	std::size_t sample_size = (NUM_AGENT_BY_PROC/2)*model.getMpiCommunicator().getSize();
+	agent_builder.init_sample(
+			sample_size,
+			[&num_call, &agent_ids] (fpmas::api::model::GridAgent<fpmas::model::GridCell>* agent) {
+				num_call++;
+				agent_ids.insert(agent->node()->getId());
+			});
+
+	fpmas::communication::TypedMpi<std::size_t> int_mpi(model.getMpiCommunicator());
+	num_call = fpmas::communication::all_reduce(int_mpi, num_call);
+
+	ASSERT_EQ(num_call, sample_size);
+
+	fpmas::communication::TypedMpi<decltype(agent_ids)> id_mpi(model.getMpiCommunicator());
+
+	agent_ids = fpmas::communication::all_reduce(id_mpi, agent_ids, fpmas::utils::Concat());
+	ASSERT_THAT(agent_ids, SizeIs(sample_size));
 }

@@ -248,6 +248,7 @@ template&lt;typename Agent &gt; </div>
 <li><a class="el" href="structfpmas_1_1model_1_1RandomNeighbors.html#a6a6d99902e9a5467e454df9cb30d282d">fpmas::model::RandomNeighbors::seed()</a></li>
 <li><a class="el" href="structfpmas_1_1model_1_1RandomMapping.html#a1043d7af676f794e5c083d9c541282f0">fpmas::model::RandomMapping::seed()</a></li>
 <li><a class="el" href="namespacefpmas_1_1random.html#a2b4ec27febc4e5d2a1fd379d6b4181ea">fpmas::random::rd_choices.seed()</a></li>
+<li><a class="el" href="structfpmas_1_1model_1_1RandomGridAgentBuilder.html#aaad5bcbd4a90ab8acf8511af2e5473eb">fpmas::model::RandomGridAgentBuilder::seed()</a></li>
 </ul>
 <p >Those are currently the only static random generators used internally in an FPMAS simulation, so seeding them ensures reproducibility.</p>
 <p >The provided <code>seed</code> is not passed directly to the generators: distinct seeds are generated using a deterministic method for each generator (if the same seed was provided to all generators, they would produce exactly the same sequence. Even if their use case is different, this might introduce some bias).</p>

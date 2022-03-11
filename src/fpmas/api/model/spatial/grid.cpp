@@ -17,6 +17,14 @@ namespace fpmas {
 			return p1.x < p2.x;
 		}
 
+		bool operator==(const DiscretePoint& p1, const DiscretePoint& p2) {
+			return p1.x == p2.x && p1.y == p2.y;
+		}
+
+		bool operator!=(const DiscretePoint& p1, const DiscretePoint& p2) {
+			return p1.x != p2.x || p1.y != p2.y;
+		}
+
 		std::ostream& operator<<(std::ostream& os, const DiscretePoint& point) {
 			return os << to_string(point);
 		}

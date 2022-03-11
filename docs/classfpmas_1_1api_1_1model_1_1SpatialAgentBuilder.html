@@ -75,6 +75,15 @@ $(function() {
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="api_2model_2spatial_2spatial__model_8h_source.html">spatial_model.h</a>&gt;</code></p>
+<div class="dynheader">
+Inheritance diagram for fpmas::api::model::SpatialAgentBuilder&lt; CellType, MappingCellType &gt;:</div>
+<div class="dyncontent">
+<div class="center"><img src="classfpmas_1_1api_1_1model_1_1SpatialAgentBuilder__inherit__graph.png" border="0" usemap="#afpmas_1_1api_1_1model_1_1SpatialAgentBuilder_3_01CellType_00_01MappingCellType_01_4_inherit__map" alt="Inheritance graph"/></div>
+<map name="afpmas_1_1api_1_1model_1_1SpatialAgentBuilder_3_01CellType_00_01MappingCellType_01_4_inherit__map" id="afpmas_1_1api_1_1model_1_1SpatialAgentBuilder_3_01CellType_00_01MappingCellType_01_4_inherit__map">
+<area shape="rect" title=" " alt="" coords="5,5,211,61"/>
+<area shape="rect" href="classfpmas_1_1model_1_1SpatialAgentBuilderBase.html" title=" " alt="" coords="17,109,199,165"/>
+</map>
+<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -87,7 +96,13 @@ Public Member Functions</h2></td></tr>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename CellType, typename MappingCellType&gt;<br />
 class fpmas::api::model::SpatialAgentBuilder&lt; CellType, MappingCellType &gt;</div><p ><a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgentBuilder.html">SpatialAgentBuilder</a> API.</p>
 <p >The purpose of the <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgentBuilder.html">SpatialAgentBuilder</a> is to instantiate and initialize <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgents</a> in a distributed way, independently of the current <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> network distribution.</p>
-<p >The <code>CellType</code> is the concrete type of <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> used by the <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html">SpatialModel</a>. The <code>MappingCellType</code> is the type used by the <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgentMapping.html">SpatialAgentMapping</a>. Those types does not need to be the same. See implementations for examples. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">CellType</td><td>final <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> type on which agents are moving </td></tr>
+    <tr><td class="paramname">MappingCellType</td><td><a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> type used by the <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgentMapping.html">SpatialAgentMapping</a>. MappingCellType must be a base of CellType. </td></tr>
+  </table>
+  </dd>
+</dl>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a9c4f3bec1dc913589b87b41211c8331d" name="a9c4f3bec1dc913589b87b41211c8331d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9c4f3bec1dc913589b87b41211c8331d">&#9670;&nbsp;</a></span>build() <span class="overload">[1/2]</span></h2>
@@ -143,6 +158,7 @@ template&lt;typename CellType , typename MappingCellType &gt; </div>
 <li>The location of each <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> is initialized to the <code>cell</code> they were built from, according to point 1. This is eventually performed using <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html#a6b2f3fc960bcad217e16796b0e032041">SpatialAgent::initLocation()</a>.</li>
 <li>The <a class="el" href="classfpmas_1_1api_1_1model_1_1DistributedMoveAlgorithm.html">DistributedMoveAlgorithm</a> provided by <code>model.distributedMoveAlgorithm()</code> is executed to complete the location initialization of built <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgents</a>.</li>
 </ol>
+<p >Additionnal implementation defined behaviors can be added according to the current model type.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">model</td><td>model in which agent are initialized. More precisely, agents are initialized within the <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> network defined by <code>model.cells()</code> </td></tr>
