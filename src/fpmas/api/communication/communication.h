@@ -273,13 +273,25 @@ namespace fpmas { namespace api { namespace communication {
 			/**
 			 * Sends `data` to `destination` (blocking, asynchronous).
 			 *
+			 * This corresponds to the MPI _standard_ mode. In this case, it is
+			 * up to the MPI implementation to decide if the message is
+			 * buffered or not (for example, depending on the message size):
+			 * - If the message is buffered, the method returns once data has
+			 *   been copied to the buffer.
+			 * - Else, the method returns only when the matching recv() has
+			 *   been initiated and data is sent, what might produce some
+			 *   deadlock behavior. See the Isend() method to prevent such
+			 *   situations.
+			 *
 			 * @param data input buffer
 			 * @param count items count in the buffer
 			 * @param datatype MPI type of the data to send
 			 * @param destination rank of the destination process
 			 * @param tag message tag
 			 */
-			virtual void send(const void* data, int count, MPI_Datatype datatype, int destination, int tag) = 0;
+			virtual void send(
+					const void* data, int count, MPI_Datatype datatype,
+					int destination, int tag) = 0;
 
 			/**
 			 * Equivalent to \ref send(const void*, int, MPI_Datatype, int, int) "send(data.buffer, data.count, datatype, destination, tag)"
@@ -289,7 +301,9 @@ namespace fpmas { namespace api { namespace communication {
 			 * @param destination rank of the destination process
 			 * @param tag message tag
 			 */
-			virtual void send(const DataPack& data, MPI_Datatype datatype, int destination, int tag) = 0;
+			virtual void send(
+					const DataPack& data, MPI_Datatype datatype,
+					int destination, int tag) = 0;
 
 			/**
 			 * Sends a void message to `destination` (blocking, asynchronous).
@@ -301,6 +315,56 @@ namespace fpmas { namespace api { namespace communication {
 			 * @param tag message tag
 			 */
 			virtual void send(int destination, int tag) = 0;
+
+			/**
+			 * Sends `data` to `destination` (non-blocking, asynchronous).
+			 *
+			 * The FPMAS implementation always copy the input data to the input
+			 * Request.
+			 *
+			 * The method returns immediately, without waiting for the message
+			 * to be buffered or received by the destination process.
+			 *
+			 * The operation must be completed with wait() or waitAll() so that
+			 * the request object is properly freed.
+			 *
+			 * @param data input buffer
+			 * @param count items count in the buffer
+			 * @param datatype MPI type of the data to send
+			 * @param destination rank of the destination process
+			 * @param tag message tag
+			 * @param request output Request
+			 */
+			virtual void Isend(
+					const void* data, int count, MPI_Datatype datatype,
+					int destination, int tag, Request& request) = 0;
+
+			/**
+			 * Equivalent to \ref Isend(const void*, int, MPI_Datatype, int, int, Request&) "send(data.buffer, data.count, datatype, destination, tag, request)"
+			 *
+			 * @param data input DataPack
+			 * @param datatype MPI type of the data to send
+			 * @param destination rank of the destination process
+			 * @param tag message tag
+			 * @param request output Request
+			 */
+			virtual void Isend(
+					const DataPack& data, MPI_Datatype datatype,
+					int destination, int tag, Request& request) = 0;
+
+			/**
+			 * Sends a void message to `destination` (non-blocking,
+			 * asynchronous).
+			 *
+			 * This might be useful to send END message for example, when only
+			 * a message tag without body might be enough.
+			 *
+			 * @param destination rank of the destination process
+			 * @param tag message tag
+			 * @param request output Request
+			 */
+			virtual void Isend(
+					int destination, int tag, Request& request) = 0;
 
 			/**
 			 * Sends `data` to `destination` (non-blocking, synchronous).
@@ -326,7 +390,8 @@ namespace fpmas { namespace api { namespace communication {
 			 * @param request output Request
 			 */
 			virtual void Issend(
-					const void* data, int count, MPI_Datatype datatype, int destination, int tag, Request& request) = 0;
+					const void* data, int count, MPI_Datatype datatype,
+					int destination, int tag, Request& request) = 0;
 
 			/**
 			 * Equivalent to \ref Issend(const void*, int, MPI_Datatype, int, int, Request&) "Issend(data.buffer, data.count, datatype, destination, tag, request)".
@@ -338,7 +403,8 @@ namespace fpmas { namespace api { namespace communication {
 			 * @param request output Request
 			 */
 			virtual void Issend(
-					const DataPack& data, MPI_Datatype datatype, int destination, int tag, Request& request) = 0;
+					const DataPack& data, MPI_Datatype datatype,
+					int destination, int tag, Request& request) = 0;
 
 			/**
 			 * Sends a void message to `destination` (non-blocking, synchronous).
@@ -418,7 +484,9 @@ namespace fpmas { namespace api { namespace communication {
 			 * @param tag message tag
 			 * @param status output MPI status
 			 */
-			virtual void recv(void* buffer, int count, MPI_Datatype datatype, int source, int tag, Status& status) = 0;
+			virtual void recv(
+					void* buffer, int count, MPI_Datatype datatype,
+					int source, int tag, Status& status) = 0;
 
 			/**
 			 * Equivalent to \ref recv(void*, int, MPI_Datatype, int, int, Status&) "recv(data.buffer, data.count, datatype, source, tag, status)"
@@ -429,7 +497,9 @@ namespace fpmas { namespace api { namespace communication {
 			 * @param tag message tag
 			 * @param status output MPI status
 			 */
-			virtual void recv(DataPack& data, MPI_Datatype datatype, int source, int tag, Status& status) = 0;
+			virtual void recv(
+					DataPack& data, MPI_Datatype datatype,
+					int source, int tag, Status& status) = 0;
 
 			/**
 			 * Tests if the input `request` is complete.
@@ -451,9 +521,19 @@ namespace fpmas { namespace api { namespace communication {
 			 * Can be used to complete non-blocking communications. Upon
 			 * return, the `request` internal data buffer is freed.
 			 *
-			 * @param request Request to test
+			 * @param request Request to wait
 			 */
 			virtual void wait(Request& request) = 0;
+
+			/**
+			 * Waits for the completion of all `requests`.
+			 *
+			 * Can be used to complete non-blocking communications. Upon
+			 * return, all `requests` internal data buffers are freed.
+			 *
+			 * @param requests Requests to wait
+			 */
+			virtual void waitAll(std::vector<Request>& requests) = 0;
 
 			/**
 			 * Performs a complete data exchange among processor.
@@ -471,8 +551,9 @@ namespace fpmas { namespace api { namespace communication {
 			 */
 			// TODO: should std::vector be used instead of map? pb: what if we
 			// want to send "no data" to process?
-			virtual std::unordered_map<int, DataPack>
-				allToAll(std::unordered_map<int, DataPack> export_map, MPI_Datatype datatype) = 0;
+			virtual std::unordered_map<int, DataPack> allToAll(
+					std::unordered_map<int, DataPack> export_map, MPI_Datatype datatype
+					) = 0;
 
 			/**
 			 * Gathers data at `root`.
@@ -616,7 +697,7 @@ namespace fpmas { namespace api { namespace communication {
 				virtual T bcast(const T& data, int root) = 0;
 
 				/**
-				 * Sends a `T` instance to `destination`.
+				 * Sends a `T` instance to `destination` (blocking).
 				 *
 				 * Follows the same rules as MpiCommunicator::send().
 				 *
@@ -627,7 +708,20 @@ namespace fpmas { namespace api { namespace communication {
 				virtual void send(const T& data, int destination, int tag) = 0;
 
 				/**
-				 * Sends a `T` instance to `destination`.
+				 * Sends a `T` instance to `destination` (non-blocking).
+				 *
+				 * Follows the same rules as MpiCommunicator::Isend().
+				 *
+				 * @param data reference to the `T` object to send to `destination`
+				 * @param destination rank of the destination process
+				 * @param tag message tag
+				 * @param req output Request
+				 */
+				virtual void Isend(const T& data, int destination, int tag, Request& req) = 0;
+
+				/**
+				 * Sends a `T` instance to `destination` (non-blocking,
+				 * synchronous).
 				 *
 				 * Follows the same rules as MpiCommunicator::Issend().
 				 *

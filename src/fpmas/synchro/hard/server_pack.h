@@ -15,11 +15,12 @@ namespace fpmas { namespace synchro { namespace hard {
 	 * An api::Server implementation that does not handle any request.
 	 */
 	class VoidServer : public api::Server {
-		void setEpoch(api::Epoch) override {};
-		api::Epoch getEpoch() const override {
-			return {};
-		};
-		void handleIncomingRequests() override {};
+		public:
+			void setEpoch(api::Epoch) override {};
+			api::Epoch getEpoch() const override {
+				return {};
+			};
+			void handleIncomingRequests() override {};
 	};
 
 	/**
@@ -39,6 +40,8 @@ namespace fpmas { namespace synchro { namespace hard {
 		typedef api::Epoch Epoch;
 
 		private:
+		std::vector<fpmas::api::communication::Request> pending_requests;
+
 		fpmas::api::communication::MpiCommunicator& comm;
 		api::TerminationAlgorithm& termination;
 		api::Server& mutex_server;
@@ -114,7 +117,36 @@ namespace fpmas { namespace synchro { namespace hard {
 		 * Applies the termination algorithm to this ServerPack.
 		 */
 		void terminate() {
+			FPMAS_LOGV(comm.getRank(), "SERVER_PACK", "wait all...", "");
+			// Applies the termination algorithm: keeps handling requests
 			termination.terminate(*this);
+
+			// Completes Isend responses performed while handling requests
+			// since the last terminate() call.
+			comm.waitAll(pending_requests);
+			pending_requests.clear();
+		}
+
+		/**
+		 * Returns a list containing all the pending non-blocking requests,
+		 * that are waiting for completions.
+		 *
+		 * Such non-blocking communications are notably used to send responses
+		 * to READ and ACQUIRE requests.
+		 *
+		 * Pending requests are guaranteed to be completed at the latest upon
+		 * return of the next terminate() call, so that Request buffers can be
+		 * freed.
+		 *
+		 * It is also valid to complete requests before the next terminate()
+		 * call, for example using
+		 * fpmas::api::communication::MpiCommunicator::test() or
+		 * fpmas::api::communication::MpiCommunicator::testSome() in order to
+		 * limit memory usage, as long as this cannot produce deadlock
+		 * situations.
+		 */
+		std::vector<fpmas::api::communication::Request>& pendingRequests() {
+			return pending_requests;
 		}
 
 		/**

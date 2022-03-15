@@ -115,6 +115,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a8bd4875ef936980432f29608d44fbeaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af231bbb7a249117dc731ed1e6ac64e7a"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html#af231bbb7a249117dc731ed1e6ac64e7a">send</a> (const T &amp;data, int destination, int tag)=0</td></tr>
 <tr class="separator:af231bbb7a249117dc731ed1e6ac64e7a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada0b937b9bcc60f0fc158cc20cd9ac0c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html#ada0b937b9bcc60f0fc158cc20cd9ac0c">Isend</a> (const T &amp;data, int destination, int tag, <a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> &amp;req)=0</td></tr>
+<tr class="separator:ada0b937b9bcc60f0fc158cc20cd9ac0c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1b0737291a2077a0d3f14c20021309af"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html#a1b0737291a2077a0d3f14c20021309af">Issend</a> (const T &amp;data, int destination, int tag, <a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> &amp;req)=0</td></tr>
 <tr class="separator:a1b0737291a2077a0d3f14c20021309af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0b47b6e02f6457960a711b3ca2372cd"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html#ac0b47b6e02f6457960a711b3ca2372cd">probe</a> (int source, int tag, <a class="el" href="structfpmas_1_1api_1_1communication_1_1Status.html">Status</a> &amp;status)=0</td></tr>
@@ -389,7 +391,7 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Sends a <code>T</code> instance to <code>destination</code>.</p>
+<p >Sends a <code>T</code> instance to <code>destination</code> (blocking).</p>
 <p >Follows the same rules as <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#afeb4b62ff2e052f4cd3583811fb58318">MpiCommunicator::send()</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -401,6 +403,69 @@ template&lt;typename T &gt; </div>
 </dl>
 
 <p>Implemented in <a class="el" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#af56c746e3e63940417f70b555253d65f">fpmas::communication::detail::TypedMpi&lt; Color, io::datapack::ObjectPack &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#af56c746e3e63940417f70b555253d65f">fpmas::communication::detail::TypedMpi&lt; DistributedId, io::datapack::ObjectPack &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#af56c746e3e63940417f70b555253d65f">fpmas::communication::detail::TypedMpi&lt; fpmas::api::utils::PtrWrapper&lt; fpmas::api::graph::DistributedEdge&lt; T &gt; &gt;, io::datapack::ObjectPack &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#af56c746e3e63940417f70b555253d65f">fpmas::communication::detail::TypedMpi&lt; fpmas::api::utils::PtrWrapper&lt; T &gt;, io::datapack::ObjectPack &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#af56c746e3e63940417f70b555253d65f">fpmas::communication::detail::TypedMpi&lt; fpmas::graph::EdgePtrWrapper&lt; T &gt;, io::datapack::LightObjectPack &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#af56c746e3e63940417f70b555253d65f">fpmas::communication::detail::TypedMpi&lt; fpmas::synchro::DataUpdatePack&lt; T &gt;, io::datapack::ObjectPack &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#af56c746e3e63940417f70b555253d65f">fpmas::communication::detail::TypedMpi&lt; fpmas::synchro::NodeUpdatePack&lt; T &gt;, io::datapack::ObjectPack &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#af56c746e3e63940417f70b555253d65f">fpmas::communication::detail::TypedMpi&lt; std::set&lt; fpmas::api::graph::DistributedId &gt;, io::datapack::ObjectPack &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#af56c746e3e63940417f70b555253d65f">fpmas::communication::detail::TypedMpi&lt; T, PackType &gt;</a>, and <a class="el" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#af56c746e3e63940417f70b555253d65f">fpmas::communication::detail::TypedMpi&lt; T, io::datapack::ObjectPack &gt;</a>.</p>
+
+</div>
+</div>
+<a id="ada0b937b9bcc60f0fc158cc20cd9ac0c" name="ada0b937b9bcc60f0fc158cc20cd9ac0c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada0b937b9bcc60f0fc158cc20cd9ac0c">&#9670;&nbsp;</a></span>Isend()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void <a class="el" href="classfpmas_1_1api_1_1communication_1_1TypedMpi.html">fpmas::api::communication::TypedMpi</a>&lt; T &gt;::Isend </td>
+          <td>(</td>
+          <td class="paramtype">const T &amp;&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>destination</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>tag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> &amp;&#160;</td>
+          <td class="paramname"><em>req</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Sends a <code>T</code> instance to <code>destination</code> (non-blocking).</p>
+<p >Follows the same rules as <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a1abccc51a27fd3119552752362181e70">MpiCommunicator::Isend()</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>reference to the <code>T</code> object to send to <code>destination</code> </td></tr>
+    <tr><td class="paramname">destination</td><td>rank of the destination process </td></tr>
+    <tr><td class="paramname">tag</td><td>message tag </td></tr>
+    <tr><td class="paramname">req</td><td>output <a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#aee5acffe05db1985ab1a7c25e6381bd1">fpmas::communication::detail::TypedMpi&lt; Color, io::datapack::ObjectPack &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#aee5acffe05db1985ab1a7c25e6381bd1">fpmas::communication::detail::TypedMpi&lt; DistributedId, io::datapack::ObjectPack &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#aee5acffe05db1985ab1a7c25e6381bd1">fpmas::communication::detail::TypedMpi&lt; fpmas::api::utils::PtrWrapper&lt; fpmas::api::graph::DistributedEdge&lt; T &gt; &gt;, io::datapack::ObjectPack &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#aee5acffe05db1985ab1a7c25e6381bd1">fpmas::communication::detail::TypedMpi&lt; fpmas::api::utils::PtrWrapper&lt; T &gt;, io::datapack::ObjectPack &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#aee5acffe05db1985ab1a7c25e6381bd1">fpmas::communication::detail::TypedMpi&lt; fpmas::graph::EdgePtrWrapper&lt; T &gt;, io::datapack::LightObjectPack &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#aee5acffe05db1985ab1a7c25e6381bd1">fpmas::communication::detail::TypedMpi&lt; fpmas::synchro::DataUpdatePack&lt; T &gt;, io::datapack::ObjectPack &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#aee5acffe05db1985ab1a7c25e6381bd1">fpmas::communication::detail::TypedMpi&lt; fpmas::synchro::NodeUpdatePack&lt; T &gt;, io::datapack::ObjectPack &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#aee5acffe05db1985ab1a7c25e6381bd1">fpmas::communication::detail::TypedMpi&lt; std::set&lt; fpmas::api::graph::DistributedId &gt;, io::datapack::ObjectPack &gt;</a>, <a class="el" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#aee5acffe05db1985ab1a7c25e6381bd1">fpmas::communication::detail::TypedMpi&lt; T, PackType &gt;</a>, and <a class="el" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#aee5acffe05db1985ab1a7c25e6381bd1">fpmas::communication::detail::TypedMpi&lt; T, io::datapack::ObjectPack &gt;</a>.</p>
 
 </div>
 </div>
@@ -451,7 +516,7 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Sends a <code>T</code> instance to <code>destination</code>.</p>
+<p >Sends a <code>T</code> instance to <code>destination</code> (non-blocking, synchronous).</p>
 <p >Follows the same rules as <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a44a9779fbe5e79225615a4d464902ede">MpiCommunicator::Issend()</a>.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">

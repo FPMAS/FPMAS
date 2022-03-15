@@ -23,6 +23,7 @@ class HardDataSyncTest : public Test {
 
 TEST_F(HardDataSyncTest, synchronize) {
 	EXPECT_CALL(termination, terminate(Ref(server_pack)));
+	EXPECT_CALL(comm, waitAll);
 	data_sync.synchronize();
 }
 
@@ -39,6 +40,7 @@ TEST_F(HardDataSyncTest, partial_synchronize) {
 	auto node2 = new MockDistributedNode<int, NiceMock>;
 
 	EXPECT_CALL(termination, terminate(Ref(server_pack)));
+	EXPECT_CALL(comm, waitAll);
 	data_sync.synchronize({node1, node2});
 
 	delete node1;

@@ -10,6 +10,7 @@
 #include "fpmas/synchro/hard/api/hard_sync_mode.h"
 #include "../data_update_pack.h"
 #include "fpmas/utils/log.h"
+#include "server_pack.h"
 
 namespace fpmas { namespace synchro { namespace hard {
 	using api::Epoch;
@@ -38,7 +39,7 @@ namespace fpmas { namespace synchro { namespace hard {
 				IdMpi& id_mpi;
 				DataMpi& data_mpi;
 				DataUpdateMpi& data_update_mpi;
-				api::Server& link_server;
+				ServerPackBase& server_pack;
 
 				void handleIncomingReadAcquireLock();
 
@@ -73,16 +74,18 @@ namespace fpmas { namespace synchro { namespace hard {
 				 * @param id_mpi IdMpi instance
 				 * @param data_mpi DataMpi instance
 				 * @param data_update_mpi DataUpdateMpi instance
-				 * @param link_server associated LinkServer. Might be a
-				 * VoidServer if the HardSyncLinker is not used.
+				 * @param server_pack the ServerPack instance used for
+				 * HardDataSync synchronization.
 				 */
 				MutexServer(
-						MpiComm& comm, IdMpi& id_mpi, DataMpi& data_mpi, DataUpdateMpi& data_update_mpi,
-						api::Server& link_server
+						MpiComm& comm, IdMpi& id_mpi, DataMpi& data_mpi,
+						DataUpdateMpi& data_update_mpi,
+						ServerPackBase& server_pack
 						) :
-					comm(comm), id_mpi(id_mpi), data_mpi(data_mpi), data_update_mpi(data_update_mpi),
-					link_server(link_server)
-				{}
+					comm(comm), id_mpi(id_mpi), data_mpi(data_mpi),
+					data_update_mpi(data_update_mpi),
+					server_pack(server_pack) {
+					}
 
 				void setEpoch(api::Epoch e) override {this->epoch = e;}
 				Epoch getEpoch() const override {return this->epoch;}
@@ -214,7 +217,11 @@ namespace fpmas { namespace synchro { namespace hard {
 			this->MutexServerBase::lockShared(mutex);
 			// Perform the response
 			const T& data = this->mutex_map.at(id)->data();
-			data_mpi.send(data, source, epoch | Tag::READ_RESPONSE);
+			server_pack.pendingRequests().emplace_back(
+					fpmas::api::communication::Request());
+			data_mpi.Isend(
+					data, source, epoch | Tag::READ_RESPONSE,
+					server_pack.pendingRequests().back());
 		}
 
 	/*
@@ -245,7 +252,12 @@ namespace fpmas { namespace synchro { namespace hard {
 			auto* mutex = mutex_map.at(id);
 			this->MutexServerBase::lock(mutex);
 			const T& data = mutex->data();
-			data_mpi.send(data, source, epoch | Tag::ACQUIRE_RESPONSE);
+			server_pack.pendingRequests().emplace_back(
+					fpmas::api::communication::Request());
+			data_mpi.Isend(
+					data, source, epoch | Tag::ACQUIRE_RESPONSE,
+					server_pack.pendingRequests().back()
+					);
 		}
 
 	template<typename T>
@@ -315,7 +327,11 @@ namespace fpmas { namespace synchro { namespace hard {
 		void MutexServer<T>::respondToLock(DistributedId id, int source) {
 			auto* mutex = mutex_map.at(id);
 			this->MutexServerBase::lock(mutex);
-			comm.send(source, epoch | Tag::LOCK_RESPONSE);
+
+			server_pack.pendingRequests().emplace_back(
+					fpmas::api::communication::Request());
+			comm.Isend(source, epoch | Tag::LOCK_RESPONSE,
+					server_pack.pendingRequests().back());
 		}
 
 	template<typename T>
@@ -342,7 +358,11 @@ namespace fpmas { namespace synchro { namespace hard {
 		void MutexServer<T>::respondToLockShared(DistributedId id, int source) {
 			auto* mutex = mutex_map.at(id);
 			this->MutexServerBase::lockShared(mutex);
-			comm.send(source, epoch | Tag::LOCK_SHARED_RESPONSE);
+
+			server_pack.pendingRequests().emplace_back(
+					fpmas::api::communication::Request());
+			comm.Isend(source, epoch | Tag::LOCK_SHARED_RESPONSE,
+					server_pack.pendingRequests().back());
 		}
 
 	template<typename T>
@@ -468,7 +488,7 @@ namespace fpmas { namespace synchro { namespace hard {
 			bool request_processed = false;
 			while(!request_processed) {
 				request_processed = handleIncomingRequests(request_to_wait);
-				link_server.handleIncomingRequests();
+				server_pack.linkServer().handleIncomingRequests();
 			}
 			FPMAS_LOGD(comm.getRank(), "MUTEX_SERVER",
 					"Handling local request to node %s.",

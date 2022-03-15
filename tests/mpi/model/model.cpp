@@ -24,8 +24,8 @@ using namespace testing;
 
 FPMAS_DEFINE_GROUPS(G_0, G_1, G_2);
 
-static const FPMAS_ID_TYPE NODE_BY_PROC = 5;
-static const int NUM_STEPS = 10;
+static const FPMAS_ID_TYPE NODE_BY_PROC = 50;
+static const int NUM_STEPS = 100;
 
 template<template<typename> class SynchronizationMode>
 class ModelIntegrationTest : public Test {
@@ -240,17 +240,17 @@ class ModelLoadBalancingTest : public ModelIntegrationTest<SynchonizationMode> {
 };
 
 typedef ModelLoadBalancingTest<fpmas::synchro::GhostMode> ModelGhostModeLoadBalancingTest;
-TEST_F(ModelGhostModeLoadBalancingTest, ghost_mode_dynamic_lb) {
+TEST_F(ModelGhostModeLoadBalancingTest, dynamic_lb) {
 	runtime.run(NUM_STEPS);
 }
 
 typedef ModelLoadBalancingTest<fpmas::synchro::hard::hard_link::HardSyncMode> ModelHardSyncModeLoadBalancingTest;
-TEST_F(ModelHardSyncModeLoadBalancingTest, ghost_mode_dynamic_lb) {
+TEST_F(ModelHardSyncModeLoadBalancingTest, dynamic_lb) {
 	runtime.run(NUM_STEPS);
 }
 
 typedef ModelLoadBalancingTest<fpmas::synchro::hard::ghost_link::HardSyncMode> ModelHardSyncModeGhostLinkLoadBalancingTest;
-TEST_F(ModelHardSyncModeGhostLinkLoadBalancingTest, ghost_mode_dynamic_lb) {
+TEST_F(ModelHardSyncModeGhostLinkLoadBalancingTest, dynamic_lb) {
 	runtime.run(NUM_STEPS);
 }
 

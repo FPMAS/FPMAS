@@ -24,6 +24,7 @@ FPMAS_DEFAULT_DATAPACK(BasicAgent);
 
 class ReaderWriterBase {
 	protected:
+		fpmas::random::mt19937_64 rd_engine;
 		int counter = 0;
 
 	public:
@@ -38,7 +39,6 @@ class ReaderWriterBase {
 
 class ReaderAgent : public ReaderWriterBase, public fpmas::model::AgentBase<ReaderAgent> {
 	private:
-		std::mt19937 engine;
 		std::uniform_real_distribution<float> random_weight;
 	public:
 		void read() {
@@ -52,53 +52,61 @@ class ReaderAgent : public ReaderWriterBase, public fpmas::model::AgentBase<Read
 					FPMAS_LOGD(
 							node()->location(), "READER_AGENT",
 							"Reading neighbor %s - count : %i",
-							FPMAS_C_STR(neighbor->node()->getId()), neighbor->getCounter());
+							FPMAS_C_STR(neighbor->node()->getId()),
+							neighbor->getCounter());
 					ASSERT_THAT(neighbor->getCounter(), Ge(this->model()->runtime().currentDate()));
 				}
 				neighbor_node->mutex()->releaseRead();
 			}
 			counter++;
-			node()->setWeight(random_weight(engine) * 10);
+			node()->setWeight(random_weight(rd_engine) * 10);
 		}
 
 		static void to_json(nlohmann::json& j, const ReaderAgent* agent) {
 			j["c"] = agent->getCounter();
+			j["rd"] = agent->rd_engine;
 		}
 
 		static ReaderAgent* from_json(const nlohmann::json& j) {
 			ReaderAgent* agent_ptr = new ReaderAgent;
 			agent_ptr->setCounter(j.at("c").get<int>());
+			agent_ptr->rd_engine = j.at("rd").get<decltype(rd_engine)>();
 			return agent_ptr;
 		}
 
-		static std::size_t size(const fpmas::io::datapack::ObjectPack& p, const ReaderAgent*) {
-			return p.size<int>();
+		static std::size_t size(
+				const fpmas::io::datapack::ObjectPack& p, const ReaderAgent* agent) {
+			return p.size<int>() + p.size(agent->rd_engine);
 		}
 
-		static void to_datapack(fpmas::io::datapack::ObjectPack& p, const ReaderAgent* agent) {
+		static void to_datapack(
+				fpmas::io::datapack::ObjectPack& p, const ReaderAgent* agent) {
 			p.put(agent->getCounter());
+			p.put(agent->rd_engine);
 		}
 
 		static ReaderAgent* from_datapack(const fpmas::io::datapack::ObjectPack& p) {
 			ReaderAgent* agent_ptr = new ReaderAgent;
 			agent_ptr->setCounter(p.get<int>());
+			agent_ptr->rd_engine = p.get<decltype(rd_engine)>();
 			return agent_ptr;
 		}
 };
 
 class WriterAgent : public ReaderWriterBase, public fpmas::model::AgentBase<WriterAgent> {
 	private:
-		std::mt19937 engine;
 		std::uniform_real_distribution<float> random_weight;
 	public:
 		void write() {
-			FPMAS_LOGD(node()->location(), "WRITER_AGENT", "Execute agent %s - count : %i", FPMAS_C_STR(node()->getId()), counter);
+			FPMAS_LOGD(node()->location(), "WRITER_AGENT",
+					"Execute agent %s - count : %i",
+					FPMAS_C_STR(node()->getId()), counter);
 			for(auto neighbor : node()->outNeighbors()) {
 				ReaderWriterBase* neighbor_agent
 					= dynamic_cast<ReaderWriterBase*>(neighbor->mutex()->acquire().get());
 
 				neighbor_agent->setCounter(neighbor_agent->getCounter()+1);
-				neighbor->setWeight(random_weight(engine) * 10);
+				neighbor->setWeight(random_weight(rd_engine) * 10);
 
 				neighbor->mutex()->releaseAcquire();
 			}
@@ -106,25 +114,31 @@ class WriterAgent : public ReaderWriterBase, public fpmas::model::AgentBase<Writ
 
 		static void to_json(nlohmann::json& j, const WriterAgent* agent) {
 			j["c"] = agent->getCounter();
+			j["rd"] = agent->rd_engine;
 		}
 
 		static WriterAgent* from_json(const nlohmann::json& j) {
 			WriterAgent* agent_ptr = new WriterAgent;
 			agent_ptr->setCounter(j.at("c").get<int>());
+			agent_ptr->rd_engine = j.at("rd").get<decltype(rd_engine)>();
 			return agent_ptr;
 		}
 
-		static std::size_t size(const fpmas::io::datapack::ObjectPack& p, const WriterAgent*) {
-			return p.size<int>();
+		static std::size_t size(
+				const fpmas::io::datapack::ObjectPack& p, const WriterAgent* agent) {
+			return p.size<int>() + p.size(agent->rd_engine);
 		}
 
-		static void to_datapack(fpmas::io::datapack::ObjectPack& p, const WriterAgent* agent) {
+		static void to_datapack(
+				fpmas::io::datapack::ObjectPack& p, const WriterAgent* agent) {
 			p.put(agent->getCounter());
+			p.put(agent->rd_engine);
 		}
 
 		static WriterAgent* from_datapack(const fpmas::io::datapack::ObjectPack& p) {
 			WriterAgent* agent_ptr = new WriterAgent;
 			agent_ptr->setCounter(p.get<int>());
+			agent_ptr->rd_engine = p.get<decltype(rd_engine)>();
 			return agent_ptr;
 		}
 

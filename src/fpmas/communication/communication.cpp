@@ -1,4 +1,6 @@
 #include "communication.h"
+#include <cstdlib>
+#include <mpi.h>
 #include <nlohmann/json.hpp>
 #include <cstdarg>
 
@@ -8,7 +10,8 @@ namespace fpmas { namespace communication {
 
 	MpiCommWorld WORLD {};
 
-	void MpiCommunicatorBase::convertStatus(MPI_Status& mpi_status, Status& status, MPI_Datatype datatype) {
+	void MpiCommunicatorBase::convertStatus(
+			MPI_Status& mpi_status, Status& status, MPI_Datatype datatype) {
 		MPI_Get_count(&mpi_status, datatype, &status.item_count);
 		int size;
 		MPI_Type_size(datatype, &size);
@@ -49,6 +52,32 @@ namespace fpmas { namespace communication {
 		MPI_Send(NULL, 0, MPI_CHAR, destination, tag, this->comm);
 	}
 
+	void MpiCommunicatorBase::Isend(
+			const void* data, int count, MPI_Datatype datatype,
+			int destination, int tag, Request& req) {
+		int type_size;
+		MPI_Type_size(datatype, &type_size);
+		req.__data = new DataPack(count, type_size);
+		std::memcpy(req.__data->buffer, data, req.__data->size);
+
+		MPI_Isend(
+				req.__data->buffer, count, datatype,
+				destination, tag, this->comm, &req.__mpi_request);
+	}
+
+	void MpiCommunicatorBase::Isend(
+			const DataPack& data, MPI_Datatype datatype,
+			int destination, int tag, Request& req) {
+		Isend(data.buffer, data.count, datatype, destination, tag, req);
+	}
+
+	void MpiCommunicatorBase::Isend(
+			int destination, int tag, Request& req) {
+		MPI_Isend(
+				NULL, 0, MPI_CHAR,
+				destination, tag, this->comm, &req.__mpi_request);
+	}
+
 	void MpiCommunicatorBase::Issend(
 			const void* data, int count, MPI_Datatype datatype,
 			int destination, int tag, Request& req) {
@@ -61,6 +90,7 @@ namespace fpmas { namespace communication {
 				req.__data->buffer, count, datatype,
 				destination, tag, this->comm, &req.__mpi_request);
 	}
+
 	void MpiCommunicatorBase::Issend(
 			const DataPack& data, MPI_Datatype datatype,
 			int destination, int tag, Request& req) {
@@ -120,6 +150,17 @@ namespace fpmas { namespace communication {
 		MPI_Status status;
 		MPI_Wait(&req.__mpi_request, &status);
 		req.free();
+	}
+
+	void MpiCommunicatorBase::waitAll(std::vector<Request> &req) {
+		std::vector<MPI_Request> requests(req.size());
+		std::vector<MPI_Status> statuses(req.size());
+
+		for(std::size_t i = 0; i < req.size(); i++)
+			requests[i] = req[i].__mpi_request;
+		MPI_Waitall(req.size(), requests.data(), statuses.data());
+		for(auto& item : req)
+			item.free();
 	}
 
 	std::unordered_map<int, DataPack> 

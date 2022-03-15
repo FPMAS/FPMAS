@@ -58,23 +58,18 @@ namespace fpmas { namespace synchro {
 					 *
 					 * @param graph reference to managed graph
 					 * @param comm MPI communicator
-					 * @param link_server HardSyncLinker server that must be
-					 * associated to the mutex_server. Might be a LinkServer or
-					 * a VoidServer, depending on the current link operations
-					 * management implementation.
 					 * @param server_pack the ServerPack instance used for
 					 * HardDataSync synchronization.
 					 */
 					HardSyncModeBase(
 							fpmas::api::graph::DistributedGraph<T>& graph,
 							fpmas::api::communication::MpiCommunicator& comm,
-							api::Server& link_server,
 							ServerPackBase& server_pack
 							) :
 						color_mpi(comm), id_mpi(comm),
 						data_mpi(comm), data_update_mpi(comm),
 						termination(comm, color_mpi),
-						mutex_server(comm, id_mpi, data_mpi, data_update_mpi, link_server),
+						mutex_server(comm, id_mpi, data_mpi, data_update_mpi, server_pack),
 						mutex_client(comm, id_mpi, data_mpi, data_update_mpi, server_pack),
 						data_sync(comm, server_pack, graph) {
 						}
@@ -140,7 +135,7 @@ namespace fpmas { namespace synchro {
 						HardSyncMode(
 								fpmas::api::graph::DistributedGraph<T>& graph,
 								fpmas::api::communication::MpiCommunicator& comm) :
-							HardSyncModeBase<T>(graph, comm, link_server, server_pack),
+							HardSyncModeBase<T>(graph, comm, server_pack),
 							id_mpi(comm), edge_mpi(comm),
 							link_server(comm, graph, id_mpi, edge_mpi),
 							link_client(comm, id_mpi, edge_mpi, server_pack),
@@ -208,7 +203,7 @@ namespace fpmas { namespace synchro {
 						HardSyncMode(
 								fpmas::api::graph::DistributedGraph<T>& graph,
 								fpmas::api::communication::MpiCommunicator& comm) :
-							HardSyncModeBase<T>(graph, comm, link_server, server_pack),
+							HardSyncModeBase<T>(graph, comm, server_pack),
 							id_mpi(comm), edge_mpi(comm),
 							server_pack(comm, this->termination, this->mutex_server, link_server),
 							sync_linker(edge_mpi, id_mpi, graph, server_pack) {

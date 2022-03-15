@@ -100,6 +100,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a03ad95028d6716d6bb5604c52f5185e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a34b01eebabd8d004bfb08ddd369204b8"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a34b01eebabd8d004bfb08ddd369204b8">send</a> (int destination, int tag)=0</td></tr>
 <tr class="separator:a34b01eebabd8d004bfb08ddd369204b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1abccc51a27fd3119552752362181e70"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a1abccc51a27fd3119552752362181e70">Isend</a> (const void *data, int count, MPI_Datatype datatype, int destination, int tag, <a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> &amp;request)=0</td></tr>
+<tr class="separator:a1abccc51a27fd3119552752362181e70"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2683652d2c04b7b5e3589a02b76cabd"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#aa2683652d2c04b7b5e3589a02b76cabd">Isend</a> (const <a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html">DataPack</a> &amp;data, MPI_Datatype datatype, int destination, int tag, <a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> &amp;request)=0</td></tr>
+<tr class="separator:aa2683652d2c04b7b5e3589a02b76cabd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aac3d18ce3d765fdaee21b9d4c0effea9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#aac3d18ce3d765fdaee21b9d4c0effea9">Isend</a> (int destination, int tag, <a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> &amp;request)=0</td></tr>
+<tr class="separator:aac3d18ce3d765fdaee21b9d4c0effea9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a44a9779fbe5e79225615a4d464902ede"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a44a9779fbe5e79225615a4d464902ede">Issend</a> (const void *data, int count, MPI_Datatype datatype, int destination, int tag, <a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> &amp;request)=0</td></tr>
 <tr class="separator:a44a9779fbe5e79225615a4d464902ede"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8cecd1781d4c48255d8476a83a4d8883"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a8cecd1781d4c48255d8476a83a4d8883">Issend</a> (const <a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html">DataPack</a> &amp;data, MPI_Datatype datatype, int destination, int tag, <a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> &amp;request)=0</td></tr>
@@ -120,6 +126,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a0caebcfc6fb644898553ca0bc507c4f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a449c57e68384cf6f3cbed21f1132f483"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a449c57e68384cf6f3cbed21f1132f483">wait</a> (<a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> &amp;request)=0</td></tr>
 <tr class="separator:a449c57e68384cf6f3cbed21f1132f483"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a120997d44c88f9a9911baadb72ebc998"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a120997d44c88f9a9911baadb72ebc998">waitAll</a> (std::vector&lt; <a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> &gt; &amp;requests)=0</td></tr>
+<tr class="separator:a120997d44c88f9a9911baadb72ebc998"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0fbed89755f937a531793200373220c2"><td class="memItemLeft" align="right" valign="top">virtual std::unordered_map&lt; int, <a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html">DataPack</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a0fbed89755f937a531793200373220c2">allToAll</a> (std::unordered_map&lt; int, <a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html">DataPack</a> &gt; export_map, MPI_Datatype datatype)=0</td></tr>
 <tr class="separator:a0fbed89755f937a531793200373220c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9ff1747cfd0b4fde11df98814a36695d"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html">DataPack</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a9ff1747cfd0b4fde11df98814a36695d">gather</a> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html">DataPack</a> data, MPI_Datatype datatype, int root)=0</td></tr>
@@ -277,6 +285,10 @@ Static Public Attributes</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p >Sends <code>data</code> to <code>destination</code> (blocking, asynchronous).</p>
+<p >This corresponds to the MPI <em>standard</em> mode. In this case, it is up to the MPI implementation to decide if the message is buffered or not (for example, depending on the message size):</p><ul>
+<li>If the message is buffered, the method returns once data has been copied to the buffer.</li>
+<li>Else, the method returns only when the matching <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a90c9f239f2f895b6e180f6107524df4e">recv()</a> has been initiated and data is sent, what might produce some deadlock behavior. See the <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a1abccc51a27fd3119552752362181e70">Isend()</a> method to prevent such situations.</li>
+</ul>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">data</td><td>input buffer </td></tr>
@@ -396,6 +408,204 @@ Static Public Attributes</h2></td></tr>
 </dl>
 
 <p>Implemented in <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicatorBase.html#ae4fc1c74dc7610e06e156f16c980f587">fpmas::communication::MpiCommunicatorBase</a>.</p>
+
+</div>
+</div>
+<a id="a1abccc51a27fd3119552752362181e70" name="a1abccc51a27fd3119552752362181e70"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1abccc51a27fd3119552752362181e70">&#9670;&nbsp;</a></span>Isend() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void fpmas::api::communication::MpiCommunicator::Isend </td>
+          <td>(</td>
+          <td class="paramtype">const void *&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">MPI_Datatype&#160;</td>
+          <td class="paramname"><em>datatype</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>destination</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>tag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> &amp;&#160;</td>
+          <td class="paramname"><em>request</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Sends <code>data</code> to <code>destination</code> (non-blocking, asynchronous).</p>
+<p >The FPMAS implementation always copy the input data to the input <a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a>.</p>
+<p >The method returns immediately, without waiting for the message to be buffered or received by the destination process.</p>
+<p >The operation must be completed with <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a449c57e68384cf6f3cbed21f1132f483">wait()</a> or <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a120997d44c88f9a9911baadb72ebc998">waitAll()</a> so that the request object is properly freed.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>input buffer </td></tr>
+    <tr><td class="paramname">count</td><td>items count in the buffer </td></tr>
+    <tr><td class="paramname">datatype</td><td>MPI type of the data to send </td></tr>
+    <tr><td class="paramname">destination</td><td>rank of the destination process </td></tr>
+    <tr><td class="paramname">tag</td><td>message tag </td></tr>
+    <tr><td class="paramname">request</td><td>output <a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicatorBase.html#acd308e12b6d0631e38e553e0d436eab5">fpmas::communication::MpiCommunicatorBase</a>.</p>
+
+</div>
+</div>
+<a id="aa2683652d2c04b7b5e3589a02b76cabd" name="aa2683652d2c04b7b5e3589a02b76cabd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa2683652d2c04b7b5e3589a02b76cabd">&#9670;&nbsp;</a></span>Isend() <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void fpmas::api::communication::MpiCommunicator::Isend </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html">DataPack</a> &amp;&#160;</td>
+          <td class="paramname"><em>data</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">MPI_Datatype&#160;</td>
+          <td class="paramname"><em>datatype</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>destination</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>tag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> &amp;&#160;</td>
+          <td class="paramname"><em>request</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Equivalent to <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a1abccc51a27fd3119552752362181e70">send(data.buffer, data.count, datatype, destination, tag, request)</a></p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>input <a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html">DataPack</a> </td></tr>
+    <tr><td class="paramname">datatype</td><td>MPI type of the data to send </td></tr>
+    <tr><td class="paramname">destination</td><td>rank of the destination process </td></tr>
+    <tr><td class="paramname">tag</td><td>message tag </td></tr>
+    <tr><td class="paramname">request</td><td>output <a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicatorBase.html#a4ff6f728d65c8d95688729ff8018a1fa">fpmas::communication::MpiCommunicatorBase</a>.</p>
+
+</div>
+</div>
+<a id="aac3d18ce3d765fdaee21b9d4c0effea9" name="aac3d18ce3d765fdaee21b9d4c0effea9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aac3d18ce3d765fdaee21b9d4c0effea9">&#9670;&nbsp;</a></span>Isend() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void fpmas::api::communication::MpiCommunicator::Isend </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>destination</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>tag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> &amp;&#160;</td>
+          <td class="paramname"><em>request</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Sends a void message to <code>destination</code> (non-blocking, asynchronous).</p>
+<p >This might be useful to send END message for example, when only a message tag without body might be enough.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">destination</td><td>rank of the destination process </td></tr>
+    <tr><td class="paramname">tag</td><td>message tag </td></tr>
+    <tr><td class="paramname">request</td><td>output <a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicatorBase.html#ada2af29bc5459510c33e3dd85a70d692">fpmas::communication::MpiCommunicatorBase</a>.</p>
 
 </div>
 </div>
@@ -985,12 +1195,48 @@ Static Public Attributes</h2></td></tr>
 <p >Can be used to complete non-blocking communications. Upon return, the <code>request</code> internal data buffer is freed.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">request</td><td><a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> to test </td></tr>
+    <tr><td class="paramname">request</td><td><a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> to wait </td></tr>
   </table>
   </dd>
 </dl>
 
 <p>Implemented in <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicatorBase.html#a646e833f057cb4c05759e3f8c87a60bb">fpmas::communication::MpiCommunicatorBase</a>.</p>
+
+</div>
+</div>
+<a id="a120997d44c88f9a9911baadb72ebc998" name="a120997d44c88f9a9911baadb72ebc998"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a120997d44c88f9a9911baadb72ebc998">&#9670;&nbsp;</a></span>waitAll()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void fpmas::api::communication::MpiCommunicator::waitAll </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>requests</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Waits for the completion of all <code>requests</code>.</p>
+<p >Can be used to complete non-blocking communications. Upon return, all <code>requests</code> internal data buffers are freed.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">requests</td><td>Requests to wait </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="classfpmas_1_1communication_1_1MpiCommunicatorBase.html#ad2fcfedd8a8759675cbc8cb8fac6d30e">fpmas::communication::MpiCommunicatorBase</a>.</p>
 
 </div>
 </div>

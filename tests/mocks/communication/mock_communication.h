@@ -28,6 +28,9 @@ class MockMpiCommunicator : public fpmas::api::communication::MpiCommunicator {
 		MOCK_METHOD(void, send, (const void*, int, MPI_Datatype, int, int), (override));
 		MOCK_METHOD(void, send, (const fpmas::api::communication::DataPack&, MPI_Datatype, int, int), (override));
 		MOCK_METHOD(void, send, (int, int), (override));
+		MOCK_METHOD(void, Isend, (int, int, fpmas::api::communication::Request&), (override));
+		MOCK_METHOD(void, Isend, (const void*, int, MPI_Datatype, int, int, fpmas::api::communication::Request&), (override));
+		MOCK_METHOD(void, Isend, (const fpmas::api::communication::DataPack&, MPI_Datatype, int, int, fpmas::api::communication::Request&), (override));
 		MOCK_METHOD(void, Issend, (const void*, int, MPI_Datatype, int, int, fpmas::api::communication::Request&), (override));
 		MOCK_METHOD(void, Issend, (const fpmas::api::communication::DataPack&, MPI_Datatype, int, int, fpmas::api::communication::Request&), (override));
 		MOCK_METHOD(void, Issend, (int, int, fpmas::api::communication::Request&), (override));
@@ -40,6 +43,7 @@ class MockMpiCommunicator : public fpmas::api::communication::MpiCommunicator {
 		MOCK_METHOD(bool, Iprobe, (MPI_Datatype, int, int, fpmas::api::communication::Status&), (override));
 		MOCK_METHOD(bool, test, (fpmas::api::communication::Request&), (override));
 		MOCK_METHOD(void, wait, (fpmas::api::communication::Request&), (override));
+		MOCK_METHOD(void, waitAll, (std::vector<fpmas::api::communication::Request>&), (override));
 
 		MOCK_METHOD(
 			(std::unordered_map<int, fpmas::api::communication::DataPack>), allToAll,
@@ -78,6 +82,7 @@ class MockMpi : public fpmas::api::communication::TypedMpi<T> {
 		MOCK_METHOD(std::vector<T>, allGather, (const T&), (override));
 		MOCK_METHOD(T, bcast, (const T&, int), (override));
 		MOCK_METHOD(void, send, (const T&, int, int), (override));
+		MOCK_METHOD(void, Isend, (const T&, int, int, fpmas::api::communication::Request&), (override));
 		MOCK_METHOD(void, Issend, (const T&, int, int, fpmas::api::communication::Request&), (override));
 		MOCK_METHOD(void, probe, (int, int, fpmas::api::communication::Status&), (override));
 		MOCK_METHOD(bool, Iprobe, (int, int, fpmas::api::communication::Status&), (override));

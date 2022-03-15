@@ -40,7 +40,7 @@ class HardSyncMutexSelfReadTest : public Test {
 
 		MockLinkServer mock_link_server;
 		MutexServer<int> mutex_server {
-			comm, id_mpi, data_mpi, data_update_mpi, mock_link_server
+			comm, id_mpi, data_mpi, data_update_mpi, server_pack
 		};
 		fpmas::synchro::hard::ServerPackBase server_pack {
 			comm, termination, mutex_server, mock_link_server
@@ -86,7 +86,8 @@ class MutexServerRaceCondition : public Test {
 		int location = 0;
 
 		MockLinkServer mock_link_server;
-		MutexServer<int> mutex_server {comm, id_mpi, data_mpi, data_update_mpi, mock_link_server};
+		MutexServer<int> mutex_server {
+			comm, id_mpi, data_mpi, data_update_mpi, server_pack};
 		fpmas::synchro::hard::ServerPackBase server_pack {
 			comm, termination, mutex_server, mock_link_server
 		};

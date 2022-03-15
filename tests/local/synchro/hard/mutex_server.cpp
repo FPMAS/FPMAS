@@ -43,24 +43,12 @@
 
 #include "communication/mock_communication.h"
 #include "fpmas/synchro/hard/api/enums.h"
+#include "fpmas/synchro/hard/server_pack.h"
 #include "synchro/hard/mock_hard_sync_mode.h"
 #include "synchro/hard/mock_client_server.h"
+#include <gmock/gmock-matchers.h>
 
-using ::testing::_;
-using ::testing::A;
-using ::testing::An;
-using ::testing::AtLeast;
-using ::testing::DoAll;
-using ::testing::InSequence;
-using ::testing::Invoke;
-using ::testing::Pair;
-using ::testing::ElementsAre;
-using ::testing::Field;
-using ::testing::Pointee;
-using ::testing::Ref;
-using ::testing::Return;
-using ::testing::ReturnRef;
-using ::testing::UnorderedElementsAre;
+using namespace testing;
 
 using fpmas::synchro::hard::Epoch;
 using fpmas::synchro::hard::Tag;
@@ -78,8 +66,14 @@ class MutexServerTest : public ::testing::Test {
 	MockMpi<int> data_mpi {comm};
 	MockMpi<DataUpdatePack<int>> data_update_mpi {comm};
 	MockLinkServer mock_link_server;
+	MockTerminationAlgorithm mock_termination;
+	fpmas::synchro::hard::VoidServer void_server;
+	fpmas::synchro::hard::ServerPackBase server_pack {
+		comm, mock_termination, void_server, mock_link_server
+	};
 
-	MutexServer<int> server {comm, id_mpi, data_mpi, data_update_mpi, mock_link_server};
+	MutexServer<int> server {
+		comm, id_mpi, data_mpi, data_update_mpi, server_pack};
 };
 
 /*
@@ -141,6 +135,8 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 		};
 		std::vector<MockHardSyncMutex<int>*> mocks;
 
+		std::vector<MPI_Request> pending_requests;
+
 
 	protected:
 		void SetUp() override {
@@ -174,7 +170,10 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 		void expectReadResponse(int source, MockHardSyncMutex<int>* mock) {
 			EXPECT_CALL(*mock, _lockShared);
 			EXPECT_CALL(data_mpi,
-				send(Ref(mock->data()), source, Epoch::EVEN | Tag::READ_RESPONSE));
+				Isend(Ref(mock->data()), source, Epoch::EVEN | Tag::READ_RESPONSE, _))
+				.WillOnce(Invoke([this] (Unused, Unused, Unused, fpmas::api::communication::Request& req) {
+							this->pending_requests.push_back(req.__mpi_request);
+							}));
 		}
 	
 		void expectUnlockedRead(int source, DistributedId id, MockHardSyncMutex<int>* mock) {
@@ -208,7 +207,10 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 
 		void expectAcquireResponse(int source, int updatedData, MockHardSyncMutex<int>* mock) {
 			EXPECT_CALL(data_mpi,
-				send(updatedData, source, Epoch::EVEN | Tag::ACQUIRE_RESPONSE));
+				Isend(updatedData, source, Epoch::EVEN | Tag::ACQUIRE_RESPONSE, _))
+				.WillOnce(Invoke([this] (Unused, Unused, Unused, fpmas::api::communication::Request& req) {
+							this->pending_requests.push_back(req.__mpi_request);
+							}));
 			EXPECT_CALL(*mock, _lock);
 		}
 
@@ -265,7 +267,11 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 		}
 
 		void expectLockResponse(int source, MockHardSyncMutex<int>* mock) {
-			EXPECT_CALL(comm, send(source, Epoch::EVEN | Tag::LOCK_RESPONSE));
+			EXPECT_CALL(comm, Isend(source, Epoch::EVEN | Tag::LOCK_RESPONSE, _))
+				.WillOnce(Invoke([this] (Unused, Unused, fpmas::api::communication::Request& req) {
+							this->pending_requests.push_back(req.__mpi_request);
+							}));
+
 			EXPECT_CALL(*mock, _lock);
 		}
 
@@ -321,7 +327,10 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 
 		void expectLockSharedResponse(int source, MockHardSyncMutex<int>* mock) {
 			EXPECT_CALL(*mock, _lockShared);
-			EXPECT_CALL(comm, send(source, Epoch::EVEN | Tag::LOCK_SHARED_RESPONSE));
+			EXPECT_CALL(comm, Isend(source, Epoch::EVEN | Tag::LOCK_SHARED_RESPONSE, _))
+				.WillOnce(Invoke([this] (Unused, Unused, fpmas::api::communication::Request& req) {
+							this->pending_requests.push_back(req.__mpi_request);
+							}));
 		}
 
 		void expectUnlockedLockShared(int source, DistributedId id, MockHardSyncMutex<int>* mock) {
@@ -364,6 +373,11 @@ class MutexServerHandleIncomingRequestsTest : public MutexServerTest {
 		}
 
 		void TearDown() override {
+			std::vector<MPI_Request> actual_pending_requests;
+			for(auto& item : server_pack.pendingRequests())
+				actual_pending_requests.push_back(item.__mpi_request);
+			ASSERT_THAT(actual_pending_requests, UnorderedElementsAreArray(pending_requests));
+
 			for(auto mock : mocks) {
 				delete mock;
 			}

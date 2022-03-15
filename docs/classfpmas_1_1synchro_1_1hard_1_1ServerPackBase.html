@@ -113,6 +113,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a066162c806901dc7d28a20ff1a7127a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a156ed1edc8deccc3e81191c9f64bea8d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPackBase.html#a156ed1edc8deccc3e81191c9f64bea8d">terminate</a> ()</td></tr>
 <tr class="separator:a156ed1edc8deccc3e81191c9f64bea8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab9ec4d6319866801c19e03dfd36caf86"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">fpmas::api::communication::Request</a> &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPackBase.html#ab9ec4d6319866801c19e03dfd36caf86">pendingRequests</a> ()</td></tr>
+<tr class="separator:ab9ec4d6319866801c19e03dfd36caf86"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aee196260c9d59c7ac678546d3ff993ea"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPackBase.html#aee196260c9d59c7ac678546d3ff993ea">waitSendRequest</a> (<a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">fpmas::api::communication::Request</a> &amp;req)</td></tr>
 <tr class="separator:aee196260c9d59c7ac678546d3ff993ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad5a1bfb6d6f6d6dfc0fd2c89b3ee6487"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
@@ -362,6 +364,35 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 <p >Applies the termination algorithm to this <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPack.html">ServerPack</a>. </p>
+
+</div>
+</div>
+<a id="ab9ec4d6319866801c19e03dfd36caf86" name="ab9ec4d6319866801c19e03dfd36caf86"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab9ec4d6319866801c19e03dfd36caf86">&#9670;&nbsp;</a></span>pendingRequests()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; <a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">fpmas::api::communication::Request</a> &gt; &amp; fpmas::synchro::hard::ServerPackBase::pendingRequests </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Returns a list containing all the pending non-blocking requests, that are waiting for completions.</p>
+<p >Such non-blocking communications are notably used to send responses to READ and ACQUIRE requests.</p>
+<p >Pending requests are guaranteed to be completed at the latest upon return of the next <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPackBase.html#a156ed1edc8deccc3e81191c9f64bea8d">terminate()</a> call, so that Request buffers can be freed.</p>
+<p >It is also valid to complete requests before the next <a class="el" href="classfpmas_1_1synchro_1_1hard_1_1ServerPackBase.html#a156ed1edc8deccc3e81191c9f64bea8d">terminate()</a> call, for example using <a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a0caebcfc6fb644898553ca0bc507c4f6">fpmas::api::communication::MpiCommunicator::test()</a> or fpmas::api::communication::MpiCommunicator::testSome() in order to limit memory usage, as long as this cannot produce deadlock situations. </p>
 
 </div>
 </div>

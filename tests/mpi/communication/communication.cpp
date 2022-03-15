@@ -185,6 +185,42 @@ TEST(TypedMpiTest, bcast) {
 	ASSERT_EQ(data, 10);
 }
 
+TEST(TypedMpiTest, isend_wait_all) {
+	MpiCommunicator comm;
+	std::string data;
+	// Generates a long string
+	for(int i = 0; i < 10000; i++) {
+		data += std::to_string(i);
+	}
+
+	FPMAS_MIN_PROCS("TypedMpiTest.isend_wait_all", comm, 2) {
+		FPMAS_ON_PROC(comm, 0) {
+			std::vector<fpmas::api::communication::Request> requests;
+			requests.resize(comm.getSize()-1);
+
+			for(int i = 1; i < comm.getSize(); i++) {
+				std::string local_data = data;
+				comm.Isend(local_data.c_str(), local_data.size(), MPI_CHAR, i, 0, requests[i-1]);
+			}
+			comm.waitAll(requests);
+		} else {
+			std::this_thread::sleep_for(std::chrono::seconds(2));
+			fpmas::communication::Status message_to_receive_status;
+			comm.probe(MPI_CHAR, 0, 0, message_to_receive_status);
+			char* buffer = (char*) std::malloc(message_to_receive_status.size);
+
+			fpmas::communication::Status status;
+			comm.recv(buffer, message_to_receive_status.item_count, MPI_CHAR, 0, 0, status);
+
+			std::string recv(buffer, message_to_receive_status.item_count);
+			ASSERT_EQ(data.size(), recv.size());
+			ASSERT_EQ(data, recv);
+
+			std::free(buffer);
+		}
+	}
+}
+
 TEST(TypedMpiTest, issend_edge_case) {
 	MpiCommunicator comm;
 	std::string data;
@@ -192,7 +228,7 @@ TEST(TypedMpiTest, issend_edge_case) {
 	for(int i = 0; i < 10000; i++) {
 		data += std::to_string(i);
 	}
-	FPMAS_MIN_PROCS("MpiIssendTest.edge_case", comm, 2) {
+	FPMAS_MIN_PROCS("TypedMpiTest.edge_case", comm, 2) {
 		FPMAS_ON_PROC(comm, 0) {
 			std::vector<fpmas::api::communication::Request> requests;
 			requests.resize(comm.getSize()-1);

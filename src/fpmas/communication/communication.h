@@ -104,6 +104,17 @@ namespace fpmas { namespace communication {
 			 */
 			void send(int destination, int tag) override;
 
+
+			void Isend(
+					const void* data, int count, MPI_Datatype datatype,
+					int destination, int tag, Request& req) override;
+
+			void Isend(
+					const DataPack& data, MPI_Datatype datatype,
+					int destination, int tag, Request& req) override;
+
+			void Isend(int destination, int tag, Request& req) override;
+
 			/**
 			 * Performs an MPI_Issend operation.
 			 *
@@ -198,6 +209,8 @@ namespace fpmas { namespace communication {
 			 * @param req Request to wait for completion
 			 */
 			void wait(Request& req) override;
+
+			void waitAll(std::vector<Request>& req) override;
 
 			/**
 			 * Performs an MPI_Alltoall operation.
@@ -374,6 +387,12 @@ namespace fpmas { namespace communication {
 					 * \copydoc fpmas::api::communication::TypedMpi::send
 					 */
 					void send(const T&, int, int) override;
+
+					/**
+					 * \copydoc fpmas::api::communication::TypedMpi::Isend
+					 */
+					void Isend(const T&, int, int, Request&) override;
+
 					/**
 					 * \copydoc fpmas::api::communication::TypedMpi::Issend
 					 */
@@ -502,6 +521,15 @@ namespace fpmas { namespace communication {
 				DataPack data_pack = PackType(data).dump();
 				comm.send(data_pack, MPI_CHAR, destination, tag);
 			}
+
+		template<typename T, typename PackType>
+			void TypedMpi<T, PackType>::Isend(const T& data, int destination, int tag, Request& req) {
+				//FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Issend JSON to process %i : %s", destination, str.c_str());
+				DataPack data_pack = PackType(data).dump();
+				comm.Isend(data_pack, MPI_CHAR, destination, tag, req);
+			}
+
+
 		template<typename T, typename PackType>
 			void TypedMpi<T, PackType>::Issend(const T& data, int destination, int tag, Request& req) {
 				//FPMAS_LOGD(comm.getRank(), "TYPED_MPI", "Issend JSON to process %i : %s", destination, str.c_str());

@@ -51,6 +51,7 @@ class HardSyncLinkerLinkTest : public HardSyncLinkerTest {
 				.WillByDefault(Return(&tgt));
 
 			EXPECT_CALL(termination, terminate);
+			EXPECT_CALL(comm, waitAll);
 		}
 
 };
@@ -147,6 +148,7 @@ TEST_F(HardSyncLinkerTest, unlink_distant) {
 
 TEST_F(HardSyncLinkerTest, synchronize) {
 	EXPECT_CALL(termination, terminate(Ref(server_pack)));
+	EXPECT_CALL(comm, waitAll);
 
 	sync_linker.synchronize();
 }
