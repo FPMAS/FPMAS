@@ -86,8 +86,6 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator_3_01random__device_01_4.html">DistributedGenerator&lt; random_device &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1DistributedIndex.html">DistributedIndex</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1Distribution.html">Distribution</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1Generator.html">Generator</a></td></tr>
@@ -126,6 +124,8 @@ Typedefs</h2></td></tr>
 <tr class="separator:a46291533711a7df58040fa051ad62fa3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aff2c18877094fcaaa04f4e857eabe64a"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classfpmas_1_1random_1_1Generator.html">Generator</a>&lt; std::random_device &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1random.html#aff2c18877094fcaaa04f4e857eabe64a">random_device</a></td></tr>
 <tr class="separator:aff2c18877094fcaaa04f4e857eabe64a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1947f11afec2a9e757a003983595324b"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="classfpmas_1_1random_1_1Index.html">Index</a>&lt; int &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1random.html#a1947f11afec2a9e757a003983595324b">DistributedIndex</a></td></tr>
+<tr class="separator:a1947f11afec2a9e757a003983595324b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
@@ -332,6 +332,24 @@ template&lt;typename IntType  = int&gt; </div>
       </table>
 </div><div class="memdoc">
 <p >Predefined <a href="https://en.cppreference.com/w/cpp/numeric/random/random_device">random_device</a> engine. </p>
+
+</div>
+</div>
+<a id="a1947f11afec2a9e757a003983595324b" name="a1947f11afec2a9e757a003983595324b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1947f11afec2a9e757a003983595324b">&#9670;&nbsp;</a></span>DistributedIndex</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef <a class="el" href="classfpmas_1_1random_1_1Index.html">Index</a>&lt;int&gt; <a class="el" href="namespacefpmas_1_1random.html#a1947f11afec2a9e757a003983595324b">fpmas::random::DistributedIndex</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Represents a continuous index distributed across processes.</p>
+<p >A distributed index is represented as a <code>(process, local_offset)</code> pair. Processes are indexed from <code>0</code> to <code>p-1</code>. Each process is assigned to a given number of items <code>n_p</code>.</p>
+<p >The sequence of values iterated by the index is as all processes items were iterated in a single sequence, from process <code>0</code> to <code>p-1</code>: </p><div class="fragment"><div class="line">(0, 0) (0, 1) ... (0, n_0-1) (1, 0) ... (1, n_1-1) ... (p-1, 0) ... (p-1, n_(p-1)-1) (p, 0)</div>
+</div><!-- fragment --><p >The interest of this structure is that local offsets associated to a process <code>p</code> can for exemple be used as indexes in a vector hosted by the process <code>p</code>. </p>
 
 </div>
 </div>
@@ -730,7 +748,7 @@ template&lt;typename Index_t , typename Generator_t &gt; </div>
   </table>
   </dd>
 </dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="classfpmas_1_1random_1_1DistributedIndex.html">DistributedIndex</a> </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="namespacefpmas_1_1random.html#a1947f11afec2a9e757a003983595324b">DistributedIndex</a> </dd></dl>
 
 </div>
 </div>
@@ -839,7 +857,7 @@ template&lt;typename T &gt; </div>
 <div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> agent : selected_agents)</div>
 <div class="line">    ((VirusAgent*) agent)-&gt;setState(INFECTED);</div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1Agent_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1Agent.html">fpmas::api::model::Agent</a></div><div class="ttdef"><b>Definition:</b> model.h:154</div></div>
-<div class="ttc" id="anamespacefpmas_1_1random_html_a93b05229a712a47fbfba61f2a7b0d638"><div class="ttname"><a href="namespacefpmas_1_1random.html#a93b05229a712a47fbfba61f2a7b0d638">fpmas::random::split_sample</a></div><div class="ttdeci">std::vector&lt; T &gt; split_sample(api::communication::MpiCommunicator &amp;comm, const std::vector&lt; T &gt; &amp;local_items, std::size_t n)</div><div class="ttdef"><b>Definition:</b> random.h:822</div></div>
+<div class="ttc" id="anamespacefpmas_1_1random_html_a93b05229a712a47fbfba61f2a7b0d638"><div class="ttname"><a href="namespacefpmas_1_1random.html#a93b05229a712a47fbfba61f2a7b0d638">fpmas::random::split_sample</a></div><div class="ttdeci">std::vector&lt; T &gt; split_sample(api::communication::MpiCommunicator &amp;comm, const std::vector&lt; T &gt; &amp;local_items, std::size_t n)</div><div class="ttdef"><b>Definition:</b> random.h:746</div></div>
 </div><!-- fragment --><p >This method performs collective communications within the specified MPI communicator. In consequence, the method must be called from all processes.</p>
 <p >The complete item list is never centralized, in order to limit communications and memory usage.</p>
 <dl class="params"><dt>Parameters</dt><dd>

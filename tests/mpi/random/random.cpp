@@ -372,7 +372,7 @@ TEST(Random, sample_distributed_indexes) {
 
 	fpmas::random::mt19937_64 gen;
 	fpmas::random::UniformIntDistribution<int> rd_count(-9, 10);
-	std::vector<std::size_t> num_items(fpmas::communication::WORLD.getSize());
+	std::map<int, std::size_t> num_items;
 	std::size_t n_items = 0;
 	for(int i = 0; i < fpmas::communication::WORLD.getSize(); i++) {
 		num_items[i] = N_LOCAL_ITEMS+rd_count(gen);
@@ -383,8 +383,8 @@ TEST(Random, sample_distributed_indexes) {
 	for(std::size_t i = 0; i < NUM_ROUNDS; i++) {
 		// Randomly choses 50000 items on each process from all processes
 		auto local_sample = fpmas::random::sample_indexes(
-				DistributedIndex::begin(num_items),
-				DistributedIndex::end(num_items),
+				DistributedIndex::begin(&num_items),
+				DistributedIndex::end(&num_items),
 				N_CHOICES, gen);
 
 		ASSERT_THAT(local_sample, SizeIs(N_CHOICES));
@@ -402,7 +402,7 @@ TEST(Random, sample_distributed_indexes) {
 		}
 
 		// Ensures item are selected from all processes
-		const DistributedIndex begin = DistributedIndex::begin(num_items);
+		const DistributedIndex begin = DistributedIndex::begin(&num_items);
 		for(auto item : sample_set)
 			histogram[DistributedIndex::distance(begin, item)]++;
 	}

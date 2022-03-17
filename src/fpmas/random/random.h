@@ -356,75 +356,47 @@ namespace fpmas { namespace random {
 	template<typename K>
 	class Index {
 		private:
-			std::map<K, std::size_t> item_counts;
-			typename std::map<K, std::size_t>::iterator it;
+			const std::map<K, std::size_t>* item_counts;
+			typename std::map<K, std::size_t>::const_iterator it;
 			std::size_t _offset;
 
 		public:
 			Index() = default;
 
 			/**
+			 * Initializes an index representing `item_counts`.
+			 *
+			 * offset() and key() are left undefined.
+			 */
+			Index(const std::map<K, std::size_t>* item_counts)
+				: item_counts(item_counts) {
+				}
+			/**
+			 * Initializes an index representing `item_counts`.
+			 *
+			 * The key() is deduced from the specified iterator, and offset()
+			 * is set to 0.
+			 */
+			Index(
+					const std::map<K, std::size_t>* item_counts,
+					typename std::map<K, std::size_t>::const_iterator it
+					)
+				: item_counts(item_counts), it(it), _offset(0) {
+				}
+
+			/**
 			 * Initializes an index representing `item_counts`, that points to
 			 * `offset` from `key`.
 			 */
 			Index(
-					const std::map<K, std::size_t>& item_counts,
+					const std::map<K, std::size_t>* item_counts,
 					K key,
 					std::size_t offset
 					) :
 				item_counts(item_counts),
-				it(this->item_counts.find(key)),
+				it(this->item_counts->find(key)),
 				_offset(offset) {
 				}
-
-			/**
-			 * Index copy constructor.
-			 */
-			Index(const Index<K>& index)
-				: item_counts(index.item_counts), _offset(index._offset) {
-					if(index.it == index.item_counts.end())
-						it = item_counts.end();
-					else
-						it = item_counts.find(index.key());
-				};
-
-			/**
-			 * Index copy assignment.
-			 */
-			Index<K>& operator=(const Index<K>& index) {
-				item_counts = index.item_counts;
-				_offset = index._offset;
-				if(index.it == index.item_counts.end())
-					it = item_counts.end();
-				else
-					it = item_counts.find(index.key());
-				return *this;
-			};
-
-			/**
-			 * Index move constructor.
-			 */
-			Index(Index<K>&& index) :
-				item_counts(std::move(index.item_counts)),
-				_offset(std::move(index._offset)) {
-					if(index.it == index.item_counts.end())
-						it = item_counts.end();
-					else
-						it = item_counts.find(index.key());
-				}
-
-			/**
-			 * Index move assignment.
-			 */
-			Index<K>& operator=(Index<K>&& index) {
-				item_counts = std::move(index.item_counts);
-				_offset = std::move(index._offset);
-				if(index.it == index.item_counts.end())
-					it = item_counts.end();
-				else
-					it = item_counts.find(index.key());
-				return *this;
-			}
 
 			/**
 			 * Key index.
@@ -443,12 +415,12 @@ namespace fpmas { namespace random {
 			 * Begin of the index associated to `item_counts`, i.e. `(k0, 0)`
 			 * where `k0` is the first key that owns at least one item.
 			 */
-			static Index begin(const std::map<K, std::size_t>& item_counts);
+			static Index begin(const std::map<K, std::size_t>* item_counts);
 
 			/**
 			 * End of the distributed index associated to `item_counts`.
 			 */
-			static Index end(const std::map<K, std::size_t>& item_counts);
+			static Index end(const std::map<K, std::size_t>* item_counts);
 
 			/**
 			 * Increments the current Index.
@@ -496,32 +468,27 @@ namespace fpmas { namespace random {
 	};
 
 	template<typename K>
-		Index<K> Index<K>::begin(const std::map<K, std::size_t>& item_counts) { 
-			Index<K> _begin;
-			_begin.item_counts = item_counts;
-			_begin.it = _begin.item_counts.begin();
+		Index<K> Index<K>::begin(const std::map<K, std::size_t>* item_counts) { 
+			Index<K> _begin(item_counts, item_counts->begin());
 			while(_begin.it->second == 0)
 				++_begin.it;
-			_begin._offset = 0;
 			return _begin;
 		}
 
 	template<typename K>
-		Index<K> Index<K>::end(const std::map<K, std::size_t>& item_counts) {
-			Index<K> _end;
-			_end.item_counts = item_counts;
-			_end.it = _end.item_counts.end();
+		Index<K> Index<K>::end(const std::map<K, std::size_t>* item_counts) {
+			Index<K> _end(item_counts, item_counts->end());
 			return _end;
 		}
 
 	template<typename K>
 		Index<K>& Index<K>::operator++() {
-			if(it != item_counts.end()) {
+			if(it != item_counts->end()) {
 				if(_offset >= it->second-1) {
 					_offset=0;
 					++it;
 					// Skips processes without items
-					while(it != item_counts.end() && it->second == 0)
+					while(it != item_counts->end() && it->second == 0)
 						++it;
 				} else {
 					++_offset;
@@ -561,7 +528,7 @@ namespace fpmas { namespace random {
 	template<typename K>
 	std::size_t Index<K>::distance(
 			const Index<K>& i1, const Index<K>& i2) {
-		if(i1.it != i1.item_counts.end() && i2.it != i2.item_counts.end()) {
+		if(i1.it != i1.item_counts->end() && i2.it != i2.item_counts->end()) {
 			if(i1.key() == i2.key()) {
 				return i2.offset() - i1.offset();
 			} else {
@@ -576,7 +543,7 @@ namespace fpmas { namespace random {
 				return result;
 			}
 		}
-		if(i1.it == i1.item_counts.end() && i2.it == i2.item_counts.end())
+		if(i1.it == i1.item_counts->end() && i2.it == i2.item_counts->end())
 			return 0;
 		// Since i2 reachable from i1, only i2 can be end (if i1 is end and not
 		// i2, unexpected result)
@@ -584,7 +551,7 @@ namespace fpmas { namespace random {
 		std::size_t result = i1.it->second - i1.offset();
 		auto it = i1.it;
 		++it;
-		while(it != i1.item_counts.end()) {
+		while(it != i1.item_counts->end()) {
 			result+=it->second;
 			++it;
 		}
@@ -593,9 +560,9 @@ namespace fpmas { namespace random {
 
 	template<typename K>
 		bool Index<K>::operator==(const Index<K>& index) const {
-			if(it == item_counts.end() && index.it == index.item_counts.end())
+			if(it == item_counts->end() && index.it == index.item_counts->end())
 				return true;
-			if(it != item_counts.end() && index.it != index.item_counts.end())
+			if(it != item_counts->end() && index.it != index.item_counts->end())
 				return key() == index.key() && offset() == index.offset();
 			// One is end and other is not
 			return false;
@@ -608,16 +575,16 @@ namespace fpmas { namespace random {
 
 	template<typename K>
 		bool Index<K>::operator<(const Index<K>& index) const {
-			if(this->it == this->item_counts.end()
-					&& index.it != index.item_counts.end())
+			if(this->it == this->item_counts->end()
+					&& index.it != index.item_counts->end())
 				// This is end, index is not
 				return false;
-			if(index.it == index.item_counts.end()
-					&& this->it != this->item_counts.end())
+			if(index.it == index.item_counts->end()
+					&& this->it != this->item_counts->end())
 				// Index is end, this is not
 				return true;
-			if(index.it == index.item_counts.end()
-					&& this->it == this->item_counts.end())
+			if(index.it == index.item_counts->end()
+					&& this->it == this->item_counts->end())
 				// Both end (ie equal)
 				return false;
 			// Index and this are not end
@@ -643,53 +610,7 @@ namespace fpmas { namespace random {
 	 * process `p` can for exemple be used as indexes in a vector hosted by the
 	 * process `p`.
 	 */
-	class DistributedIndex : public Index<int> {
-		private:
-			static std::map<int, std::size_t> vec_to_map(
-					const std::vector<std::size_t>& item_counts);
-		public:
-			DistributedIndex() = default;
-
-			/**
-			 * Builds a distributed index from the corresponding Index.
-			 */
-			DistributedIndex(const Index<int>& index) : Index<int>(index) {
-			}
-			/**
-			 * Builds a distributed index from the corresponding Index.
-			 */
-			DistributedIndex(Index<int>&& index) : Index<int>(std::move(index)) {
-			}
-
-			/**
-			 * Assigns the specified Index to this DistributedIndex.
-			 */
-			DistributedIndex& operator=(const Index<int>& index) {
-				(Index<int>&) *this = index;
-				return *this;
-			}
-
-			/**
-			 * Assigns the specified Index to this DistributedIndex.
-			 */
-			DistributedIndex& operator=(Index<int>&& index) {
-				(Index<int>&) *this = std::move(index);
-				return *this;
-			}
-
-			/**
-			 * Begin of the distributed index associated to `item_counts`, i.e.
-			 * `(p0, 0)` where `p0` is the first process that owns at least one
-			 * item.
-			 */
-			static DistributedIndex begin(const std::vector<std::size_t>& item_counts);
-
-			/**
-			 * End of the distributed index associated to `item_counts`, i.e.
-			 * (p, 0).
-			 */
-			static DistributedIndex end(const std::vector<std::size_t>& item_counts);
-	};
+	typedef Index<int> DistributedIndex;
 
 	/**
 	 * Randomly selects `n` items from **all** `local_items` specified on all
@@ -737,12 +658,15 @@ namespace fpmas { namespace random {
 			communication::TypedMpi<std::size_t> int_mpi(comm);
 			std::vector<std::size_t> item_counts
 				= int_mpi.allGather(local_items.size());
+			std::map<int, std::size_t> item_counts_map;
+			for(std::size_t i = 0; i < item_counts.size(); i++)
+				item_counts_map[i] = item_counts[i];
 
 			// index = (process, local_offset)
 			std::vector<DistributedIndex> result_indexes
 				= sample_indexes(
-						DistributedIndex::begin(item_counts),
-						DistributedIndex::end(item_counts),
+						DistributedIndex::begin(&item_counts_map),
+						DistributedIndex::end(&item_counts_map),
 						std::min(
 							n,
 							std::accumulate(item_counts.begin(), item_counts.end(), 0ul)
@@ -830,12 +754,15 @@ namespace fpmas { namespace random {
 			communication::TypedMpi<std::size_t> int_mpi(comm);
 			std::vector<std::size_t> item_counts
 				= int_mpi.allGather(local_items.size());
+			std::map<int, std::size_t> item_counts_map;
+			for(std::size_t i = 0; i < item_counts.size(); i++)
+				item_counts_map[i] = item_counts[i];
 
 			// index = (process, local_offset)
 			std::vector<DistributedIndex> result_indexes
 				= sample_indexes(
-						DistributedIndex::begin(item_counts),
-						DistributedIndex::end(item_counts),
+						DistributedIndex::begin(&item_counts_map),
+						DistributedIndex::end(&item_counts_map),
 						std::min(
 							n,
 							std::accumulate(item_counts.begin(), item_counts.end(), 0ul)

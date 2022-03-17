@@ -65,7 +65,7 @@ struct dist_index_cmp {
 TEST(Random, distributed_index) {
 	using fpmas::random::DistributedIndex;
 
-	std::vector<std::size_t> sizes(30);
+	std::map<int, std::size_t> sizes;
 
 	fpmas::random::mt19937_64 gen;
 	fpmas::random::UniformIntDistribution<> rd_size(1, 20);
@@ -83,13 +83,13 @@ TEST(Random, distributed_index) {
 	total_count-=sizes[29];
 	sizes[29] = 0;
 
-	DistributedIndex dist_index_begin = DistributedIndex::begin(sizes);
-	DistributedIndex dist_index_end = DistributedIndex::end(sizes);
+	DistributedIndex dist_index_begin = DistributedIndex::begin(&sizes);
+	DistributedIndex dist_index_end = DistributedIndex::end(&sizes);
 
 	std::set<fpmas::random::DistributedIndex, dist_index_cmp> value_set;
 	std::vector<std::size_t> expected_offsets;
 	for(auto item : sizes)
-		for(std::size_t i = 0; i < item; i++)
+		for(std::size_t i = 0; i < item.second; i++)
 			expected_offsets.push_back(i);
 
 	std::size_t count = 0;
@@ -106,12 +106,15 @@ TEST(Random, distributed_index) {
 }
 
 TEST(Random, distributed_index_random_increment) {
-	std::vector<std::size_t> item_counts {{
+	std::vector<std::size_t> item_counts_vec {{
 		0, 3, 7, 0, 2, 8, 10
 	}};
+	std::map<int, std::size_t> item_counts;
+	for(std::size_t i = 0; i < item_counts_vec.size(); i++)
+		item_counts[i] = item_counts_vec[i];
 	using fpmas::random::DistributedIndex;
 
-	DistributedIndex begin = DistributedIndex::begin(item_counts);
+	DistributedIndex begin = DistributedIndex::begin(&item_counts);
 
 	DistributedIndex index = begin+2;
 	ASSERT_EQ(index.key(), 1);
@@ -131,13 +134,16 @@ TEST(Random, distributed_index_random_increment) {
 }
 
 TEST(Random, distributed_index_distance) {
-	std::vector<std::size_t> item_counts {{
+	std::vector<std::size_t> item_counts_vec {{
 		0, 3, 7, 0, 2, 8, 10
 	}};
+	std::map<int, std::size_t> item_counts;
+	for(std::size_t i = 0; i < item_counts_vec.size(); i++)
+		item_counts[i] = item_counts_vec[i];
 	using fpmas::random::DistributedIndex;
 
-	DistributedIndex begin = DistributedIndex::begin(item_counts);
-	DistributedIndex end = DistributedIndex::end(item_counts);
+	DistributedIndex begin = DistributedIndex::begin(&item_counts);
+	DistributedIndex end = DistributedIndex::end(&item_counts);
 
 	ASSERT_EQ(DistributedIndex::distance(begin, begin+2), 2);
 	ASSERT_EQ(DistributedIndex::distance(begin, begin+11), 11);

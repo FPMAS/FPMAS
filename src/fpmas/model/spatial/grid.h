@@ -241,8 +241,10 @@ namespace fpmas { namespace model {
 	template<typename CellType = GridCell>
 		class GridAgentBuilder : public SpatialAgentBuilderBase<CellType, api::model::GridCell> {
 			private:
-				GridAgentIndex agent_begin;
-				GridAgentIndex agent_end;
+				// Count of items by DiscretePoint (no entry <=> 0)
+				std::map<DiscretePoint, std::size_t> item_counts;
+				GridAgentIndex agent_begin {&item_counts};
+				GridAgentIndex agent_end {&item_counts};
 				std::map<GridAgentIndex, api::model::GridAgent<CellType>*> agent_index;
 
 			public:
@@ -395,8 +397,6 @@ namespace fpmas { namespace model {
 				std::function<api::model::SpatialAgent<CellType>*()> factory,
 				api::model::SpatialAgentMapping<api::model::GridCell>& agent_mapping
 				) {
-			// Count of items by DiscretePoint (no entry <=> 0)
-			std::map<DiscretePoint, std::size_t> item_counts;
 			for(auto cell : model.cells()) {
 				std::size_t count = agent_mapping.countAt(cell);
 				if(count > 0)
@@ -410,16 +410,7 @@ namespace fpmas { namespace model {
 			item_counts =
 				communication::all_reduce(item_counts_mpi, item_counts, utils::Concat());
 
-			// Contains the cumulative sum of item_counts entries
-			std::map<DiscretePoint, std::size_t> item_counts_sum;
-
-			// Loop ordered by DiscretePoint
-			std::size_t sum = 0;
-			for(auto item : item_counts) {
-				sum+=item.second;
-				item_counts_sum.insert({item.first, sum});
-			}
-			// Containes the current index of agents located at each location
+			// Contains the current index of agents located at each location
 			std::map<DiscretePoint, std::size_t> local_counts;
 
 			// Built agents
@@ -432,8 +423,8 @@ namespace fpmas { namespace model {
 					return agent;
 					}, agent_mapping);
 
-			agent_begin = GridAgentIndex::begin(item_counts);
-			agent_end = GridAgentIndex::end(item_counts);
+			agent_begin = GridAgentIndex::begin(&item_counts);
+			agent_end = GridAgentIndex::end(&item_counts);
 			std::vector<std::mt19937_64::result_type> local_seeds(
 					GridAgentIndex::distance(agent_begin, agent_end)
 					);
@@ -448,11 +439,8 @@ namespace fpmas { namespace model {
 
 			for(std::size_t i = 0; i < agents.size(); i++) {
 				std::size_t& offset = local_counts[agents[i]->locationPoint()];
-				GridAgentIndex index(item_counts, agents[i]->locationPoint(), offset);
+				GridAgentIndex index(&item_counts, agents[i]->locationPoint(), offset);
 				agent_index.insert({index, agents[i]});
-				//agents[i]->seed(
-						//local_seeds[GridAgentIndex::distance(agent_begin, index)]
-						//);
 
 				++offset;
 			}
