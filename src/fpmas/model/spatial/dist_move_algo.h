@@ -228,8 +228,14 @@ namespace fpmas { namespace model {
 			std::vector<CellType*> cells;
 			for(auto cell : dist_move_algo.cell_group.localAgents()) {
 				cells.push_back(static_cast<CellType*>(cell));
-				// Initializes all cells
+				// Initializes all cells. Eventually initializes cell
+				// bufferedSuccessors().
 				cells.back()->init();
+				// Synchronizes the cell mutex. In GlobalGhostMode, this
+				// notably stores cell bufferedSuccessors() into the ghost
+				// copy, so that following ReadGuards have a consistent
+				// behavior.
+				cells.back()->node()->mutex()->synchronize();
 			}
 
 			// Initializes the generic end condition

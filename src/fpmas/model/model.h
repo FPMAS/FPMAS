@@ -939,8 +939,8 @@ namespace fpmas { namespace model {
 				// considering the move assignment operator defined above. In
 				// consequence, those fields are properly preserved, as
 				// required by the method.
-				// If AgentType only explicitly defines a copy assignment
-				// operator, it should not call the AgentBase copy assignment
+				// If AgentType only explicitly defines a move assignment
+				// operator, it should not call the AgentBase move assignment
 				// so there should not be any problem.
 				*static_cast<AgentType*>(this) = std::move(*static_cast<AgentType*>(agent));
 
@@ -1003,6 +1003,7 @@ namespace fpmas { namespace model {
 			 * \copydoc fpmas::api::model::Agent::task(GroupId)
 			 */
 			api::model::AgentTask* task(api::model::GroupId id) override {
+				assert(_tasks.count(id) > 0);
 				return _tasks.at(id);
 			}
 			/**

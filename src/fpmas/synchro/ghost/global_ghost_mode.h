@@ -2,6 +2,7 @@
 #define FPMAS_GLOBAL_GHOST_MODE_H
 
 #include "ghost_mode.h"
+#include "fpmas/api/model/spatial/grid.h"
 
 namespace fpmas { namespace synchro {
 	namespace ghost {
@@ -16,6 +17,7 @@ namespace fpmas { namespace synchro {
 		template<typename T>
 			class GlobalGhostMutex : public SingleThreadMutex<T> {
 				private:
+					T aux;
 					T ghost_data;
 
 				public:
@@ -28,13 +30,22 @@ namespace fpmas { namespace synchro {
 					 * @param data reference to node data
 					 */
 					GlobalGhostMutex(T& data)
-						: SingleThreadMutex<T>(data), ghost_data(data) {
+						: SingleThreadMutex<T>(data), aux(data), ghost_data(data) {
 						}
 
-					const T& read() override {return ghost_data;};
-					void releaseRead() override {};
-					T& acquire() override {return ghost_data;};
-					void releaseAcquire() override {};
+					const T& read() override {
+						aux = this->data();
+						this->data() = ghost_data;
+						return this->data();
+					};
+					void releaseRead() override {
+						this->data() = aux;
+					};
+					T& acquire() override {
+						return this->data();
+					};
+					void releaseAcquire() override {
+					};
 
 					void synchronize() override {
 						this->ghost_data = this->data();

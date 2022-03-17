@@ -396,6 +396,7 @@ namespace fpmas { namespace model {
 						// The cell as not already been linked in the
 						// MOVE layer
 						fpmas::model::ReadGuard read_cell(cell);
+
 						if(spatial_agent->mobilityRange().contains(
 									location,
 									cell
