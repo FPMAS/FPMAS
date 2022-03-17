@@ -6,8 +6,8 @@
  */
 
 #include <cstdint>
-#include <nlohmann/adl_serializer.hpp>
 #include <random>
+#include <sstream>
 #include "fpmas/api/random/generator.h"
 #include "fpmas/communication/communication.h"
 
