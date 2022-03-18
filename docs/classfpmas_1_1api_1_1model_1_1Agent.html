@@ -779,14 +779,6 @@ Public Member Functions</h2></td></tr>
 <li><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#ab805bc1280df495baeb6d62cdc2e3aff">node()</a></li>
 <li><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#aa4f0276dc605d4acc25dfc92270723c7">model()</a></li>
 </ul>
-<p ><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#afb59191c838d991d80339c5a3eee262f">groups()</a> and <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#acb19869ea5caee19d301b4fa5e27872c">tasks()</a> fields are particularly handled such as the <code>agent</code>s <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#aed62d20b96c9bb544315b7d5863c35a5">groupIds()</a> is assumed to be up to date and synchronized with this <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#aed62d20b96c9bb544315b7d5863c35a5">groupIds()</a>.</p>
-<p >More particularly:</p><ul>
-<li>this agent is added to groups corresponding to ids contained in <code>agent-&gt;<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#aed62d20b96c9bb544315b7d5863c35a5">groupIds()</a></code> but not in <code>this-&gt;<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#aed62d20b96c9bb544315b7d5863c35a5">groupIds()</a></code> (see <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a8b05cfc77d52c34c85121793df15b5fb">AgentGroup::add()</a>)</li>
-<li>this agent is removed from groups corresponding to ids contained in <code>this-&gt;<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#aed62d20b96c9bb544315b7d5863c35a5">groupIds()</a></code> but not in <code>agent-&gt;<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#aed62d20b96c9bb544315b7d5863c35a5">groupIds()</a></code> (see <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a26fcdced435645d94157555677bb72d0">AgentGroup::remove()</a>)</li>
-<li>other groups are left unchanged.</li>
-</ul>
-<p ><code>this-&gt;<a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#aed62d20b96c9bb544315b7d5863c35a5">groupIds()</a></code> is also updated according to the previous rules.</p>
-<p ><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html#acb19869ea5caee19d301b4fa5e27872c">tasks()</a> are assumed to stay consistent with the rules expressed above, since tasks are bound to agent groups to which the agent belong. Those tasks are updated automatically by <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a8b05cfc77d52c34c85121793df15b5fb">AgentGroup::add()</a> and <a class="el" href="classfpmas_1_1api_1_1model_1_1AgentGroup.html#a26fcdced435645d94157555677bb72d0">AgentGroup::remove()</a>.</p>
 <p >Other fields are moved according to implementation defined rules.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">

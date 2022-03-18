@@ -13,6 +13,7 @@
 #include "fpmas/utils/format.h"
 #include "fpmas/graph/graph_builder.h"
 #include "fpmas/graph/random_load_balancing.h"
+#include "fpmas/synchro/synchro.h"
 #include <fstream>
 
 
@@ -909,29 +910,7 @@ namespace fpmas { namespace model {
 			 * \copydoc fpmas::api::model::Agent::moveAssign
 			 */
 			void moveAssign(api::model::Agent* agent) override {
-				// TODO: this should probably be improved in 2.0
-				// The purpose of "moveAssign" is clearly inconsistent with its
-				// current behavior, that does much more that just "moving" the
-				// agent.
-
-				// Sets and overrides the fields that must be preserved
-				std::set<api::model::GroupId> local_ids;
-				for(auto id : this->groupIds())
-					local_ids.insert(id);
-				std::set<api::model::GroupId> updated_ids;
-				for(auto id : agent->groupIds())
-					updated_ids.insert(id);
-
-				std::vector<api::model::GroupId> new_groups;
-				for(auto id : updated_ids)
-					if(local_ids.count(id) == 0)
-						new_groups.push_back(id);
-
-				std::vector<api::model::GroupId> obsolete_groups;
-				for(auto id : local_ids)
-					if(updated_ids.count(id) == 0)
-						obsolete_groups.push_back(id);
-
+				
 				// Uses AgentType move assignment operator
 				//
 				// groupIds(), groups(), tasks(), node() and model() are
@@ -943,15 +922,6 @@ namespace fpmas { namespace model {
 				// operator, it should not call the AgentBase move assignment
 				// so there should not be any problem.
 				*static_cast<AgentType*>(this) = std::move(*static_cast<AgentType*>(agent));
-
-				// Dynamically updates groups lists
-				// If `agent` was added to / removed from group on a distant
-				// process for example (assuming that this agent is DISTANT),
-				// this agent representation groups are updated.
-				for(auto id : new_groups)
-					this->model()->getGroup(id).add(this);
-				for(auto id : obsolete_groups)
-					this->model()->getGroup(id).remove(this);
 			}
 
 			/**
@@ -1738,6 +1708,84 @@ namespace fpmas { namespace io { namespace datapack {
 			static WeakAgentPtr from_datapack(const LightObjectPack& pack);
 		};
 }}}
+
+namespace fpmas { namespace synchro {
+	/**
+	 * AgentPtr data update specialization.
+	 *
+	 * In addition to move the updated agent data into the local agent, the
+	 * update() method also updates the local agents groups.
+	 */
+	template<>
+		struct DataUpdate<api::model::AgentPtr> {
+			/**
+			 * Updates the local agent with the updated agent data.
+			 *
+			 * The local agent groups are also updated according to the
+			 * following rules:
+			 * - the local agent is added to groups corresponding to ids
+			 *   contained in `updated_agent->groupIds()` but not in
+			 *   `local_agent->groupIds()` (see api::model::AgentGroup::add())
+			 * - this agent is removed from groups corresponding to ids
+			 *   contained in `local_agent->groupIds()` but not in
+			 *   `updated_agent->groupIds()` (see api::model::AgentGroup::remove())
+			 * - other groups are left unchanged.
+			 *
+			 * `local_agent->groupIds()` is also updated according to the
+			 * previous rules.
+			 *
+			 * local_agent.tasks() and local_agent.groups() are assumed to stay
+			 * consistent with the rules expressed above, since tasks are bound
+			 * to agent groups to which the agent belong. Those fields are
+			 * updated automatically by api::model::AgentGroup::add() and
+			 * api::model::AgentGroup::remove().
+			 *
+			 * \Agent data is pulled from `updated_agent` to `local_agent`
+			 * using the api::model::AgentPtr move assignment operator.
+			 *
+			 * @param local_agent reference to the local agent to update
+			 * @param updated_agent reference to the temporary updated agent
+			 */
+			static void update(
+					api::model::AgentPtr& local_agent,
+					api::model::AgentPtr&& updated_agent) {
+				// TODO: this should probably be improved in 2.0
+				// The purpose of "moveAssign" is clearly inconsistent with its
+				// current behavior, that does much more that just "moving" the
+				// agent.
+
+				// Sets and overrides the fields that must be preserved
+				std::set<api::model::GroupId> local_ids;
+				for(auto id : local_agent->groupIds())
+					local_ids.insert(id);
+				std::set<api::model::GroupId> updated_ids;
+				for(auto id : updated_agent->groupIds())
+					updated_ids.insert(id);
+
+				std::vector<api::model::GroupId> new_groups;
+				for(auto id : updated_ids)
+					if(local_ids.count(id) == 0)
+						new_groups.push_back(id);
+
+				std::vector<api::model::GroupId> obsolete_groups;
+				for(auto id : local_ids)
+					if(updated_ids.count(id) == 0)
+						obsolete_groups.push_back(id);
+
+				local_agent = std::move(updated_agent);
+
+				// Dynamically updates groups lists
+				// If `agent` was added to / removed from group on a distant
+				// process for example (assuming that this agent is DISTANT),
+				// this agent representation groups are updated.
+				for(auto id : new_groups)
+					local_agent->model()->getGroup(id).add(local_agent.get());
+				for(auto id : obsolete_groups)
+					local_agent->model()->getGroup(id).remove(local_agent.get());
+
+			}
+		};
+}}
 
 namespace nlohmann {
 	/**

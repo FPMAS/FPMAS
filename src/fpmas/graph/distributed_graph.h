@@ -10,6 +10,7 @@
 #include "fpmas/api/graph/distributed_graph.h"
 #include "fpmas/graph/distributed_edge.h"
 #include "fpmas/graph/location_manager.h"
+#include "fpmas/synchro/synchro.h"
 
 #include "fpmas/graph/graph.h"
 
@@ -433,7 +434,9 @@ namespace fpmas { namespace graph {
 
 				// Set local representation as local
 				auto local_node = this->getNode(node->getId());
-				local_node->data() = std::move(node->data());
+				synchro::DataUpdate<T>::update(
+						local_node->data(), std::move(node->data())
+						);
 				local_node->setWeight(node->getWeight());
 				setLocal(local_node, api::graph::SetLocalNodeEvent<T>::IMPORT_EXISTING_LOCAL);
 

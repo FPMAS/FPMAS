@@ -7,6 +7,7 @@
 
 #include "mutex_client.h"
 #include "mutex_server.h"
+#include "../synchro.h"
 
 namespace fpmas { namespace synchro { namespace hard {
 
@@ -117,7 +118,10 @@ namespace fpmas { namespace synchro { namespace hard {
 				_locked_shared++;
 				return node->data();
 			}
-			node->data() = std::move(mutex_client.read(node->getId(), node->location()));
+			synchro::DataUpdate<T>::update(
+					node->data(),
+					mutex_client.read(node->getId(), node->location())
+					);
 			return node->data();
 		}
 
@@ -172,7 +176,11 @@ namespace fpmas { namespace synchro { namespace hard {
 				this->_locked = true;
 				return node->data();
 			}
-			node->data() = std::move(mutex_client.acquire(node->getId(), node->location()));
+
+			synchro::DataUpdate<T>::update(
+					node->data(),
+					mutex_client.acquire(node->getId(), node->location())
+					);
 			return node->data();
 		}
 

@@ -9,6 +9,7 @@
 #include "fpmas/api/graph/distributed_graph.h"
 #include "fpmas/utils/macros.h"
 #include "../data_update_pack.h"
+#include "../synchro.h"
 #include "single_thread_mutex.h"
 
 namespace fpmas { namespace synchro {
@@ -118,7 +119,10 @@ namespace fpmas { namespace synchro {
 				for(auto list : updated_data) {
 					for(auto& data : list.second) {
 						auto local_node = graph.getNode(data.id);
-						local_node->data() = std::move(data.updated_data);
+						synchro::DataUpdate<T>::update(
+								local_node->data(),
+								std::move(data.updated_data)
+								);
 						local_node->setWeight(data.updated_weight);
 					}
 				}

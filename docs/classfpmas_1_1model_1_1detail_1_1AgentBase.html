@@ -232,7 +232,7 @@ class fpmas::model::detail::AgentBase&lt; AgentInterface, AgentType, TypeIdBase 
 <div class="line">                   +-----------+</div>
 <div class="line">                   | UserAgent |</div>
 <div class="line">                   +-----------+</div>
-<div class="ttc" id="anamespacefpmas_1_1model_html_abafe5560b52e38705b8cc693c2f6e7df"><div class="ttname"><a href="namespacefpmas_1_1model.html#abafe5560b52e38705b8cc693c2f6e7df">fpmas::model::AgentBase</a></div><div class="ttdeci">detail::AgentBase&lt; api::model::Agent, AgentType, TypeIdBase &gt; AgentBase</div><div class="ttdef"><b>Definition:</b> model.h:1154</div></div>
+<div class="ttc" id="anamespacefpmas_1_1model_html_abafe5560b52e38705b8cc693c2f6e7df"><div class="ttname"><a href="namespacefpmas_1_1model.html#abafe5560b52e38705b8cc693c2f6e7df">fpmas::model::AgentBase</a></div><div class="ttdeci">detail::AgentBase&lt; api::model::Agent, AgentType, TypeIdBase &gt; AgentBase</div><div class="ttdef"><b>Definition:</b> model.h:1124</div></div>
 </div><!-- fragment --></li>
 <li>Implementing a <a class="el" href="classfpmas_1_1model_1_1GridAgent.html">GridAgent</a> UserAgent produces the following hierarchy. In this case, <code>AgentInterface=<a class="el" href="classfpmas_1_1api_1_1model_1_1GridAgent.html">api::model::GridAgent</a></code>. <div class="fragment"><div class="line">            +--------------------------+</div>
 <div class="line">            | <a class="code hl_class" href="classfpmas_1_1api_1_1model_1_1Agent.html">fpmas::api::model::Agent</a> |</div>
@@ -1088,14 +1088,6 @@ template&lt;typename AgentInterface , typename AgentType , typename TypeIdBase  
 <li><a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html#a82d445edd89cfa8018000920c47369a4">node()</a></li>
 <li><a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html#a876c6c3c131680a104393253b15eb8e9">model()</a></li>
 </ul>
-<p ><a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html#a7cc888920be127024b32e158e55cb14a">groups()</a> and <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html#a535b62f2e97e000612f2257b07a3c412">tasks()</a> fields are particularly handled such as the <code>agent</code>s <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html#a87e25833f62e860d872467dacfbcc3f5">groupIds()</a> is assumed to be up to date and synchronized with this <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html#a87e25833f62e860d872467dacfbcc3f5">groupIds()</a>.</p>
-<p >More particularly:</p><ul>
-<li>this agent is added to groups corresponding to ids contained in <code>agent-&gt;<a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html#a87e25833f62e860d872467dacfbcc3f5">groupIds()</a></code> but not in <code>this-&gt;<a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html#a87e25833f62e860d872467dacfbcc3f5">groupIds()</a></code> (see <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#ac226e2eb63a7f2e2a0e1138a325b1ee8">AgentGroup::add()</a>)</li>
-<li>this agent is removed from groups corresponding to ids contained in <code>this-&gt;<a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html#a87e25833f62e860d872467dacfbcc3f5">groupIds()</a></code> but not in <code>agent-&gt;<a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html#a87e25833f62e860d872467dacfbcc3f5">groupIds()</a></code> (see <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#a6ab7b85ed29da686d3f97b3b838ca873">AgentGroup::remove()</a>)</li>
-<li>other groups are left unchanged.</li>
-</ul>
-<p ><code>this-&gt;<a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html#a87e25833f62e860d872467dacfbcc3f5">groupIds()</a></code> is also updated according to the previous rules.</p>
-<p ><a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html#a535b62f2e97e000612f2257b07a3c412">tasks()</a> are assumed to stay consistent with the rules expressed above, since tasks are bound to agent groups to which the agent belong. Those tasks are updated automatically by <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#ac226e2eb63a7f2e2a0e1138a325b1ee8">AgentGroup::add()</a> and <a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentGroupBase.html#a6ab7b85ed29da686d3f97b3b838ca873">AgentGroup::remove()</a>.</p>
 <p >Other fields are moved according to implementation defined rules.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">

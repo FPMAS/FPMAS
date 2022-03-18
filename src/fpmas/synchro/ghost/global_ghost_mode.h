@@ -34,12 +34,13 @@ namespace fpmas { namespace synchro {
 						}
 
 					const T& read() override {
-						aux = this->data();
-						this->data() = ghost_data;
+						aux = std::move(this->data());
+						this->data() = std::move(ghost_data);
 						return this->data();
 					};
 					void releaseRead() override {
-						this->data() = aux;
+						this->ghost_data = std::move(this->data());
+						this->data() = std::move(aux);
 					};
 					T& acquire() override {
 						return this->data();
