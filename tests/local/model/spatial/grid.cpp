@@ -11,12 +11,17 @@ using namespace testing;
 using namespace fpmas::model;
 
 template<typename GridCellType>
-class BaseGridCellTest : public testing::Test {
+class BaseGridCellTest : public Test {
 	protected:
 		GridCellType grid_cell {{12, -7}};
 		fpmas::api::model::AgentPtr src_ptr {&grid_cell};
 
-		void TearDown() {
+		void SetUp() override {
+			// Puts the associated random generator to a "random" state
+			grid_cell.seed(27);
+		}
+
+		void TearDown() override {
 			src_ptr.release();
 		}
 
@@ -46,11 +51,12 @@ TEST_F(GridCellTest, location) {
 		auto ptr = Unserialize(j);\
 		ASSERT_THAT(ptr.get(), WhenDynamicCastTo<CELL_TYPE*>(NotNull()));\
 		ASSERT_EQ(\
-				dynamic_cast<CELL_TYPE*>(ptr.get())->location(),\
+				static_cast<CELL_TYPE*>(ptr.get())->location(),\
 				DiscretePoint(12, -7)\
 				);\
+		ASSERT_EQ(static_cast<CELL_TYPE*>(ptr.get())->rd(), grid_cell.rd());\
 		/* Checks optional cell data equality */\
-		ASSERT_EQ(*dynamic_cast<CELL_TYPE*>(ptr.get()), grid_cell);\
+		ASSERT_EQ(*static_cast<CELL_TYPE*>(ptr.get()), grid_cell);\
 		delete ptr.get();\
 	}\
 	\
@@ -72,11 +78,12 @@ TEST_F(GridCellTest, location) {
 		auto ptr = Unserialize(pack);\
 		ASSERT_THAT(ptr.get(), WhenDynamicCastTo<CELL_TYPE*>(NotNull()));\
 		ASSERT_EQ(\
-				dynamic_cast<CELL_TYPE*>(ptr.get())->location(),\
+				static_cast<CELL_TYPE*>(ptr.get())->location(),\
 				DiscretePoint(12, -7)\
 				);\
+		ASSERT_EQ(static_cast<CELL_TYPE*>(ptr.get())->rd(), grid_cell.rd());\
 		/* Checks optional cell data equality */\
-		ASSERT_EQ(*dynamic_cast<CELL_TYPE*>(ptr.get()), grid_cell);\
+		ASSERT_EQ(*static_cast<CELL_TYPE*>(ptr.get()), grid_cell);\
 		delete ptr.get();\
 	}\
 	\
@@ -140,7 +147,10 @@ class BaseGridAgentTest : public testing::Test, protected GridAgentType {
 			delete GridAgentType::perception_range;
 		}
 
-		void SetUp() {
+		void SetUp() override {
+			// Puts the associated random generator to a "random" state
+			grid_agent.seed(27);
+
 			grid_agent.setModel(&mock_model);
 			grid_agent.setNode(&mock_agent_node);
 
@@ -158,7 +168,7 @@ class BaseGridAgentTest : public testing::Test, protected GridAgentType {
 				.WillByDefault(ReturnRef(mock_cell_node.data()));
 		}
 
-		void TearDown() {
+		void TearDown() override {
 			mock_cell_node.data().release();
 		}
 
@@ -221,6 +231,7 @@ TEST_F(GridAgentTest, moveToPointOutOfField) {
 		ASSERT_EQ(\
 				static_cast<AGENT_TYPE*>(unserialized_agent.get())->locationPoint(),\
 				location_point);\
+		ASSERT_EQ(static_cast<AGENT_TYPE*>(unserialized_agent.get())->rd(), grid_agent.rd());\
 		/* Checks optional cell data equality */\
 		ASSERT_EQ(*static_cast<AGENT_TYPE*>(unserialized_agent.get()), grid_agent);\
 		\
@@ -258,6 +269,7 @@ TEST_F(GridAgentTest, moveToPointOutOfField) {
 		ASSERT_EQ(\
 				static_cast<AGENT_TYPE*>(unserialized_agent.get())->locationPoint(),\
 				location_point);\
+		ASSERT_EQ(static_cast<AGENT_TYPE*>(unserialized_agent.get())->rd(), grid_agent.rd());\
 		/* Checks optional cell data equality */\
 		ASSERT_EQ(*static_cast<AGENT_TYPE*>(unserialized_agent.get()), grid_agent);\
 		\

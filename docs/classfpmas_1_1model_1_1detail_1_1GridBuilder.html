@@ -113,6 +113,11 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a77d6023be2df378764db7d86c5eca9c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4c60caf615fbdb5c3a87a102faae7f7b"><td class="memItemLeft" align="right" valign="top">std::vector&lt; CellType * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#a4c60caf615fbdb5c3a87a102faae7f7b">build</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html">api::model::SpatialModel</a>&lt; CellType &gt; &amp;spatial_model, <a class="el" href="namespacefpmas_1_1api_1_1model.html#aed5895780a486f536653be0248d0a56a">api::model::GroupList</a> groups) const override</td></tr>
 <tr class="separator:a4c60caf615fbdb5c3a87a102faae7f7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af57b922eeb301d5f1830933fc63d3dda"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#af57b922eeb301d5f1830933fc63d3dda">initSample</a> (std::size_t n, std::function&lt; void(CellType *)&gt; init_function) const</td></tr>
+<tr class="separator:af57b922eeb301d5f1830933fc63d3dda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0fd97251b1890891e89d2f553d15a75f"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a0fd97251b1890891e89d2f553d15a75f"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#a0fd97251b1890891e89d2f553d15a75f">initSequence</a> (const std::vector&lt; T &gt; &amp;items, std::function&lt; void(CellType *, typename std::vector&lt; T &gt;::const_reference)&gt; init_function) const</td></tr>
+<tr class="separator:a0fd97251b1890891e89d2f553d15a75f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac85f8f975eb8d2b842785c460bbb56cc"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; CellType * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1CellNetworkBuilder.html#ac85f8f975eb8d2b842785c460bbb56cc">build</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html">SpatialModel</a>&lt; CellType &gt; &amp;spatial_model) const =0</td></tr>
 <tr class="separator:ac85f8f975eb8d2b842785c460bbb56cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a86c402687dcd30c3a7210cb5eba545ba"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; CellType * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1CellNetworkBuilder.html#a86c402687dcd30c3a7210cb5eba545ba">build</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html">SpatialModel</a>&lt; CellType &gt; &amp;spatial_model, <a class="el" href="namespacefpmas_1_1api_1_1model.html#aed5895780a486f536653be0248d0a56a">GroupList</a> groups) const =0</td></tr>
@@ -608,6 +613,133 @@ template&lt;typename CellType &gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>cells built on the current process </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1CellNetworkBuilder.html#a86c402687dcd30c3a7210cb5eba545ba">fpmas::api::model::CellNetworkBuilder&lt; CellType &gt;</a>.</p>
+
+</div>
+</div>
+<a id="af57b922eeb301d5f1830933fc63d3dda" name="af57b922eeb301d5f1830933fc63d3dda"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af57b922eeb301d5f1830933fc63d3dda">&#9670;&nbsp;</a></span>initSample()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename CellType &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html">fpmas::model::detail::GridBuilder</a>&lt; CellType &gt;::initSample </td>
+          <td>(</td>
+          <td class="paramtype">std::size_t&#160;</td>
+          <td class="paramname"><em>n</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::function&lt; void(CellType *)&gt;&#160;</td>
+          <td class="paramname"><em>init_function</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Initializes a sample of <code>n</code> cells selected from the previously built cells with the provided <code>init_function</code>.</p>
+<p >The sample of cells selected is <b>deterministic</b>: it is guaranteed that the same cells are initialized independently of the current distribution.</p>
+<p >The selection process can be seeded with <a class="el" href="namespacefpmas.html#a3ef0a8b9bd8de597a399b5c0d35ac1ec">fpmas::seed()</a>.</p>
+<p >Successive calls can be used to independently initialize several cell states.</p>
+<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><a class="code hl_class" href="classfpmas_1_1model_1_1MooreGridBuilder.html">fpmas::model::MooreGridBuilder&lt;UserCell&gt;</a> grid_builder(<a class="code hl_function" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#a8a5b352f3c08f8314c92808b7ccfce5b">width</a>, <a class="code hl_function" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#ad28ed48a0361b3985cf8979368fb392c">height</a>);</div>
+<div class="line">grid_builder.build(</div>
+<div class="line">    grid_model,</div>
+<div class="line">    {cell_group}</div>
+<div class="line">);</div>
+<div class="line"><span class="comment">// Sets 10 random cells to be GROWN</span></div>
+<div class="line">grid_builder.initSample(</div>
+<div class="line">    10, [] (UserCell* cell) {</div>
+<div class="line">        cell-&gt;setState(GROWN);</div>
+<div class="line">    }</div>
+<div class="line">);</div>
+<div class="line"><span class="comment">// Sets 15 random agents to be RED</span></div>
+<div class="line">grid_builder.initSample(</div>
+<div class="line">    15, [] (UserCell* cell) {</div>
+<div class="line">        cell-&gt;setColor(RED);</div>
+<div class="line">    }</div>
+<div class="line">);</div>
+<div class="ttc" id="aclassfpmas_1_1model_1_1MooreGridBuilder_html"><div class="ttname"><a href="classfpmas_1_1model_1_1MooreGridBuilder.html">fpmas::model::MooreGridBuilder</a></div><div class="ttdef"><b>Definition:</b> moore_grid.h:47</div></div>
+<div class="ttc" id="aclassfpmas_1_1model_1_1detail_1_1GridBuilder_html_a8a5b352f3c08f8314c92808b7ccfce5b"><div class="ttname"><a href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#a8a5b352f3c08f8314c92808b7ccfce5b">fpmas::model::detail::GridBuilder::width</a></div><div class="ttdeci">DiscreteCoordinate width() const</div><div class="ttdef"><b>Definition:</b> grid_builder.h:281</div></div>
+<div class="ttc" id="aclassfpmas_1_1model_1_1detail_1_1GridBuilder_html_ad28ed48a0361b3985cf8979368fb392c"><div class="ttname"><a href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#ad28ed48a0361b3985cf8979368fb392c">fpmas::model::detail::GridBuilder::height</a></div><div class="ttdeci">DiscreteCoordinate height() const</div><div class="ttdef"><b>Definition:</b> grid_builder.h:287</div></div>
+</div><!-- fragment --></dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">n</td><td>sample size </td></tr>
+    <tr><td class="paramname">init_function</td><td>initialization function </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0fd97251b1890891e89d2f553d15a75f" name="a0fd97251b1890891e89d2f553d15a75f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0fd97251b1890891e89d2f553d15a75f">&#9670;&nbsp;</a></span>initSequence()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename CellType &gt; </div>
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html">fpmas::model::detail::GridBuilder</a>&lt; CellType &gt;::initSequence </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>items</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::function&lt; void(CellType *, typename std::vector&lt; T &gt;::const_reference)&gt;&#160;</td>
+          <td class="paramname"><em>init_function</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Sequentially initializes built cells from the input <code>items</code>.</p>
+<p >Each item is assigned to a cell using the specified <code>init_function</code>.</p>
+<p >The item assignment is <b>deterministic</b>: it is guaranteed that each cell is always initialized with the same item independently of the current distribution.</p>
+<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><a class="code hl_class" href="classfpmas_1_1model_1_1MooreGridBuilder.html">fpmas::model::MooreGridBuilder&lt;UserCell&gt;</a> grid_builder(<a class="code hl_function" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#a8a5b352f3c08f8314c92808b7ccfce5b">width</a>, <a class="code hl_function" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#ad28ed48a0361b3985cf8979368fb392c">height</a>);</div>
+<div class="line"> </div>
+<div class="line">grid_builder.build(</div>
+<div class="line">    grid_model,</div>
+<div class="line">    {cell_group}</div>
+<div class="line">);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Vector containing an item for each cell</span></div>
+<div class="line">std::vector&lt;unsigned long&gt; items(<a class="code hl_function" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#a8a5b352f3c08f8314c92808b7ccfce5b">width</a> * <a class="code hl_function" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#ad28ed48a0361b3985cf8979368fb392c">height</a>);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// items initialization</span></div>
+<div class="line">...</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Assign items to agents</span></div>
+<div class="line">grid_builder.initSequence(</div>
+<div class="line">    items, [] (</div>
+<div class="line">        UserCell* cell,</div>
+<div class="line">        <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span>&amp; item</div>
+<div class="line">        ) {</div>
+<div class="line">        cell-&gt;setData(item);</div>
+<div class="line">    }</div>
+<div class="line">);</div>
+</div><!-- fragment --></dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">items</td><td>Items to assign to built cells. The number of items must be greater or equal to the total number of built cells, <code>N=<a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#a8a5b352f3c08f8314c92808b7ccfce5b">width()</a>*height()</code>. Only the first <code>N</code> items are assigned, other are ignored. </td></tr>
+    <tr><td class="paramname">init_function</td><td>item assignment function </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

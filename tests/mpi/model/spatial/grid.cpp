@@ -9,13 +9,13 @@
 #include "fpmas/synchro/ghost/ghost_mode.h"
 #include "gmock/gmock.h"
 #include "../test_agents.h"
-#include "random/mock_random.h"
-#include "model/mock_grid.h"
+#include "../../../mocks/random/mock_random.h"
+#include "../../../mocks/model/mock_grid.h"
 
 using namespace testing;
 using namespace fpmas::model;
 
-class GridBuilderTest : public Test {
+class GridBuilderTestBase : public Test {
 	protected:
 		void checkGridCells(
 				fpmas::api::model::SpatialModel<fpmas::model::GridCell>& grid_model,
@@ -51,7 +51,7 @@ class GridBuilderTest : public Test {
 
 };
 
-class VonNeumannGridBuilderTest : public GridBuilderTest {
+class VonNeumannGridBuilderTest : public GridBuilderTestBase {
 	protected:
 		void checkGridStructure(
 				fpmas::api::model::SpatialModel<fpmas::model::GridCell>& grid_model,
@@ -237,7 +237,7 @@ TEST_F(VonNeumannGridBuilderTest, build_with_groups) {
 	}
 }
 
-class MooreGridBuilderTest : public GridBuilderTest {
+class MooreGridBuilderTest : public GridBuilderTestBase {
 	protected:
 		void checkGridStructure(
 				fpmas::api::model::SpatialModel<fpmas::model::GridCell>& grid_model,
@@ -449,19 +449,109 @@ TEST_F(MooreGridBuilderTest, build_with_groups) {
 	}
 }
 
-class GridAgentBuilderTest : public Test {
+class GridBuilderTest : public Test {
+	protected:
+		fpmas::model::GridModel<fpmas::synchro::GhostMode> model;
+		fpmas::api::model::DiscreteCoordinate grid_width =
+			10*model.getMpiCommunicator().getSize();
+		fpmas::api::model::DiscreteCoordinate grid_height = 20;
+
+		fpmas::model::VonNeumannGridBuilder<fpmas::model::GridCell> grid_builder {
+				grid_width, grid_height
+		};
+
+		void SetUp() override {
+			grid_builder.build(model);
+
+		}
+};
+
+TEST_F(GridBuilderTest, random_initialization) {
+	std::vector<fpmas::random::mt19937_64> random_generators;
+	for(auto cell : model.cells())
+		random_generators.push_back(cell->rd());
+
+	fpmas::communication::TypedMpi<decltype(random_generators)> mpi(
+				model.getMpiCommunicator());
+	random_generators
+		= fpmas::communication::all_reduce(mpi, random_generators, fpmas::utils::Concat());
+	for(std::size_t i = 0; i < random_generators.size()-1; i++) {
+		for(std::size_t j = i+1; j < random_generators.size(); j++) {
+			ASSERT_NE(random_generators[i], random_generators[j]);
+		}
+	}
+}
+
+TEST_F(GridBuilderTest, init_sample) {
+	using namespace fpmas::communication;
+
+	std::size_t num_call = 0;
+	std::set<fpmas::model::DistributedId> cell_ids;
+
+	std::size_t sample_size = (grid_width*grid_height/2);
+	grid_builder.initSample(
+			sample_size,
+			[&num_call, &cell_ids] (fpmas::model::GridCell* cell) {
+				num_call++;
+				cell_ids.insert(cell->node()->getId());
+			});
+
+	TypedMpi<std::size_t> int_mpi(model.getMpiCommunicator());
+	num_call = all_reduce(int_mpi, num_call);
+
+	ASSERT_EQ(num_call, sample_size);
+
+	TypedMpi<decltype(cell_ids)> id_mpi(model.getMpiCommunicator());
+
+	cell_ids = all_reduce(id_mpi, cell_ids, fpmas::utils::Concat());
+	ASSERT_THAT(cell_ids, SizeIs(sample_size));
+}
+
+TEST_F(GridBuilderTest, init_sequence) {
+	using namespace fpmas::communication;
+
+	std::size_t num_call = 0;
+	std::set<fpmas::model::DistributedId> cell_ids;
+	std::set<unsigned long> assigned_items;
+
+	std::size_t num_cells = grid_width * grid_height;
+	std::vector<unsigned long> items(num_cells);
+	for(std::size_t i = 0; i < num_cells; i++)
+		items[i] = i;
+
+	grid_builder.initSequence(
+			items,
+			[&num_call, &cell_ids, &assigned_items] (
+				fpmas::model::GridCell* cell,
+				const unsigned long& item) {
+				num_call++;
+				cell_ids.insert(cell->node()->getId());
+				assigned_items.insert(item);
+			});
+
+	TypedMpi<std::size_t> int_mpi(model.getMpiCommunicator());
+	num_call = all_reduce(int_mpi, num_call);
+
+	ASSERT_EQ(num_call, num_cells);
+
+	TypedMpi<decltype(cell_ids)> id_mpi(model.getMpiCommunicator());
+
+	cell_ids = all_reduce(id_mpi, cell_ids, fpmas::utils::Concat());
+	ASSERT_THAT(cell_ids, SizeIs(num_cells));
+
+	TypedMpi<std::set<unsigned long>> item_mpi(model.getMpiCommunicator());
+	assigned_items = all_reduce(item_mpi, assigned_items, fpmas::utils::Concat());
+	ASSERT_THAT(assigned_items, SizeIs(num_cells));
+}
+
+class GridAgentBuilderTest : public GridBuilderTest {
 	protected:
 		static const std::size_t NUM_AGENT_BY_PROC = 20;
-		fpmas::model::GridModel<fpmas::synchro::GhostMode> model;
 		fpmas::model::GridAgentBuilder<fpmas::model::GridCell> agent_builder;
 
-		void SetUp() {
-			auto grid_width = 10*model.getMpiCommunicator().getSize();
-			auto grid_height = 20;
+		void SetUp() override {
+			GridBuilderTest::SetUp();
 			auto& agent_group = model.buildGroup(1);
-			fpmas::model::VonNeumannGridBuilder<fpmas::model::GridCell> grid_builder(
-					grid_width, grid_height);
-			grid_builder.build(model);
 
 			fpmas::model::UniformGridAgentMapping agent_mapping(
 					grid_width, grid_height, NUM_AGENT_BY_PROC*model.getMpiCommunicator().getSize());
@@ -472,7 +562,7 @@ class GridAgentBuilderTest : public Test {
 		}
 };
 
-TEST_F(GridAgentBuilderTest, build) {
+TEST_F(GridAgentBuilderTest, random_initialization) {
 	std::vector<fpmas::random::mt19937_64> random_generators;
 	for(auto agent : model.getGroup(1).localAgents())
 		random_generators.push_back(((TestGridAgent*) agent)->rd());
@@ -495,7 +585,7 @@ TEST_F(GridAgentBuilderTest, init_sample) {
 	std::set<fpmas::model::DistributedId> agent_ids;
 
 	std::size_t sample_size = (NUM_AGENT_BY_PROC/2)*model.getMpiCommunicator().getSize();
-	agent_builder.init_sample(
+	agent_builder.initSample(
 			sample_size,
 			[&num_call, &agent_ids] (fpmas::api::model::GridAgent<fpmas::model::GridCell>* agent) {
 				num_call++;
@@ -524,7 +614,8 @@ TEST_F(GridAgentBuilderTest, init_sequence) {
 	std::vector<unsigned long> items(num_agents);
 	for(std::size_t i = 0; i < num_agents; i++)
 		items[i] = i;
-	agent_builder.init_sequence(
+
+	agent_builder.initSequence(
 			items,
 			[&num_call, &agent_ids, &assigned_items] (
 				fpmas::api::model::GridAgent<fpmas::model::GridCell>* agent,

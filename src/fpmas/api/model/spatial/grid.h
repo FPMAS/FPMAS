@@ -75,7 +75,7 @@ namespace fpmas { namespace api { namespace model {
 	 * Contrary to base \Cells that do not need to be explicitly situated,
 	 * \GridCells are situated using a DiscretePoint.
 	 */
-	class GridCell : public Cell {
+	class GridCell : public Cell, public RandomAgent {
 		public:
 			/**
 			 * Returns the GridCell location.
@@ -143,7 +143,8 @@ namespace fpmas { namespace api { namespace model {
 	 * The specified `GridCellType` is required to extend GridCell.
 	 */
 	template<typename GridCellType>
-	class GridAgent : public SpatialAgent<GridCellType>, public GridAgentBase {
+	class GridAgent :
+		public SpatialAgent<GridCellType>, public GridAgentBase, public RandomAgent {
 		protected:
 			static_assert(
 					std::is_base_of<api::model::GridCell, GridCellType>::value,
@@ -151,30 +152,6 @@ namespace fpmas { namespace api { namespace model {
 					);
 			using SpatialAgent<GridCellType>::moveTo;
 			using GridAgentBase::moveTo;
-
-		public:
-			/**
-			 * Returns a reference to the sequential random number bound to
-			 * this agent.
-			 *
-			 * The implementation should ensure that each agent produces an
-			 * indenpendent random number sequence.
-			 *
-			 * This can be perfomed:
-			 * - Bounding a sequential generator to all agents, and seed() them
-			 *   independently.
-			 * - Using a global DistributedGenerator
-			 */
-			virtual random::Generator<std::mt19937_64::result_type>& rd() = 0;
-
-			/**
-			 * Seeds the generator bound to this agent.
-			 *
-			 * @note The generator is seeded from this agent, even if it is
-			 * shared by several agents, for example in the case of a
-			 * DistributedGenerator.
-			 */
-			virtual void seed(std::mt19937_64::result_type seed) = 0;
 	};
 
 	/**

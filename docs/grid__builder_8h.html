@@ -69,66 +69,68 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
-<a href="#namespaces">Namespaces</a>  </div>
+<a href="#namespaces">Namespaces</a> &#124;
+<a href="#typedef-members">Typedefs</a>  </div>
   <div class="headertitle"><div class="title">grid_builder.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="model_2spatial_2grid_8h_source.html">grid.h</a>&quot;</code><br />
+<code>#include &lt;<a class="el" href="random_8h_source.html">fpmas/random/random.h</a>&gt;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for grid_builder.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="grid__builder_8h__incl.png" border="0" usemap="#asrc_2fpmas_2model_2spatial_2grid__builder_8h" alt=""/></div>
 <map name="asrc_2fpmas_2model_2spatial_2grid__builder_8h" id="asrc_2fpmas_2model_2spatial_2grid__builder_8h">
-<area shape="rect" title=" " alt="" coords="127,5,289,47"/>
-<area shape="rect" href="model_2spatial_2grid_8h.html" title=" " alt="" coords="181,95,235,121"/>
-<area shape="rect" href="api_2model_2spatial_2grid_8h.html" title=" " alt="" coords="369,319,529,360"/>
-<area shape="rect" href="communication_2communication_8h.html" title=" " alt="" coords="195,751,346,792"/>
-<area shape="rect" href="random_8h.html" title=" " alt="" coords="484,579,647,606"/>
-<area shape="rect" href="random_2distribution_8h.html" title=" " alt="" coords="327,669,423,695"/>
-<area shape="rect" href="model_2spatial_2spatial__model_8h.html" title=" " alt="" coords="567,169,681,196"/>
-<area shape="rect" href="api_2model_2spatial_2spatial__model_8h.html" title=" " alt="" coords="473,408,586,435"/>
-<area shape="rect" href="api_2model_2model_8h.html" title=" " alt="" coords="1409,579,1489,606"/>
-<area shape="rect" href="random_2generator_8h.html" title=" " alt="" coords="447,669,622,695"/>
-<area shape="rect" title=" " alt="" coords="1222,669,1301,695"/>
-<area shape="rect" title=" " alt="" coords="1041,997,1079,1023"/>
-<area shape="rect" href="api_2graph_2distributed__graph_8h.html" title=" " alt="" coords="1019,661,1197,703"/>
-<area shape="rect" href="api_2runtime_2runtime_8h.html" title=" " alt="" coords="1325,669,1509,695"/>
-<area shape="rect" href="ptr__wrapper_8h.html" title=" " alt="" coords="1487,989,1614,1031"/>
-<area shape="rect" href="api_2communication_2communication_8h.html" title=" " alt="" coords="449,989,620,1031"/>
-<area shape="rect" href="distributed__id_8h.html" title=" " alt="" coords="270,1079,477,1105"/>
-<area shape="rect" title=" " alt="" coords="277,1153,389,1180"/>
-<area shape="rect" title=" " alt="" coords="414,1153,493,1180"/>
-<area shape="rect" title=" " alt="" coords="1587,1153,1717,1180"/>
-<area shape="rect" title=" " alt="" coords="517,1153,571,1180"/>
-<area shape="rect" title=" " alt="" coords="193,1153,253,1180"/>
-<area shape="rect" title=" " alt="" coords="5,1153,88,1180"/>
-<area shape="rect" title=" " alt="" coords="836,915,897,941"/>
-<area shape="rect" title=" " alt="" coords="598,758,663,785"/>
-<area shape="rect" title=" " alt="" coords="945,758,1015,785"/>
-<area shape="rect" href="api_2random_2generator_8h.html" title=" " alt="" coords="769,840,964,867"/>
-<area shape="rect" title=" " alt="" coords="159,997,214,1023"/>
-<area shape="rect" title=" " alt="" coords="338,840,449,867"/>
-<area shape="rect" title=" " alt="" coords="195,840,314,867"/>
-<area shape="rect" href="json__datapack_8h.html" title=" " alt="" coords="575,840,745,867"/>
-<area shape="rect" href="datapack_8h.html" title=" " alt="" coords="362,915,449,941"/>
-<area shape="rect" href="json_8h.html" title=" " alt="" coords="1635,915,1693,941"/>
-<area shape="rect" title=" " alt="" coords="385,997,425,1023"/>
-<area shape="rect" title=" " alt="" coords="303,997,361,1023"/>
-<area shape="rect" title=" " alt="" coords="646,669,714,695"/>
-<area shape="rect" href="api_2random_2distribution_8h.html" title=" " alt="" coords="370,758,574,785"/>
-<area shape="rect" href="dist__move__algo_8h.html" title=" " alt="" coords="554,326,678,353"/>
-<area shape="rect" href="exceptions_8h.html" title=" " alt="" coords="297,244,493,271"/>
-<area shape="rect" href="serializer_8h.html" title=" " alt="" coords="667,244,765,271"/>
-<area shape="rect" href="model_2model_8h.html" title=" " alt="" coords="1044,408,1124,435"/>
-<area shape="rect" href="api_2graph_2graph__builder_8h.html" title=" " alt="" coords="1026,572,1177,613"/>
-<area shape="rect" href="model_2guards_8h.html" title=" " alt="" coords="1121,490,1193,517"/>
-<area shape="rect" href="model_2detail_2model_8h.html" title=" " alt="" coords="1429,490,1531,517"/>
-<area shape="rect" href="io_2breakpoint_8h.html" title=" " alt="" coords="1689,1079,1836,1105"/>
-<area shape="rect" href="format_8h.html" title=" " alt="" coords="805,579,944,606"/>
-<area shape="rect" href="graph_2graph__builder_8h.html" title=" " alt="" coords="1217,490,1404,517"/>
-<area shape="rect" href="random__load__balancing_8h.html" title=" " alt="" coords="804,483,945,524"/>
-<area shape="rect" href="json__serializer_8h.html" title=" " alt="" coords="1333,326,1449,353"/>
-<area shape="rect" href="datapack__serializer_8h.html" title=" " alt="" coords="934,326,1079,353"/>
+<area shape="rect" title=" " alt="" coords="134,5,295,47"/>
+<area shape="rect" href="model_2spatial_2grid_8h.html" title=" " alt="" coords="391,95,446,121"/>
+<area shape="rect" href="random_8h.html" title=" " alt="" coords="317,654,480,681"/>
+<area shape="rect" href="api_2model_2spatial_2grid_8h.html" title=" " alt="" coords="905,319,1065,360"/>
+<area shape="rect" href="communication_2communication_8h.html" title=" " alt="" coords="858,811,1009,852"/>
+<area shape="rect" href="random_2distribution_8h.html" title=" " alt="" coords="308,736,404,763"/>
+<area shape="rect" href="model_2spatial_2spatial__model_8h.html" title=" " alt="" coords="458,169,571,196"/>
+<area shape="rect" href="api_2model_2spatial_2spatial__model_8h.html" title=" " alt="" coords="929,408,1042,435"/>
+<area shape="rect" href="api_2model_2model_8h.html" title=" " alt="" coords="1072,565,1152,591"/>
+<area shape="rect" title=" " alt="" coords="1134,654,1213,681"/>
+<area shape="rect" title=" " alt="" coords="1233,1057,1271,1083"/>
+<area shape="rect" href="api_2graph_2distributed__graph_8h.html" title=" " alt="" coords="604,647,783,688"/>
+<area shape="rect" href="api_2runtime_2runtime_8h.html" title=" " alt="" coords="925,654,1109,681"/>
+<area shape="rect" href="ptr__wrapper_8h.html" title=" " alt="" coords="1447,1049,1574,1091"/>
+<area shape="rect" href="api_2communication_2communication_8h.html" title=" " alt="" coords="663,1049,833,1091"/>
+<area shape="rect" href="distributed__id_8h.html" title=" " alt="" coords="449,1139,655,1165"/>
+<area shape="rect" title=" " alt="" coords="331,1213,443,1240"/>
+<area shape="rect" title=" " alt="" coords="467,1213,546,1240"/>
+<area shape="rect" title=" " alt="" coords="805,1213,936,1240"/>
+<area shape="rect" title=" " alt="" coords="570,1213,625,1240"/>
+<area shape="rect" title=" " alt="" coords="649,1213,709,1240"/>
+<area shape="rect" title=" " alt="" coords="153,1213,236,1240"/>
+<area shape="rect" href="random_2generator_8h.html" title=" " alt="" coords="450,736,537,763"/>
+<area shape="rect" title=" " alt="" coords="561,736,629,763"/>
+<area shape="rect" title=" " alt="" coords="595,975,656,1001"/>
+<area shape="rect" title=" " alt="" coords="471,818,537,845"/>
+<area shape="rect" title=" " alt="" coords="663,818,732,845"/>
+<area shape="rect" href="api_2random_2generator_8h.html" title=" " alt="" coords="393,900,588,927"/>
+<area shape="rect" title=" " alt="" coords="1033,1057,1087,1083"/>
+<area shape="rect" title=" " alt="" coords="1102,900,1213,927"/>
+<area shape="rect" title=" " alt="" coords="959,900,1078,927"/>
+<area shape="rect" href="json__datapack_8h.html" title=" " alt="" coords="1339,900,1509,927"/>
+<area shape="rect" href="datapack_8h.html" title=" " alt="" coords="1289,975,1375,1001"/>
+<area shape="rect" href="json_8h.html" title=" " alt="" coords="1583,975,1641,1001"/>
+<area shape="rect" title=" " alt="" coords="1300,1057,1340,1083"/>
+<area shape="rect" title=" " alt="" coords="1365,1057,1422,1083"/>
+<area shape="rect" href="api_2random_2distribution_8h.html" title=" " alt="" coords="243,818,447,845"/>
+<area shape="rect" href="dist__move__algo_8h.html" title=" " alt="" coords="630,326,754,353"/>
+<area shape="rect" href="exceptions_8h.html" title=" " alt="" coords="417,244,613,271"/>
+<area shape="rect" href="serializer_8h.html" title=" " alt="" coords="1191,244,1289,271"/>
+<area shape="rect" href="model_2model_8h.html" title=" " alt="" coords="652,408,732,435"/>
+<area shape="rect" href="api_2graph_2graph__builder_8h.html" title=" " alt="" coords="625,557,775,599"/>
+<area shape="rect" href="model_2guards_8h.html" title=" " alt="" coords="952,483,1024,509"/>
+<area shape="rect" href="model_2detail_2model_8h.html" title=" " alt="" coords="825,483,927,509"/>
+<area shape="rect" href="io_2breakpoint_8h.html" title=" " alt="" coords="797,1139,944,1165"/>
+<area shape="rect" href="format_8h.html" title=" " alt="" coords="461,565,600,591"/>
+<area shape="rect" href="graph_2graph__builder_8h.html" title=" " alt="" coords="613,483,800,509"/>
+<area shape="rect" href="random__load__balancing_8h.html" title=" " alt="" coords="195,557,336,599"/>
+<area shape="rect" href="json__serializer_8h.html" title=" " alt="" coords="1259,326,1375,353"/>
+<area shape="rect" href="datapack__serializer_8h.html" title=" " alt="" coords="1090,326,1235,353"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -164,6 +166,11 @@ Namespaces</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespacefpmas_1_1model_1_1detail"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model_1_1detail.html">fpmas::model::detail</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
+Typedefs</h2></td></tr>
+<tr class="memitem:a508344a806c0040e0f523fc902f4bfaa"><td class="memItemLeft" align="right" valign="top">typedef random::Index&lt; DiscretePoint &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1model_1_1detail.html#a508344a806c0040e0f523fc902f4bfaa">fpmas::model::detail::GridCellIndex</a></td></tr>
+<tr class="separator:a508344a806c0040e0f523fc902f4bfaa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Generic grid builder features. </p>

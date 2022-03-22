@@ -6,7 +6,6 @@
  */
 
 #include "../model.h"
-#include "fpmas/random/generator.h"
 
 namespace fpmas { namespace api { namespace model {
 

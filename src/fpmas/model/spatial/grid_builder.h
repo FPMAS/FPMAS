@@ -6,6 +6,7 @@
  */
 
 #include "grid.h"
+#include <fpmas/random/random.h>
 
 namespace fpmas { namespace model { namespace detail {
 
@@ -78,6 +79,11 @@ namespace fpmas { namespace model { namespace detail {
 	};
 
 	/**
+	 * An index representing grid cells.
+	 */
+	typedef random::Index<DiscretePoint> GridCellIndex;
+
+	/**
 	 * Grid builder base class.
 	 *
 	 * This class defines a generic algorithm that can be used to build
@@ -101,6 +107,11 @@ namespace fpmas { namespace model { namespace detail {
 				api::model::GridCellFactory<CellType>& cell_factory;
 				DiscreteCoordinate _width;
 				DiscreteCoordinate _height;
+
+				mutable std::map<DiscretePoint, std::size_t> built_cells;
+				mutable GridCellIndex cell_begin {&built_cells};
+				mutable GridCellIndex cell_end {&built_cells};
+				mutable std::map<GridCellIndex, CellType*> cell_index;
 
 				CellMatrix buildLocalCells(
 						api::model::SpatialModel<CellType>& model,
@@ -310,7 +321,98 @@ namespace fpmas { namespace model { namespace detail {
 						api::model::GroupList groups) const override {
 					return this->_build(spatial_model, groups);
 				}
+				/**
+				 * Initializes a sample of `n` cells selected from the
+				 * previously built cells with the provided `init_function`.
+				 *
+				 * The sample of cells selected is **deterministic**: it is
+				 * guaranteed that the same cells are initialized independently
+				 * of the current distribution.
+				 *
+				 * The selection process can be seeded with fpmas::seed().
+				 *
+				 * Successive calls can be used to independently initialize
+				 * several cell states.
+				 *
+				 * @par Example
+				 * ```cpp
+				 * fpmas::model::MooreGridBuilder<UserCell> grid_builder(width, height);
+				 * grid_builder.build(
+				 * 	grid_model,
+				 * 	{cell_group}
+				 * );
+				 * // Sets 10 random cells to be GROWN
+				 * grid_builder.initSample(
+				 * 	10, [] (UserCell* cell) {
+				 * 		cell->setState(GROWN);
+				 * 	}
+				 * );
+				 * // Sets 15 random agents to be RED
+				 * grid_builder.initSample(
+				 * 	15, [] (UserCell* cell) {
+				 * 		cell->setColor(RED);
+				 * 	}
+				 * );
+				 * ```
+				 *
+				 * @param n sample size
+				 * @param init_function initialization function
+				 */
+				void initSample(
+						std::size_t n,
+						std::function<void(CellType*)> init_function
+						) const;
 
+				/**
+				 * Sequentially initializes built cells from the input `items`.
+				 *
+				 * Each item is assigned to a cell using the specified
+				 * `init_function`.
+				 *
+				 * The item assignment is **deterministic**: it is guaranteed
+				 * that each cell is always initialized with the same item
+				 * independently of the current distribution.
+				 *
+				 ** @par Example
+				 * ```cpp
+				 * fpmas::model::MooreGridBuilder<UserCell> grid_builder(width, height);
+				 *
+				 * grid_builder.build(
+				 * 	grid_model,
+				 * 	{cell_group}
+				 * );
+				 *
+				 * // Vector containing an item for each cell
+				 * std::vector<unsigned long> items(width * height);
+				 *
+				 * // items initialization
+				 * ...
+				 *
+				 * // Assign items to agents
+				 * grid_builder.initSequence(
+				 * 	items, [] (
+				 * 		UserCell* cell,
+				 * 		const unsigned long& item
+				 * 		) {
+				 * 		cell->setData(item);
+				 * 	}
+				 * );
+				 * ```
+				 *
+				 * @param items Items to assign to built cells. The number of
+				 * items must be greater or equal to the total number of built
+				 * cells, `N=width()*height()`. Only the first `N` items are
+				 * assigned, other are ignored.
+				 * @param init_function item assignment function
+				 */
+				template<typename T>
+					void initSequence(
+							const std::vector<T>& items,
+							std::function<void(
+								CellType*,
+								typename std::vector<T>::const_reference
+								)> init_function
+							) const;
 
 		};
 
@@ -348,6 +450,44 @@ namespace fpmas { namespace model { namespace detail {
 					group.get().add(cell);
 			}
 		}
+
+		for(DiscreteCoordinate y = 0; y < this->height(); y++)
+			for(DiscreteCoordinate x = 0; x < this->width(); x++)
+				built_cells.insert(std::pair<api::model::DiscretePoint, std::size_t>(
+							{x, y}, 1ul
+							));
+		
+		cell_begin = GridCellIndex::begin(&built_cells);
+		cell_end = GridCellIndex::end(&built_cells);
+
+		for(auto row : cells) {
+			for(auto cell : row) {
+				// GridCellIndex offset is always 0 in this case (at most one
+				// cell per coordinate)
+				GridCellIndex index(&built_cells, cell->location(), 0);
+				cell_index.insert({index, cell});
+			}
+		}
+
+		// Random cell seed initialization
+		std::vector<std::mt19937_64::result_type> local_seeds(
+					GridCellIndex::distance(cell_begin, cell_end)
+					);
+		for(std::size_t i = 0; i < local_seeds.size(); i++)
+			// Generates a unique integer for each, independently from the
+			// current distribution
+			local_seeds[i] = i;
+		// Genererates a better seed distribution. The same seeds are
+		// generated on all processes.
+		std::seed_seq seed_generator(local_seeds.begin(), local_seeds.end());
+		seed_generator.generate(local_seeds.begin(), local_seeds.end());
+
+		initSequence(local_seeds, [] (
+					CellType* cell,
+					const std::mt19937_64::result_type& seed) {
+				cell->seed(seed);
+				});
+
 		return cells;
 	}
 
@@ -380,9 +520,6 @@ namespace fpmas { namespace model { namespace detail {
 					{end_width, this->_height}
 				};
 
-				//cells = buildLocalCells(
-						//model, begin_width, end_width, 0, this->_height-1, groups
-						//);
 				cells = buildLocalCells(
 						model, local_dimensions, groups
 						);
@@ -531,6 +668,34 @@ namespace fpmas { namespace model { namespace detail {
 				built_cells.push_back(cell);
 		return built_cells;
 	}
+
+	template<typename CellType>
+		void GridBuilder<CellType>::initSample(
+				std::size_t n,
+				std::function<void(CellType*)> init_function) const {
+			std::vector<GridCellIndex> indexes = random::sample_indexes(
+					cell_begin, cell_end, n, RandomGridAgentBuilder::rd);
+			for(auto index : indexes) {
+				auto it = cell_index.find(index);
+				if(it != cell_index.end())
+					init_function(it->second);
+			}
+		}
+
+	template<typename CellType>
+		template<typename T>
+		void GridBuilder<CellType>::initSequence(
+				const std::vector<T> &items,
+				std::function<void (
+					CellType*,
+					typename std::vector<T>::const_reference
+					)> init_function) const {
+			for(auto cell : cell_index)
+				init_function(
+						cell.second,
+						items[GridCellIndex::distance(cell_begin, cell.first)]
+						);
+		}
 
 }}}
 #endif

@@ -54,6 +54,8 @@ namespace fpmas { namespace model {
 
 		private:
 			DiscretePoint _location;
+			random::mt19937_64 _rd;
+
 		public:
 			/**
 			 * Type that must be registered to enable Json serialization.
@@ -78,6 +80,20 @@ namespace fpmas { namespace model {
 			 */
 			DiscretePoint location() const override {
 				return _location;
+			}
+
+			/**
+			 * \copydoc fpmas::api::model::RandomAgent::rd
+			 */
+			random::mt19937_64& rd() override {
+				return _rd;
+			}
+
+			/**
+			 * \copydoc fpmas::api::model::RandomAgent::seed
+			 */
+			void seed(std::mt19937_64::result_type seed) override {
+				_rd.seed(seed);
 			}
 	};
 
@@ -295,6 +311,9 @@ namespace fpmas { namespace model {
 				 *
 				 * @par Example
 				 * ```cpp
+				 * std::size_t n_agent = 50;
+				 *
+				 * fpmas::model::UniformGridAgentMapping mapping(20, 20, n_agent);
 				 * fpmas::model::GridAgentBuilder<> agent_builder;
 				 * agent_builder.build(
 				 * 	grid_model,
@@ -303,14 +322,14 @@ namespace fpmas { namespace model {
 				 * 	agent_mapping
 				 * );
 				 * // Sets 10 random agents to be INFECTED
-				 * agent_builder.init_sample(
+				 * agent_builder.initSample(
 				 * 	10, [] (fpmas::api::model::GridAgent<>* agent) {
 				 * 		((UserAgent*) agent)->setState(INFECTED);
 				 * 	}
 				 * );
 				 * // Sets 15 random agents to be HAPPY
-				 * agent_builder.init_sample(
-				 * 	10, [] (fpmas::api::model::GridAgent<>* agent) {
+				 * agent_builder.initSample(
+				 * 	15, [] (fpmas::api::model::GridAgent<>* agent) {
 				 * 		((UserAgent*) agent)->setMood(HAPPY);
 				 * 	}
 				 * );
@@ -319,10 +338,10 @@ namespace fpmas { namespace model {
 				 * @param n sample size
 				 * @param init_function initialization function
 				 */
-				void init_sample(
+				void initSample(
 						std::size_t n,
 						std::function<void(api::model::GridAgent<CellType>*)> init_function
-						);
+						) const;
 
 				/**
 				 * Sequentially initializes built agents from the input
@@ -354,7 +373,7 @@ namespace fpmas { namespace model {
 				 * ...
 				 *
 				 * // Assign items to agents
-				 * agent_builder.init_sequence(
+				 * agent_builder.initSequence(
 				 * 	items, [] (
 				 * 		fpmas::api::model::GridAgent<>* agent,
 				 * 		const unsigned long& item
@@ -371,13 +390,13 @@ namespace fpmas { namespace model {
 				 * @param init_function item assignment function
 				 */
 				template<typename T>
-					void init_sequence(
+					void initSequence(
 							const std::vector<T>& items,
 							std::function<void(
 								api::model::GridAgent<CellType>*,
 								typename std::vector<T>::const_reference
 								)> init_function
-							);
+							) const;
 		};
 
 	template<typename CellType>
@@ -425,36 +444,29 @@ namespace fpmas { namespace model {
 
 			agent_begin = GridAgentIndex::begin(&item_counts);
 			agent_end = GridAgentIndex::end(&item_counts);
-			std::vector<std::mt19937_64::result_type> local_seeds(
-					GridAgentIndex::distance(agent_begin, agent_end)
-					);
-			for(std::size_t i = 0; i < local_seeds.size(); i++)
-				// Generates a unique integer for each, independently from the
-				// current distribution
-				local_seeds[i] = i;
-			// Genererates a better seed distribution. The same seeds are
-			// generated on all processes.
-			std::seed_seq seed_generator(local_seeds.begin(), local_seeds.end());
-			seed_generator.generate(local_seeds.begin(), local_seeds.end());
-
+   
 			for(std::size_t i = 0; i < agents.size(); i++) {
 				std::size_t& offset = local_counts[agents[i]->locationPoint()];
 				GridAgentIndex index(&item_counts, agents[i]->locationPoint(), offset);
 				agent_index.insert({index, agents[i]});
 
 				++offset;
+
+				// Generates seed from the current localion random number
+				// generator (RNG).
+				// Since the grid cell RNG initialization does not depend on
+				// the current distribution, the grid agents RNG does not
+				// depend neither on the distribution (i.e. the agent with the
+				// current `index` is **always** associated to the same seed)
+				agents[i]->seed(agents[i]->locationCell()->rd()());
 			}
-			init_sequence(local_seeds, [] (
-						api::model::GridAgent<CellType>* agent,
-						const std::mt19937_64::result_type& seed) {
-					agent->seed(seed);
-					});
 		}
 
 	template<typename CellType>
-		void GridAgentBuilder<CellType>::init_sample(
+		void GridAgentBuilder<CellType>::initSample(
 				std::size_t n,
-				std::function<void(api::model::GridAgent<CellType>*)> init_function) {
+				std::function<void(api::model::GridAgent<CellType>*)> init_function
+				) const {
 			std::vector<GridAgentIndex> indexes = random::sample_indexes(
 					agent_begin, agent_end, n, RandomGridAgentBuilder::rd);
 			for(auto index : indexes) {
@@ -466,12 +478,12 @@ namespace fpmas { namespace model {
 
 	template<typename CellType>
 		template<typename T>
-		void GridAgentBuilder<CellType>::init_sequence(
+		void GridAgentBuilder<CellType>::initSequence(
 				const std::vector<T> &items,
 				std::function<void (
 					api::model::GridAgent<CellType> *,
 					typename std::vector<T>::const_reference
-					)> init_function) {
+					)> init_function) const {
 			for(auto agent : agent_index)
 				init_function(
 						agent.second,
@@ -759,6 +771,7 @@ namespace nlohmann {
 						const_cast<Derived*>(static_cast<const Derived*>(ptr.get())));
 				// Current base serialization
 				j[1] = ptr->_location;
+				j[2] = ptr->_rd;
 			}
 
 			/**
@@ -786,6 +799,7 @@ namespace nlohmann {
 
 				// Initializes the current base
 				derived_ptr->_location = j[1].get<fpmas::api::model::DiscretePoint>();
+				derived_ptr->_rd = j[2].get<fpmas::random::mt19937_64>();
 				return derived_ptr.get();
 			}
 		};
@@ -1008,7 +1022,8 @@ namespace fpmas { namespace io { namespace datapack {
 			static std::size_t size(const ObjectPack& p, const Ptr& ptr) {
 				PtrWrapper<Derived> derived = PtrWrapper<Derived>(
 						const_cast<Derived*>(static_cast<const Derived*>(ptr.get())));
-				return p.size(derived) + p.size<api::model::DiscretePoint>();
+				return p.size(derived) + p.size<api::model::DiscretePoint>()
+					+ p.size(ptr->_rd);
 			}
 
 			/**
@@ -1025,6 +1040,7 @@ namespace fpmas { namespace io { namespace datapack {
 				pack.put(derived);
 				// Current base serialization (only location is needed)
 				pack.put(ptr->_location);
+				pack.put(ptr->_rd);
 			}
 
 			/**
@@ -1052,6 +1068,7 @@ namespace fpmas { namespace io { namespace datapack {
 
 				// Initializes the current base
 				derived_ptr->_location = pack.get<fpmas::api::model::DiscretePoint>();
+				derived_ptr->_rd = pack.get<fpmas::random::mt19937_64>();
 				return derived_ptr.get();
 			}
 		};

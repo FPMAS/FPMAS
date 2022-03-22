@@ -856,7 +856,7 @@ template&lt;typename T &gt; </div>
 <div class="line"><span class="comment">// randomly selected agents.</span></div>
 <div class="line"><span class="keywordflow">for</span>(<span class="keyword">auto</span> agent : selected_agents)</div>
 <div class="line">    ((VirusAgent*) agent)-&gt;setState(INFECTED);</div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1Agent_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1Agent.html">fpmas::api::model::Agent</a></div><div class="ttdef"><b>Definition:</b> model.h:154</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1Agent_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1Agent.html">fpmas::api::model::Agent</a></div><div class="ttdef"><b>Definition:</b> model.h:155</div></div>
 <div class="ttc" id="anamespacefpmas_1_1random_html_a93b05229a712a47fbfba61f2a7b0d638"><div class="ttname"><a href="namespacefpmas_1_1random.html#a93b05229a712a47fbfba61f2a7b0d638">fpmas::random::split_sample</a></div><div class="ttdeci">std::vector&lt; T &gt; split_sample(api::communication::MpiCommunicator &amp;comm, const std::vector&lt; T &gt; &amp;local_items, std::size_t n)</div><div class="ttdef"><b>Definition:</b> random.h:746</div></div>
 </div><!-- fragment --><p >This method performs collective communications within the specified MPI communicator. In consequence, the method must be called from all processes.</p>
 <p >The complete item list is never centralized, in order to limit communications and memory usage.</p>

@@ -570,9 +570,9 @@ TEST_F(SpatialAgentTest, agentBehaviorWithDuplicates) {
 		auto ptr = Unserialize(j);\
 		\
 		ASSERT_THAT(ptr.get(), WhenDynamicCastTo<AGENT_TYPE*>(NotNull()));\
-		ASSERT_EQ(dynamic_cast<AGENT_TYPE*>(ptr.get())->locationId(), location_id);\
+		ASSERT_EQ(static_cast<AGENT_TYPE*>(ptr.get())->locationId(), location_id);\
 		/* Checks optional cell data equality */\
-		ASSERT_EQ(*dynamic_cast<AGENT_TYPE*>(ptr.get()), agent);\
+		ASSERT_EQ(*static_cast<AGENT_TYPE*>(ptr.get()), agent);\
 		delete ptr.get();\
 	}\
 	\
@@ -605,9 +605,9 @@ TEST_F(SpatialAgentTest, agentBehaviorWithDuplicates) {
 		auto ptr = Unserialize(pack);\
 		\
 		ASSERT_THAT(ptr.get(), WhenDynamicCastTo<AGENT_TYPE*>(NotNull()));\
-		ASSERT_EQ(dynamic_cast<AGENT_TYPE*>(ptr.get())->locationId(), location_id);\
+		ASSERT_EQ(static_cast<AGENT_TYPE*>(ptr.get())->locationId(), location_id);\
 		/* Checks optional cell data equality */\
-		ASSERT_EQ(*dynamic_cast<AGENT_TYPE*>(ptr.get()), agent);\
+		ASSERT_EQ(*static_cast<AGENT_TYPE*>(ptr.get()), agent);\
 		delete ptr.get();\
 	}\
 	\

@@ -1,6 +1,7 @@
 <map id="fpmas::api::model::GridCell" name="fpmas::api::model::GridCell">
-<area shape="rect" id="node1" title=" " alt="" coords="84,169,219,211"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1model_1_1Cell.html" title=" " alt="" coords="73,95,230,121"/>
+<area shape="rect" id="node1" title=" " alt="" coords="169,184,304,225"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1model_1_1Cell.html" title=" " alt="" coords="73,102,230,129"/>
 <area shape="rect" id="node3" href="$classfpmas_1_1api_1_1model_1_1Agent.html" title=" " alt="" coords="5,5,140,47"/>
 <area shape="rect" id="node4" href="$classfpmas_1_1api_1_1model_1_1CellBehavior.html" title=" " alt="" coords="164,5,299,47"/>
+<area shape="rect" id="node5" href="$classfpmas_1_1api_1_1model_1_1RandomAgent.html" title=" " alt="" coords="255,95,389,136"/>
 </map>
