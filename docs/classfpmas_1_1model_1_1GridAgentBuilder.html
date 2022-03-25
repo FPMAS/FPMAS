@@ -264,7 +264,10 @@ template&lt;typename CellType &gt; </div>
 <p >The sample of agents selected is <b>deterministic</b>: it is guaranteed that the same agents are initialized independently of the current cell distribution.</p>
 <p >The selection process can be seeded with <a class="el" href="namespacefpmas.html#a3ef0a8b9bd8de597a399b5c0d35ac1ec">fpmas::seed()</a>.</p>
 <p >Successive calls can be used to independently initialize several agent states.</p>
-<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line"><a class="code hl_class" href="classfpmas_1_1model_1_1GridAgentBuilder.html">fpmas::model::GridAgentBuilder&lt;&gt;</a> agent_builder;</div>
+<dl class="section user"><dt>Example</dt><dd><div class="fragment"><div class="line">std::size_t n_agent = 50;</div>
+<div class="line"> </div>
+<div class="line"><a class="code hl_class" href="classfpmas_1_1model_1_1UniformGridAgentMapping.html">fpmas::model::UniformGridAgentMapping</a> mapping(20, 20, n_agent);</div>
+<div class="line"><a class="code hl_class" href="classfpmas_1_1model_1_1GridAgentBuilder.html">fpmas::model::GridAgentBuilder&lt;&gt;</a> agent_builder;</div>
 <div class="line">agent_builder.<a class="code hl_function" href="classfpmas_1_1model_1_1GridAgentBuilder.html#aa25c80bdd970ae40fe5a21b994f45ac6">build</a>(</div>
 <div class="line">    grid_model,</div>
 <div class="line">    {agent_group},</div>
@@ -285,8 +288,9 @@ template&lt;typename CellType &gt; </div>
 <div class="line">);</div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1model_1_1GridAgent_html"><div class="ttname"><a href="classfpmas_1_1api_1_1model_1_1GridAgent.html">fpmas::api::model::GridAgent</a></div><div class="ttdef"><b>Definition:</b> grid.h:147</div></div>
 <div class="ttc" id="aclassfpmas_1_1model_1_1GridAgentBuilder_html"><div class="ttname"><a href="classfpmas_1_1model_1_1GridAgentBuilder.html">fpmas::model::GridAgentBuilder</a></div><div class="ttdef"><b>Definition:</b> grid.h:258</div></div>
-<div class="ttc" id="aclassfpmas_1_1model_1_1GridAgentBuilder_html_aa25c80bdd970ae40fe5a21b994f45ac6"><div class="ttname"><a href="classfpmas_1_1model_1_1GridAgentBuilder.html#aa25c80bdd970ae40fe5a21b994f45ac6">fpmas::model::GridAgentBuilder::build</a></div><div class="ttdeci">void build(api::model::SpatialModel&lt; CellType &gt; &amp;model, api::model::GroupList groups, api::model::SpatialAgentFactory&lt; CellType &gt; &amp;factory, api::model::SpatialAgentMapping&lt; api::model::GridCell &gt; &amp;agent_mapping) override</div><div class="ttdef"><b>Definition:</b> grid.h:400</div></div>
-<div class="ttc" id="aclassfpmas_1_1model_1_1GridAgentBuilder_html_aa7c5ca0f7f0798392ce4932b087126a6"><div class="ttname"><a href="classfpmas_1_1model_1_1GridAgentBuilder.html#aa7c5ca0f7f0798392ce4932b087126a6">fpmas::model::GridAgentBuilder::initSample</a></div><div class="ttdeci">void initSample(std::size_t n, std::function&lt; void(api::model::GridAgent&lt; CellType &gt; *)&gt; init_function) const</div><div class="ttdef"><b>Definition:</b> grid.h:471</div></div>
+<div class="ttc" id="aclassfpmas_1_1model_1_1GridAgentBuilder_html_aa25c80bdd970ae40fe5a21b994f45ac6"><div class="ttname"><a href="classfpmas_1_1model_1_1GridAgentBuilder.html#aa25c80bdd970ae40fe5a21b994f45ac6">fpmas::model::GridAgentBuilder::build</a></div><div class="ttdeci">void build(api::model::SpatialModel&lt; CellType &gt; &amp;model, api::model::GroupList groups, api::model::SpatialAgentFactory&lt; CellType &gt; &amp;factory, api::model::SpatialAgentMapping&lt; api::model::GridCell &gt; &amp;agent_mapping) override</div><div class="ttdef"><b>Definition:</b> grid.h:403</div></div>
+<div class="ttc" id="aclassfpmas_1_1model_1_1GridAgentBuilder_html_aa7c5ca0f7f0798392ce4932b087126a6"><div class="ttname"><a href="classfpmas_1_1model_1_1GridAgentBuilder.html#aa7c5ca0f7f0798392ce4932b087126a6">fpmas::model::GridAgentBuilder::initSample</a></div><div class="ttdeci">void initSample(std::size_t n, std::function&lt; void(api::model::GridAgent&lt; CellType &gt; *)&gt; init_function) const</div><div class="ttdef"><b>Definition:</b> grid.h:466</div></div>
+<div class="ttc" id="aclassfpmas_1_1model_1_1UniformGridAgentMapping_html"><div class="ttname"><a href="classfpmas_1_1model_1_1UniformGridAgentMapping.html">fpmas::model::UniformGridAgentMapping</a></div><div class="ttdef"><b>Definition:</b> grid_agent_mapping.h:84</div></div>
 </div><!-- fragment --></dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -355,7 +359,6 @@ template&lt;typename T &gt; </div>
 <div class="line">        ((UserAgent*) agent)-&gt;setData(item);</div>
 <div class="line">    }</div>
 <div class="line">);</div>
-<div class="ttc" id="aclassfpmas_1_1model_1_1UniformGridAgentMapping_html"><div class="ttname"><a href="classfpmas_1_1model_1_1UniformGridAgentMapping.html">fpmas::model::UniformGridAgentMapping</a></div><div class="ttdef"><b>Definition:</b> grid_agent_mapping.h:84</div></div>
 </div><!-- fragment --></dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">

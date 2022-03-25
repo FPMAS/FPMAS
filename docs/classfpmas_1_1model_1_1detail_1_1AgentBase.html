@@ -268,7 +268,7 @@ class fpmas::model::detail::AgentBase&lt; AgentInterface, AgentType, TypeIdBase 
 <div class="line">                    | UserAgent |</div>
 <div class="line">                    +-----------+</div>
 <div class="ttc" id="aclassfpmas_1_1model_1_1GridAgent_html"><div class="ttname"><a href="classfpmas_1_1model_1_1GridAgent.html">fpmas::model::GridAgent</a></div><div class="ttdef"><b>Definition:</b> grid.h:121</div></div>
-<div class="ttc" id="aclassfpmas_1_1model_1_1SpatialAgentBase_html"><div class="ttname"><a href="classfpmas_1_1model_1_1SpatialAgentBase.html">fpmas::model::SpatialAgentBase</a></div><div class="ttdef"><b>Definition:</b> spatial_model.h:682</div></div>
+<div class="ttc" id="aclassfpmas_1_1model_1_1SpatialAgentBase_html"><div class="ttname"><a href="classfpmas_1_1model_1_1SpatialAgentBase.html">fpmas::model::SpatialAgentBase</a></div><div class="ttdef"><b>Definition:</b> spatial_model.h:750</div></div>
 </div><!-- fragment --></li>
 </ul>
 <p >In previous FPMAS versions, various Agent implementations was based on diamond inheritance and virtual base classes. However, such design revealed extremely costly in terms of <code>dynamic_cast</code> (downcasts using <code>static_cast</code> is not allowed with virtual bases). The new templated <code>AgentInterface</code> design produces vertical hierarchies that are much more efficient in case of <code>dynamic_cast</code>, and allow <code>static_cast</code>.</p>
@@ -353,10 +353,10 @@ template&lt;typename AgentInterface , typename AgentType , typename TypeIdBase  
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Auto generated copy assignment operator.</p>
-<p >If <code>AgentType</code> does not define any custom copy assignment operator, the <code>AgentType</code> copy assignment operator copies assign all <code>AgentType</code> members and all base classes (including this <code><a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html">AgentBase</a></code>) members.</p>
-<p >If a custom <code>AgentType</code> copy assignment operator is defined, this <code><a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html">AgentBase</a></code> copy assignment operator must be called explictly to ensure required members are properly copied.</p>
-<dl class="section see"><dt>See also</dt><dd><a href="https://en.cppreference.com/w/cpp/language/copy_assignment">https://en.cppreference.com/w/cpp/language/copy_assignment</a> </dd></dl>
+<p >Auto generated copy constructor.</p>
+<p >If <code>AgentType</code> does not define any custom copy constructor , the <code>AgentType</code> copy constructor copies all <code>AgentType</code> members and all base classes (including this <code><a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html">AgentBase</a></code>) members using their copy constructors.</p>
+<p >If a custom <code>AgentType</code> copy constructor is defined, this <code><a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html">AgentBase</a></code> copy constructor must be called explictly to ensure required members are properly copied.</p>
+<dl class="section see"><dt>See also</dt><dd><a href="https://en.cppreference.com/w/cpp/language/copy_constructor">https://en.cppreference.com/w/cpp/language/copy_constructor</a> </dd></dl>
 
 </div>
 </div>
@@ -385,9 +385,9 @@ template&lt;typename AgentInterface , typename AgentType , typename TypeIdBase  
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Autor generated move constructor.</p>
+<p >Auto generated move constructor.</p>
 <p >If <code>AgentType</code> does not define any custom move constructor , the <code>AgentType</code> move constructor moves all <code>AgentType</code> members and all base classes (including this <code><a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html">AgentBase</a></code>) members using their move constructors.</p>
-<p >If a custom <code>AgentType</code> move constructor is defined, this <code><a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html">AgentBase</a></code> copy constructor must be called explictly to ensure required members are properly copied.</p>
+<p >If a custom <code>AgentType</code> move constructor is defined, this <code><a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html">AgentBase</a></code> move constructor must be called explictly to ensure required members are properly moved.</p>
 <dl class="section see"><dt>See also</dt><dd><a href="https://en.cppreference.com/w/cpp/language/move_constructor">https://en.cppreference.com/w/cpp/language/move_constructor</a> </dd></dl>
 
 </div>
@@ -418,10 +418,10 @@ template&lt;typename AgentInterface , typename AgentType , typename TypeIdBase  
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Auto generated copy constructor.</p>
-<p >If <code>AgentType</code> does not define any custom copy constructor , the <code>AgentType</code> copy constructor copies all <code>AgentType</code> members and all base classes (including this <code><a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html">AgentBase</a></code>) members using their copy constructors.</p>
-<p >If a custom <code>AgentType</code> copy constructor is defined, this <code><a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html">AgentBase</a></code> copy constructor must be called explictly to ensure required members are properly copied.</p>
-<dl class="section see"><dt>See also</dt><dd><a href="https://en.cppreference.com/w/cpp/language/copy_constructor">https://en.cppreference.com/w/cpp/language/copy_constructor</a> </dd></dl>
+<p >Auto generated copy assignment operator.</p>
+<p >If <code>AgentType</code> does not define any custom copy assignment operator, the <code>AgentType</code> copy assignment operator copies assign all <code>AgentType</code> members and all base classes (including this <code><a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html">AgentBase</a></code>) members.</p>
+<p >If a custom <code>AgentType</code> copy assignment operator is defined, this <code><a class="el" href="classfpmas_1_1model_1_1detail_1_1AgentBase.html">AgentBase</a></code> copy assignment operator must be called explictly to ensure required members are properly copied.</p>
+<dl class="section see"><dt>See also</dt><dd><a href="https://en.cppreference.com/w/cpp/language/copy_assignment">https://en.cppreference.com/w/cpp/language/copy_assignment</a> </dd></dl>
 
 </div>
 </div>

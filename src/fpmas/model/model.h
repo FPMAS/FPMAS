@@ -728,22 +728,6 @@ namespace fpmas { namespace model {
 			AgentBase() = default;
 
 			/**
-			 * Auto generated copy assignment operator.
-			 *
-			 * If `AgentType` does not define any custom copy assignment
-			 * operator, the `AgentType` copy assignment operator copies assign
-			 * all `AgentType` members and all base classes (including this
-			 * `AgentBase`) members.
-			 *
-			 * If a custom `AgentType` copy assignment operator is defined,
-			 * this `AgentBase` copy assignment operator must be called
-			 * explictly to ensure required members are properly copied.
-			 *
-			 * @see https://en.cppreference.com/w/cpp/language/copy_assignment
-			 */
-			AgentBase(const AgentBase& agent) = default;
-
-			/**
 			 * Auto generated copy constructor.
 			 *
 			 * If `AgentType` does not define any custom copy constructor , the
@@ -757,13 +741,29 @@ namespace fpmas { namespace model {
 			 *
 			 * @see https://en.cppreference.com/w/cpp/language/copy_constructor
 			 */
+			AgentBase(const AgentBase& agent) = default;
+			
+			/**
+			 * Auto generated copy assignment operator.
+			 *
+			 * If `AgentType` does not define any custom copy assignment
+			 * operator, the `AgentType` copy assignment operator copies assign
+			 * all `AgentType` members and all base classes (including this
+			 * `AgentBase`) members.
+			 *
+			 * If a custom `AgentType` copy assignment operator is defined,
+			 * this `AgentBase` copy assignment operator must be called
+			 * explictly to ensure required members are properly copied.
+			 *
+			 * @see https://en.cppreference.com/w/cpp/language/copy_assignment
+			 */
 			AgentBase& operator=(const AgentBase& agent) = default;
 
 			// Move constructor and assignment preserve groupIds(), groups(),
 			// group_pos, tasks(), node() and model()
 
 			/**
-			 * Autor generated move constructor.
+			 * Auto generated move constructor.
 			 *
 			 * If `AgentType` does not define any custom move constructor , the
 			 * `AgentType` move constructor moves all `AgentType` members and
@@ -771,8 +771,8 @@ namespace fpmas { namespace model {
 			 * their move constructors.
 			 *
 			 * If a custom `AgentType` move constructor is defined, this
-			 * `AgentBase` copy constructor must be called explictly to ensure
-			 * required members are properly copied.
+			 * `AgentBase` move constructor must be called explictly to ensure
+			 * required members are properly moved.
 			 *
 			 * @see https://en.cppreference.com/w/cpp/language/move_constructor
 			 */

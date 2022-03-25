@@ -266,6 +266,74 @@ namespace fpmas { namespace model {
 
 		public:
 			/**
+			 * Auto generated default constructor.
+			 */
+			CellBase() = default;
+
+			/**
+			 * Auto generated copy constructor.
+			 *
+			 * If `CellType` does not define any custom copy constructor , the
+			 * `CellType` copy constructor copies all `CellType` members and
+			 * all base classes (including this `CellBase`) members using their
+			 * copy constructors.
+			 *
+			 * If a custom `CellType` copy constructor is defined, this
+			 * `CellBase` copy constructor must be called explictly to ensure
+			 * required members are properly copied.
+			 *
+			 * @see https://en.cppreference.com/w/cpp/language/copy_constructor
+			 */
+			CellBase(const CellBase&) = default;
+			
+			/**
+			 * Auto generated copy assignment operator.
+			 *
+			 * If `CellType` does not define any custom copy assignment
+			 * operator, the `CellType` copy assignment operator copies assign
+			 * all `CellType` members and all base classes (including this
+			 * `CellBase`) members.
+			 *
+			 * If a custom `CellType` copy assignment operator is defined, this
+			 * `CellBase` copy assignment operator must be called explictly to
+			 * ensure required members are properly copied.
+			 *
+			 * @see https://en.cppreference.com/w/cpp/language/copy_assignment
+			 */
+			CellBase& operator=(const CellBase&) = default;
+
+			/**
+			 * Auto generated move constructor.
+			 *
+			 * If `CellType` does not define any custom move constructor , the
+			 * `AgentType` move constructor moves all internal `CellType`
+			 * members and all base classes (including this `CellBase`) members
+			 * using their move constructors.
+			 *
+			 * If a custom `CellType` move constructor is defined, this
+			 * `CellBase` move constructor must be called explictly to ensure
+			 * required members are properly moved.
+			 *
+			 * @see https://en.cppreference.com/w/cpp/language/move_constructor
+			 */
+			CellBase(CellBase&&) = default;
+
+			/**
+			 * Move assignment operator.
+			 *
+			 * Internal bufferes are preserved, i.e. they are **not** moved
+			 * from `other` to `this`.
+			 *
+			 * Since the current implementation does not do anything, there is
+			 * no requirement to explicitly call this move constructor if a
+			 * custom `CellBase` move constructor is defined.
+			 */
+			CellBase<CellInterface, CellType, TypeIdBase>& operator=(
+					CellBase<CellInterface, CellType, TypeIdBase>&&) {
+				return *this;
+			}
+
+			/**
 			 * \copydoc fpmas::api::model::Cell::successors()
 			 *
 			 * Implements fpmas::api::model::Cell
