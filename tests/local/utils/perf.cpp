@@ -25,6 +25,15 @@ TEST(Duration, json) {
 	ASSERT_EQ(duration, unserial);
 }
 
+TEST(Duration, datapack) {
+	std::chrono::milliseconds duration(12);
+
+	fpmas::io::datapack::ObjectPack pack = duration;
+	std::chrono::milliseconds unserial = pack.get<std::chrono::milliseconds>();
+
+	ASSERT_EQ(duration, unserial);
+}
+
 TEST(Probe, constructor) {
 	Probe probe("hello");
 	ASSERT_EQ(probe.label(), "hello");

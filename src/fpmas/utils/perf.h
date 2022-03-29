@@ -171,6 +171,32 @@ namespace nlohmann {
 		};
 }
 
+namespace fpmas { namespace io { namespace datapack {
+
+	template<typename Rep, typename Ratio>
+		struct Serializer<std::chrono::duration<Rep, Ratio>> {
+			template<typename Pack>
+				static std::size_t size(
+						const Pack& pack,
+						const std::chrono::duration<Rep, Ratio>& duration) {
+					return pack.template size<Rep>();
+				}
+
+			template<typename Pack>
+				static void to_datapack(
+						Pack& pack,
+						const std::chrono::duration<Rep, Ratio>& duration) {
+					pack.put(duration.count());
+				}
+
+			template<typename Pack>
+				static std::chrono::duration<Rep, Ratio> from_datapack(
+						const Pack& pack) {
+					return std::chrono::duration<Rep, Ratio>(pack.template get<Rep>());
+				}
+		};
+}}}
+
 namespace fpmas { namespace io {
 	/**
 	 * fpmas::io::CsvSerial specialization for std::chrono::duration.
