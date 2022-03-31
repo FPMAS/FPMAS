@@ -178,7 +178,7 @@ namespace fpmas { namespace io { namespace datapack {
 			template<typename Pack>
 				static std::size_t size(
 						const Pack& pack,
-						const std::chrono::duration<Rep, Ratio>& duration) {
+						const std::chrono::duration<Rep, Ratio>&) {
 					return pack.template size<Rep>();
 				}
 

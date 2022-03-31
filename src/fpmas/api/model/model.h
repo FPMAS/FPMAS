@@ -461,6 +461,9 @@ namespace fpmas { namespace api {namespace model {
 			 * DistributedGenerator.
 			 */
 			virtual void seed(std::mt19937_64::result_type seed) = 0;
+
+			virtual ~RandomAgent() {
+			}
 	};
 
 	/**

@@ -470,7 +470,7 @@ namespace fpmas { namespace random {
 	template<typename K>
 		Index<K> Index<K>::begin(const std::map<K, std::size_t>* item_counts) { 
 			Index<K> _begin(item_counts, item_counts->begin());
-			while(_begin.it->second == 0)
+			while(_begin.it != item_counts->end() && _begin.it->second == 0)
 				++_begin.it;
 			return _begin;
 		}

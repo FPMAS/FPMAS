@@ -15,6 +15,73 @@ namespace fpmas { namespace model {
 	using api::model::DiscreteCoordinate;
 
 	/**
+	 * Utility class used to describe the shape of a discrete grid.
+	 *
+	 * A grid is described by its origin point and an extent until which the
+	 * grid extents.
+	 *
+	 * The `origin` is included in the grid, while the `extent` is
+	 * **not**
+	 *
+	 * For example, GridDimensions({0, 0}, {10, 10}) describes a grid
+	 * where the bottom left corner is at (0, 0), and the top right
+	 * corner is at (9, 9).
+	 */
+	class GridDimensions {
+		private:
+			DiscretePoint origin;
+			DiscretePoint extent;
+
+		public:
+			/**
+			 * GridDimensions constructor.
+			 *
+			 * @param origin origin point of the grid
+			 * @param extent point to until which the grid extents
+			 */
+			GridDimensions(DiscretePoint origin, DiscretePoint extent)
+				: origin(origin), extent(extent) {
+				}
+			/**
+			 * Default GridDimensions constructor.
+			 */
+			GridDimensions() {}
+
+			/**
+			 * Origin of the grid.
+			 */
+			DiscretePoint getOrigin() const {return origin;}
+			/**
+			 * Sets the origin of the grid.
+			 */
+			void setOrigin(const DiscretePoint& point) {this->origin = point;}
+
+			/**
+			 * Extent of the grid.
+			 */
+			DiscretePoint getExtent() const {return extent;}
+			/**
+			 * Sets the extent of the grid.
+			 */
+			void setExtent(const DiscretePoint& point) {this->extent = point;}
+
+			/**
+			 * Returns the width of the grid, i.e. the count of cells contained
+			 * in the grid width.
+			 */
+			DiscreteCoordinate width() const {
+				return extent.x - origin.x;
+			}
+			/**
+			 * Returns the height of the grid, i.e. the count of cells contained
+			 * in the grid height.
+			 */
+			DiscreteCoordinate height() const {
+				return extent.y - origin.y;
+			}
+	};
+
+	/**
 	 * When a graph is distributed using a grid-based load-balancing algorithm,
 	 * a portion of the 2D discrete space is associated to each process.
 	 *
@@ -57,6 +124,9 @@ namespace fpmas { namespace model {
 				VERTICAL_FRONTIER,
 				LEAF
 			};
+
+			std::vector<GridDimensions> process_grid_dimensions;
+
 			struct Node {
 				// Coordinates of the bottom left corner of the zone
 				// represented by this node
@@ -139,6 +209,8 @@ namespace fpmas { namespace model {
 			TreeProcessMapping& operator=(const TreeProcessMapping&) = delete;
 
 			int process(DiscretePoint point) const override;
+
+			GridDimensions gridDimensions(int process) const;
 
 			~TreeProcessMapping();
 	};

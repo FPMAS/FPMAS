@@ -21,10 +21,15 @@ namespace fpmas { namespace model {
 		while(leafs.size() != (std::size_t) comm.getSize()) {
 			split_node(leafs);
 		}
+		process_grid_dimensions.resize(comm.getSize());
 		int process = 0;
 		for(auto leaf : leafs) {
 			leaf->node_type = LEAF;
 			leaf->process = process;
+			process_grid_dimensions[process] = {
+				leaf->origin,
+				{leaf->origin.x + leaf->width, leaf->origin.y + leaf->height}
+			};
 			process++;
 		}
 	}
@@ -101,6 +106,10 @@ namespace fpmas { namespace model {
 
 	int TreeProcessMapping::process(DiscretePoint point) const {
 		return process(point, root);
+	}
+
+	GridDimensions TreeProcessMapping::gridDimensions(int process) const {
+		return process_grid_dimensions[process];
 	}
 
 	StripProcessMapping::StripProcessMapping(

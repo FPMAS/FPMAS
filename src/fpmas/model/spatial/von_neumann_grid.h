@@ -51,24 +51,16 @@ namespace fpmas { namespace model {
 
 			void buildLocalGrid(
 					api::model::SpatialModel<CellType>& model,
-					detail::GridDimensions local_dimensions,
+					GridDimensions local_dimensions,
 					typename detail::GridBuilder<CellType>::CellMatrix& cells
 					) const override;
 
-			void linkVerticalFrontiers(
+			void linkFrontiers(
 					api::model::SpatialModel<CellType>& model,
-					detail::GridDimensions local_dimensions,
+					GridDimensions local_dimensions,
 					typename detail::GridBuilder<CellType>::CellMatrix& local_cells,
-					const std::array<std::vector<CellType*>, 2>& frontier
+					std::vector<CellType*>& frontier
 					) const override;
-
-			void linkHorizontalFrontiers(
-					api::model::SpatialModel<CellType>& model,
-					detail::GridDimensions local_dimensions,
-					typename detail::GridBuilder<CellType>::CellMatrix& local_cells,
-					const std::array<std::vector<CellType*>, 2>& frontier
-					) const override;
-
 		public:
 			using detail::GridBuilder<CellType>::GridBuilder;
 	};
@@ -76,7 +68,7 @@ namespace fpmas { namespace model {
 	template<typename CellType>
 	void VonNeumannGridBuilder<CellType>::buildLocalGrid(
 			api::model::SpatialModel<CellType>& model,
-			detail::GridDimensions local_dimensions,
+			GridDimensions local_dimensions,
 			typename detail::GridBuilder<CellType>::CellMatrix& cells
 			) const {
 		DiscreteCoordinate local_width = local_dimensions.width();
@@ -100,58 +92,59 @@ namespace fpmas { namespace model {
 		}
 	}
 	template<typename CellType>
-			void VonNeumannGridBuilder<CellType>::linkVerticalFrontiers(
+			void VonNeumannGridBuilder<CellType>::linkFrontiers(
 					api::model::SpatialModel<CellType>& model,
-					detail::GridDimensions local_dimensions,
+					GridDimensions local_dimensions,
 					typename detail::GridBuilder<CellType>::CellMatrix& local_cells,
-					const std::array<std::vector<CellType*>, 2>& frontier
+					std::vector<CellType*>& frontier
 					) const {
-				for(DiscreteCoordinate y = 0; y < this->height(); y++) {
-					if(frontier[0].size() > 0) {
-						// Left border
-						model.link(
-								local_cells[y][0], frontier[0][y],
-								SpatialModelLayers::CELL_SUCCESSOR
-								);
+				for(auto cell : frontier) {
+					if(cell->location().y == local_dimensions.getExtent().y) {
+						// top
+						if(cell->location().x >= local_dimensions.getOrigin().x
+								&& cell->location().x < local_dimensions.getExtent().x) {
+							model.link(
+									local_cells[local_dimensions.height()-1][cell->location().x - local_dimensions.getOrigin().x],
+									cell,
+									SpatialModelLayers::CELL_SUCCESSOR
+									);
+						}
 					}
-					if(frontier[1].size() > 0) {
-						// Right border
-						model.link(
-								local_cells[y][local_dimensions.width()-1],
-								frontier[1][y],
-								SpatialModelLayers::CELL_SUCCESSOR
-								);
+					else if(cell->location().y == local_dimensions.getOrigin().y-1) {
+						// bottom
+						if(cell->location().x >= local_dimensions.getOrigin().x
+								&& cell->location().x < local_dimensions.getExtent().x) {
+							model.link(
+									local_cells[0][cell->location().x - local_dimensions.getOrigin().x],
+									cell,
+									SpatialModelLayers::CELL_SUCCESSOR
+									);
+						}
 					}
-				}
-			};
-
-	template<typename CellType>
-		void VonNeumannGridBuilder<CellType>::linkHorizontalFrontiers(
-				api::model::SpatialModel<CellType>& model,
-				detail::GridDimensions local_dimensions,
-				typename detail::GridBuilder<CellType>::CellMatrix& local_cells,
-				const std::array<std::vector<CellType*>, 2>& frontier
-				) const {
-			for(DiscreteCoordinate x = 0; x < this->width(); x++) {
-				if(frontier[0].size() > 0) {
-					// Bottom border
-					model.link(
-							local_cells[0][x], frontier[0][x],
-							SpatialModelLayers::CELL_SUCCESSOR
-							);
-				}
-				if(frontier[1].size() > 0) {
-					// Top border
-					model.link(
-							local_cells[local_dimensions.height()-1][x],
-							frontier[1][x],
-							SpatialModelLayers::CELL_SUCCESSOR
-							);
+					else if(cell->location().x == local_dimensions.getOrigin().x-1) {
+						// left
+						if(cell->location().y >= local_dimensions.getOrigin().y
+								&& cell->location().y < local_dimensions.getExtent().y) {
+							model.link(
+									local_cells[cell->location().y - local_dimensions.getOrigin().y][0],
+									cell,
+									SpatialModelLayers::CELL_SUCCESSOR
+									);
+						}
+					}
+					else if(cell->location().x == local_dimensions.getExtent().x) {
+						// right
+						if(cell->location().y >= local_dimensions.getOrigin().y
+								&& cell->location().y < local_dimensions.getExtent().y) {
+							model.link(
+									local_cells[cell->location().y - local_dimensions.getOrigin().y][local_dimensions.width()-1],
+									cell,
+									SpatialModelLayers::CELL_SUCCESSOR
+									);
+						}
+					}
 				}
 			}
-		};
-
-
 
 	/**
 	 * VonNeumann GridConfig specialization, that might be used where a

@@ -150,6 +150,23 @@ TEST_F(VonNeumannGridBuilderTest, trivial) {
 	ASSERT_EQ(null.width(), 0);
 }
 
+TEST_F(VonNeumannGridBuilderTest, regular_grid) {
+	GridModel<fpmas::synchro::GhostMode, fpmas::model::GridCell,
+		StaticEndCondition<VonNeumannRange<VonNeumannGrid<>>, 0, fpmas::model::GridCell>
+			> grid_model;
+
+	int X = fpmas::communication::WORLD.getSize() * 4;
+	int Y = X;
+	VonNeumannGridBuilder<> grid_builder(X, Y);
+
+	ASSERT_EQ(grid_builder.width(), X);
+	ASSERT_EQ(grid_builder.height(), Y);
+
+	auto cells = grid_builder.build(grid_model);
+
+	checkGridStructure(grid_model, cells, X, Y);
+}
+
 TEST_F(VonNeumannGridBuilderTest, ghost_mode_build_height_sup_width) {
 	GridModel<fpmas::synchro::GhostMode, fpmas::model::GridCell,
 		StaticEndCondition<VonNeumannRange<VonNeumannGrid<>>, 0, fpmas::model::GridCell>
@@ -362,6 +379,23 @@ TEST_F(MooreGridBuilderTest, trivial) {
 	ASSERT_EQ(null.width(), 0);
 }
 
+TEST_F(MooreGridBuilderTest, regular_grid) {
+	GridModel<fpmas::synchro::GhostMode, fpmas::model::GridCell,
+		StaticEndCondition<MooreRange<MooreGrid<>>, 0, fpmas::model::GridCell>
+			> grid_model;
+
+	int X = fpmas::communication::WORLD.getSize() * 2;
+	int Y = X;
+	MooreGridBuilder<> grid_builder(X, Y);
+
+	ASSERT_EQ(grid_builder.width(), X);
+	ASSERT_EQ(grid_builder.height(), Y);
+
+	auto cells = grid_builder.build(grid_model);
+
+	checkGridStructure(grid_model, cells, X, Y);
+}
+
 TEST_F(MooreGridBuilderTest, ghost_mode_build_height_sup_width) {
 	GridModel<fpmas::synchro::GhostMode, fpmas::model::GridCell,
 		StaticEndCondition<VonNeumannRange<MooreGrid<>>, 0, fpmas::model::GridCell>
@@ -384,7 +418,7 @@ TEST_F(MooreGridBuilderTest, ghost_mode_build_width_sup_height) {
 		StaticEndCondition<VonNeumannRange<MooreGrid<>>, 0, fpmas::model::GridCell>
 			> grid_model;
 
-	int Y = fpmas::communication::WORLD.getSize() * 10;
+	int Y = fpmas::communication::WORLD.getSize() * 2;
 	int X = 2*Y + 1; // +1 so that there is a "remainder" when columns are assigned to each process
 	MooreGridBuilder<> grid_builder(X, Y);
 

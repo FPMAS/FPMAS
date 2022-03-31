@@ -105,6 +105,17 @@ TEST(Random, distributed_index) {
 	ASSERT_THAT(value_set, SizeIs(total_count));
 }
 
+TEST(Random, null_distributed_index) {
+	using fpmas::random::DistributedIndex;
+
+	std::map<int, std::size_t> null_map;
+	DistributedIndex begin = DistributedIndex::begin(&null_map);
+	DistributedIndex end = DistributedIndex::end(&null_map);
+
+	ASSERT_EQ(begin, end);
+	ASSERT_EQ(DistributedIndex::distance(begin, end), 0);
+}
+
 TEST(Random, distributed_index_random_increment) {
 	std::vector<std::size_t> item_counts_vec {{
 		0, 3, 7, 0, 2, 8, 10

@@ -49,24 +49,16 @@ namespace fpmas { namespace model {
 
 			void buildLocalGrid(
 					api::model::SpatialModel<CellType>& model,
-					detail::GridDimensions local_dimensions,
+					GridDimensions local_dimensions,
 					typename detail::GridBuilder<CellType>::CellMatrix& cells
 					) const override;
 
-			void linkVerticalFrontiers(
+			void linkFrontiers(
 					api::model::SpatialModel<CellType>& model,
-					detail::GridDimensions local_dimensions,
+					GridDimensions local_dimensions,
 					typename detail::GridBuilder<CellType>::CellMatrix& local_cells,
-					const std::array<std::vector<CellType*>, 2>& frontier
+					std::vector<CellType*>& frontier
 					) const override;
-
-			void linkHorizontalFrontiers(
-					api::model::SpatialModel<CellType>& model,
-					detail::GridDimensions local_dimensions,
-					typename detail::GridBuilder<CellType>::CellMatrix& local_cells,
-					const std::array<std::vector<CellType*>, 2>& frontier
-					) const override;
-
 		public:
 			using detail::GridBuilder<CellType>::GridBuilder;
 	};
@@ -74,7 +66,7 @@ namespace fpmas { namespace model {
 	template<typename CellType>
 	void MooreGridBuilder<CellType>::buildLocalGrid(
 			api::model::SpatialModel<CellType>& model,
-			detail::GridDimensions local_dimensions,
+			GridDimensions local_dimensions,
 			typename detail::GridBuilder<CellType>::CellMatrix& cells
 			) const {
 		DiscreteCoordinate local_width = local_dimensions.width();
@@ -128,128 +120,151 @@ namespace fpmas { namespace model {
 			}
 		}
 	}
+	
 	template<typename CellType>
-			void MooreGridBuilder<CellType>::linkVerticalFrontiers(
+			void MooreGridBuilder<CellType>::linkFrontiers(
 					api::model::SpatialModel<CellType>& model,
-					detail::GridDimensions local_dimensions,
+					GridDimensions local_dimensions,
 					typename detail::GridBuilder<CellType>::CellMatrix& local_cells,
-					const std::array<std::vector<CellType*>, 2>& frontier
+					std::vector<CellType*>& frontier
 					) const {
-				// VonNeumann links
-				for(DiscreteCoordinate y = 0; y < this->height(); y++) {
-					if(frontier[0].size() > 0) {
-						model.link(
-								local_cells[y][0], frontier[0][y],
-								SpatialModelLayers::CELL_SUCCESSOR
-								);
-					}
-					if(frontier[1].size() > 0) {
-						model.link(
-								local_cells[y][local_dimensions.width()-1],
-								frontier[1][y],
-								SpatialModelLayers::CELL_SUCCESSOR
-								);
-					}
-				}
-				// North corners
-				for(DiscreteCoordinate y = 0; y < this->height()-1; y++) {
-					if(frontier[0].size() > 0) {
-						// Left frontier
-						model.link(
-								local_cells[y][0], frontier[0][y+1],
-								SpatialModelLayers::CELL_SUCCESSOR
-								);
-					}
-					if(frontier[1].size() > 0) {
-						// Right frontier
-						model.link(
-								local_cells[y][local_dimensions.width()-1],
-								frontier[1][y+1],
-								SpatialModelLayers::CELL_SUCCESSOR
-								);
-					}
-				}
-				// South corners
-				for(DiscreteCoordinate y = 1; y < this->height(); y++) {
-					if(frontier[0].size() > 0) {
-						// Left frontier
-						model.link(
-								local_cells[y][0], frontier[0][y-1],
-								SpatialModelLayers::CELL_SUCCESSOR
-								);
-					}
-					if(frontier[1].size() > 0) {
-						// Right frontier
-						model.link(
-								local_cells[y][local_dimensions.width()-1],
-								frontier[1][y-1],
-								SpatialModelLayers::CELL_SUCCESSOR
-								);
-					}
-				}
-			};
+				for(auto cell : frontier) {
+					if(cell->location().y == local_dimensions.getExtent().y) {
+						// top
 
-	template<typename CellType>
-		void MooreGridBuilder<CellType>::linkHorizontalFrontiers(
-				api::model::SpatialModel<CellType>& model,
-				detail::GridDimensions local_dimensions,
-				typename detail::GridBuilder<CellType>::CellMatrix& local_cells,
-				const std::array<std::vector<CellType*>, 2>& frontier
-				) const {
-			// Von Neumann links
-			for(DiscreteCoordinate x = 0; x < this->width(); x++) {
-				if(frontier[0].size() > 0) {
-					model.link(
-							local_cells[0][x], frontier[0][x],
-							SpatialModelLayers::CELL_SUCCESSOR
-							);
-				}
-				if(frontier[1].size() > 0) {
-					model.link(
-							local_cells[local_dimensions.height()-1][x],
-							frontier[1][x],
-							SpatialModelLayers::CELL_SUCCESSOR
-							);
-				}
-			}
-			// East corners
-			for(DiscreteCoordinate x = 0; x < this->width()-1; x++) {
-				if(frontier[0].size() > 0) {
-					// Bottom frontier
-					model.link(
-							local_cells[0][x], frontier[0][x+1],
-							SpatialModelLayers::CELL_SUCCESSOR
-							);
-				}
-				if(frontier[1].size() > 0) {
-					// Top frontier
-					model.link(
-							local_cells[local_dimensions.height()-1][x],
-							frontier[1][x+1],
-							SpatialModelLayers::CELL_SUCCESSOR
-							);
-				}
-			}
-			// West corners
-			for(DiscreteCoordinate x = 1; x < this->width(); x++) {
-				if(frontier[0].size() > 0) {
-					// Left frontier
-					model.link(
-							local_cells[0][x], frontier[0][x-1],
-							SpatialModelLayers::CELL_SUCCESSOR
-							);
-				}
-				if(frontier[1].size() > 0) {
-					// Right frontier
-					model.link(
-							local_cells[local_dimensions.height()-1][x],
-							frontier[1][x-1],
-							SpatialModelLayers::CELL_SUCCESSOR
-							);
-				}
-			}
-		};
+						// X coordinate of the cell below (index in the local_cells
+						// matrix)
+						DiscreteCoordinate mid_x = cell->location().x - local_dimensions.getOrigin().x;
+						if(mid_x >= 0 && mid_x < local_dimensions.width())
+							// For corners, the mid_x value is not in the local
+							// matrix
+							model.link(
+									local_cells[local_dimensions.height()-1][mid_x],
+									cell,
+									SpatialModelLayers::CELL_SUCCESSOR
+									);
 
+						// X coordinate the cell below left (index in the local_cells
+						// matrix)
+						DiscreteCoordinate left_x = mid_x-1;
+						if(left_x >= 0)
+							model.link(
+									local_cells[local_dimensions.height()-1][left_x],
+									cell,
+									SpatialModelLayers::CELL_SUCCESSOR
+									);
+
+						// X coordinate of the cell below right (index in the
+						// local_cells matrix)
+						DiscreteCoordinate right_x = mid_x+1;
+						if(right_x < local_dimensions.width())
+							model.link(
+									local_cells[local_dimensions.height()-1][right_x],
+									cell,
+									SpatialModelLayers::CELL_SUCCESSOR
+									);
+					}
+					else if(cell->location().y == local_dimensions.getOrigin().y-1) {
+						// bottom
+
+						// X coordinate of the cell above (index in the local_cells
+						// matrix)
+						DiscreteCoordinate mid_x = cell->location().x - local_dimensions.getOrigin().x;
+						if(mid_x >= 0 && mid_x < local_dimensions.width())
+							model.link(
+									local_cells[0][mid_x],
+									cell,
+									SpatialModelLayers::CELL_SUCCESSOR
+									);
+
+						// X coordinate the cell above left (index in the local_cells
+						// matrix)
+						DiscreteCoordinate left_x = mid_x-1;
+						if(left_x >= 0)
+							model.link(
+									local_cells[0][left_x],
+									cell,
+									SpatialModelLayers::CELL_SUCCESSOR
+									);
+
+						// X coordinate of the cell above right (index in the
+						// local_cells matrix)
+						DiscreteCoordinate right_x = mid_x+1;
+						if(right_x < local_dimensions.width())
+							model.link(
+									local_cells[0][right_x],
+									cell,
+									SpatialModelLayers::CELL_SUCCESSOR
+									);
+					}
+					else if(cell->location().x == local_dimensions.getOrigin().x-1) {
+						// left
+
+						// Y coordinate of the cell left (index in the local_cells
+						// matrix)
+						DiscreteCoordinate left_y = cell->location().y - local_dimensions.getOrigin().y;
+						if(left_y >= 0 && left_y < local_dimensions.height())
+							model.link(
+									local_cells[left_y][0],
+									cell,
+									SpatialModelLayers::CELL_SUCCESSOR
+									);
+
+						// Y coordinate the cell below left (index in the local_cells
+						// matrix)
+						DiscreteCoordinate bottom_y = left_y-1;
+						if(bottom_y >= 0)
+							model.link(
+									local_cells[bottom_y][0],
+									cell,
+									SpatialModelLayers::CELL_SUCCESSOR
+									);
+
+						// y coordinate of the cell above left (index in the
+						// local_cells matrix)
+						DiscreteCoordinate top_y = left_y+1;
+						if(top_y < local_dimensions.height())
+							model.link(
+									local_cells[top_y][0],
+									cell,
+									SpatialModelLayers::CELL_SUCCESSOR
+									);
+					}
+					else if(cell->location().x == local_dimensions.getExtent().x) {
+						// right
+
+						// Y coordinate of the cell left (index in the local_cells
+						// matrix)
+						DiscreteCoordinate right_y = cell->location().y - local_dimensions.getOrigin().y;
+						if(right_y >= 0 && right_y < local_dimensions.height())
+							model.link(
+									local_cells[right_y][local_dimensions.width()-1],
+									cell,
+									SpatialModelLayers::CELL_SUCCESSOR
+									);
+
+						// Y coordinate the cell below right (index in the local_cells
+						// matrix)
+						DiscreteCoordinate bottom_y = right_y-1;
+						if(bottom_y >= 0)
+							model.link(
+									local_cells[bottom_y][local_dimensions.width()-1],
+									cell,
+									SpatialModelLayers::CELL_SUCCESSOR
+									);
+
+						// y coordinate of the cell above left (index in the
+						// local_cells matrix)
+						DiscreteCoordinate top_y = right_y+1;
+						if(top_y < local_dimensions.height())
+							model.link(
+									local_cells[top_y][local_dimensions.width()-1],
+									cell,
+									SpatialModelLayers::CELL_SUCCESSOR
+									);
+					}
+				}
+			}
 	/**
 	 * Moore GridConfig specialization, that might be used where a
 	 * `GridConfig` template parameter is required.

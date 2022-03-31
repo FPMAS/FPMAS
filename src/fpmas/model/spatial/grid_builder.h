@@ -7,76 +7,10 @@
 
 #include "grid.h"
 #include <fpmas/random/random.h>
+#include "grid_load_balancing.h"
 
 namespace fpmas { namespace model { namespace detail {
 
-
-	/**
-	 * Utility class used to describe the shape of a discrete grid.
-	 *
-	 * A grid is described by its origin point and an extent until which the
-	 * grid extents.
-	 *
-	 * The `origin` is included in the grid, while the `extent` is
-	 * **not**
-	 *
-	 * For example, GridDimensions({0, 0}, {10, 10}) describes a grid
-	 * where the bottom left corner is at (0, 0), and the top right
-	 * corner is at (9, 9).
-	 */
-	class GridDimensions {
-		private:
-			DiscretePoint origin;
-			DiscretePoint extent;
-
-		public:
-			/**
-			 * GridDimensions constructor.
-			 *
-			 * @param origin origin point of the grid
-			 * @param extent point to until which the grid extents
-			 */
-			GridDimensions(DiscretePoint origin, DiscretePoint extent)
-				: origin(origin), extent(extent) {
-				}
-			/**
-			 * Default GridDimensions constructor.
-			 */
-			GridDimensions() {}
-
-			/**
-			 * Origin of the grid.
-			 */
-			DiscretePoint getOrigin() const {return origin;}
-			/**
-			 * Sets the origin of the grid.
-			 */
-			void setOrigin(const DiscretePoint& point) {this->origin = point;}
-
-			/**
-			 * Extent of the grid.
-			 */
-			DiscretePoint getExtent() const {return extent;}
-			/**
-			 * Sets the extent of the grid.
-			 */
-			void setExtent(const DiscretePoint& point) {this->extent = point;}
-
-			/**
-			 * Returns the width of the grid, i.e. the count of cells contained
-			 * in the grid width.
-			 */
-			DiscreteCoordinate width() const {
-				return extent.x - origin.x;
-			}
-			/**
-			 * Returns the height of the grid, i.e. the count of cells contained
-			 * in the grid height.
-			 */
-			DiscreteCoordinate height() const {
-				return extent.y - origin.y;
-			}
-	};
 
 	/**
 	 * An index representing grid cells.
@@ -153,86 +87,12 @@ namespace fpmas { namespace model { namespace detail {
 						CellMatrix& cells
 						) const = 0;
 
-				/**
-				 * Builds links across processes, when the partitioning of the
-				 * grid is horizontal, i.e. borders are vertical, i.e. along
-				 * the y axis.
-				 *
-				 * The `frontier` parameter already contains temporary nodes
-				 * that are automatically replicated across processes, so that
-				 * they can be linked to `local_cells` in order to build the
-				 * required grid shape.
-				 *
-				 * The `frontier` contains two vectors:
-				 * - frontier[0]: column of cells replicated from the left
-				 *   process, that are expected to be link to `local_cells[y][0]`
-				 *   on this process
-				 * - frontier[1]: column of cells replicated from the right
-				 *   process, that are expected to be link to
-				 *   `local_cells[y][local_dimensions.width()-1]`
-				 *   on this process
-				 *
-				 * For the two processes that represent the border of the
-				 * global grid, either frontier[0] or frontier[1] is empty.
-				 *
-				 * `local_cells` and `local_dimensions` are defined as for
-				 * buildLocalGrid().
-				 *
-				 * @param model model in which cells are built
-				 * @param local_dimensions dimension of the local grid, that is
-				 * only a part of the global grid
-				 * @param local_cells built cells to link, corresponding to
-				 * local_dimensions
-				 * @param frontier temporary DISTANT cells, replicated from
-				 * other processes, that should be linked to local cells
-				 */
-				virtual void linkVerticalFrontiers(
+				virtual void linkFrontiers(
 						api::model::SpatialModel<CellType>& model,
 						GridDimensions local_dimensions,
 						CellMatrix& local_cells,
-						const std::array<std::vector<CellType*>, 2>& frontier
+						std::vector<CellType*>& frontier
 						) const = 0;
-
-				/**
-				 * Builds links across processes, when the partitioning of the
-				 * grid is vertical, i.e. borders are horizontal, i.e. along
-				 * the x axis.
-				 *
-				 * The `frontier` parameter already contains temporary nodes
-				 * that are automatically replicated across processes, so that
-				 * they can be linked to `local_cells` in order to build the
-				 * required grid shape.
-				 *
-				 * The `frontier` contains two vectors:
-				 * - frontier[0]: row of cells replicated from the bottom
-				 *   process, that are expected to be link to `local_cells[0][x]`
-				 *   on this process
-				 * - frontier[1]: row of cells replicated from the top
-				 *   process, that are expected to be link to
-				 *   `local_cells[local_dimensions.height()-1][x]`
-				 *   on this process
-				 *
-				 * For the two processes that represent the border of the
-				 * global grid, either frontier[0] or frontier[1] is empty.
-				 *
-				 * `local_cells` and `local_dimensions` are defined as for
-				 * buildLocalGrid().
-				 *
-				 * @param model model in which cells are built
-				 * @param local_dimensions dimension of the local grid, that is
-				 * only a part of the global grid
-				 * @param local_cells built cells to link, corresponding to
-				 * local_dimensions
-				 * @param frontier temporary DISTANT cells, replicated from
-				 * other processes, that should be linked to local cells
-				 */
-				virtual void linkHorizontalFrontiers(
-						api::model::SpatialModel<CellType>& model,
-						GridDimensions local_dimensions,
-						CellMatrix& local_cells,
-						const std::array<std::vector<CellType*>, 2>& frontier
-						) const = 0;
-
 
 			public:
 				/**
@@ -473,6 +333,7 @@ namespace fpmas { namespace model { namespace detail {
 		std::vector<std::mt19937_64::result_type> local_seeds(
 					GridCellIndex::distance(cell_begin, cell_end)
 					);
+
 		for(std::size_t i = 0; i < local_seeds.size(); i++)
 			// Generates a unique integer for each, independently from the
 			// current distribution
@@ -495,172 +356,326 @@ namespace fpmas { namespace model { namespace detail {
 	std::vector<CellType*> GridBuilder<CellType>::_build(
 			api::model::SpatialModel<CellType>& model,
 			api::model::GroupList groups) const {
-		typedef std::pair<DistributedId, std::vector<api::model::GroupId>>
+		typedef std::pair<std::pair<DistributedId, DiscretePoint>, std::vector<api::model::GroupId>>
 			GridCellPack;
 
 		CellMatrix cells;
-		if(this->_width * this->_height > 0) {
-			auto& mpi_comm = model.graph().getMpiCommunicator();
-			fpmas::communication::TypedMpi<std::vector<GridCellPack>> mpi(mpi_comm);
-			GridDimensions local_dimensions;
+		auto& mpi_comm = model.graph().getMpiCommunicator();
+		fpmas::communication::TypedMpi<std::vector<GridCellPack>> mpi(mpi_comm);
 
-			if(this->_width >= this->_height) {
-				DiscreteCoordinate column_per_proc = this->_width / mpi_comm.getSize();
-				DiscreteCoordinate remainder = this->_width % mpi_comm.getSize();
+		TreeProcessMapping tree_process_mapping(
+				this->width(), this->height(), mpi_comm
+				);
+		// Represents the local grid shape built on this process
+		GridDimensions local_dimensions
+			= tree_process_mapping.gridDimensions(mpi_comm.getRank());
 
-				DiscreteCoordinate local_columns_count = column_per_proc;
-				FPMAS_ON_PROC(mpi_comm, mpi_comm.getSize()-1)
-					local_columns_count+=remainder;
+		// Build cells
+		cells = buildLocalCells(
+				model, local_dimensions, groups
+				);
+		// Build local links
+		buildLocalGrid(model, local_dimensions, cells);
 
-				DiscreteCoordinate begin_width = mpi_comm.getRank() * column_per_proc;
-				DiscreteCoordinate end_width = begin_width + local_columns_count;
+		std::unordered_map<int, std::vector<GridCellPack>> mpi_frontiers;
 
-				local_dimensions = {
-					{begin_width, 0},
-					{end_width, this->_height}
+		/* exchange frontiers */
+		/*
+		 * Exchange process:
+		 * When the TreeProcessMapping is used, the intuitive distribution on 4
+		 * processes looks as follows:
+		 * +------+------+
+		 * |  1   |  2   |
+		 * +------+------+
+		 * |  0   |  3   |
+		 * +------+------+
+		 *
+		 * In this case, the right frontier of 0 is sent to 3, the top frontier
+		 * of 0 is sent to 1, and the top right corner of 0 is sent to 2.
+		 *
+		 * There are however specific cases about corners, see below.
+		 */
+		 
+		DiscreteCoordinate left_x = local_dimensions.getOrigin().x-1;
+		if(left_x >= 0) {
+			// left frontier
+			for(DiscreteCoordinate y = 1; y < local_dimensions.height()-1; y++) {
+				auto cell = cells[y][0];
+				std::set<int> processes = {
+					tree_process_mapping.process({left_x, cell->location().y})
 				};
+				if(cell->location().y+1 < this->height())
+					processes.insert(
+							tree_process_mapping.process({left_x, cell->location().y+1})
+							);
+				if(cell->location().y-1 >= 0)
+					processes.insert(
+							tree_process_mapping.process({left_x, cell->location().y-1})
+							);
 
-				cells = buildLocalCells(
-						model, local_dimensions, groups
-						);
-				buildLocalGrid(model, local_dimensions, cells);
-
-				std::unordered_map<int, std::vector<GridCellPack>> mpi_frontiers;
-				if(mpi_comm.getRank() < mpi_comm.getSize() - 1) {
-					std::vector<GridCellPack> frontier;
-					for(DiscreteCoordinate y = 0; y < this->_height; y++) {
-						auto cell = cells[y][end_width-begin_width-1];
-						frontier.push_back({cell->node()->getId(), cell->groupIds()});
-					}
-					mpi_frontiers[mpi_comm.getRank()+1] = frontier;
+				for(int process : processes) {
+					mpi_frontiers[process].push_back(
+							{{cell->node()->getId(), cell->location()}, cell->groupIds()});
 				}
-				if (mpi_comm.getRank() > 0) {
-					std::vector<GridCellPack> frontier;
-					for(DiscreteCoordinate y = 0; y < this->_height; y++) {
-						auto cell = cells[y][0];
-						frontier.push_back({cell->node()->getId(), cell->groupIds()});
-					}
-					mpi_frontiers[mpi_comm.getRank()-1] = frontier;
-				}
-				mpi_frontiers = mpi.allToAll(mpi_frontiers);
-
-				std::array<std::vector<CellType*>, 2> cell_frontiers;
-				for(auto frontier : mpi_frontiers) {
-					for(DiscreteCoordinate y = 0; y < this->_height; y++) {
-						auto cell_pack = frontier.second[y];
-						DiscretePoint point;
-						if(frontier.first < mpi_comm.getRank()) {
-							point = {begin_width-1, y};
-						} else {
-							point = {end_width, y};
-						}
-						// Builds a temporary cell
-						auto cell = cell_factory.build(point);
-						// Cells group ids must be updated before it is
-						// inserted in the graph
-						for(auto gid : cell_pack.second)
-							cell->addGroupId(gid);
-
-						// Builds a temporary node representing the node on the
-						// frontier (that is located on an other process)
-						api::graph::DistributedNode<AgentPtr>* tmp_node
-							= new graph::DistributedNode<AgentPtr>(cell_pack.first, cell);
-						tmp_node->setLocation(frontier.first);
-
-						// The node might already exist (for example, if a
-						// previous link operation from an other process as
-						// already occured). In this case, tmp_node is deleted
-						// and the existing node is returned, so finally
-						// tmp_node is up to date.
-						tmp_node = model.graph().insertDistant(tmp_node);
-
-						if(frontier.first < mpi_comm.getRank()) {
-							// tmp_node->data() is always up to date, cf above
-							cell_frontiers[0].push_back(
-									dynamic_cast<CellType*>(tmp_node->data().get())
-									);
-						} else {
-							// idem
-							cell_frontiers[1].push_back(
-									dynamic_cast<CellType*>(tmp_node->data().get())
-									);
-						}
-					}
-				}
-				linkVerticalFrontiers(model, local_dimensions, cells, cell_frontiers);
-			} else {
-				DiscreteCoordinate rows_per_proc = this->_height / mpi_comm.getSize();
-				DiscreteCoordinate remainder = this->_height % mpi_comm.getSize();
-
-				DiscreteCoordinate local_rows_count = rows_per_proc;
-				FPMAS_ON_PROC(mpi_comm, mpi_comm.getSize()-1)
-					local_rows_count+=remainder;
-
-				DiscreteCoordinate begin_height = mpi_comm.getRank() * rows_per_proc;
-				DiscreteCoordinate end_height = begin_height + local_rows_count;
-
-				GridDimensions local_dimensions {
-					{0, begin_height},
-					{this->_width, end_height}
-				};
-
-				cells = buildLocalCells(
-						model, local_dimensions, groups
-						);
-				buildLocalGrid(model, local_dimensions, cells);
-
-				std::unordered_map<int, std::vector<GridCellPack>> frontiers;
-				if(mpi_comm.getRank() < mpi_comm.getSize() - 1) {
-					std::vector<GridCellPack> frontier;
-					for(DiscreteCoordinate x = 0; x < this->_width; x++) {
-						auto cell = cells[end_height-begin_height-1][x];
-						frontier.push_back({cell->node()->getId(), cell->groupIds()});
-					}
-					frontiers[mpi_comm.getRank()+1] = frontier;
-				}
-				if (mpi_comm.getRank() > 0) {
-					std::vector<GridCellPack> frontier;
-					for(DiscreteCoordinate x = 0; x < this->_width; x++) {
-						auto cell = cells[0][x];
-						frontier.push_back({cell->node()->getId(), cell->groupIds()});
-					}
-					frontiers[mpi_comm.getRank()-1] = frontier;
-				}
-				frontiers = mpi.allToAll(frontiers);
-
-				std::array<std::vector<CellType*>, 2> cell_frontiers;
-				for(auto frontier : frontiers) {
-					for(DiscreteCoordinate x = 0; x < this->_width; x++) {
-						auto cell_pack = frontier.second[x];
-						DiscretePoint point;
-						if(frontier.first < mpi_comm.getRank()) {
-							point = {x, begin_height-1};
-						} else {
-							point = {x, end_height};
-						}
-						// Same procedure as above
-						auto cell = cell_factory.build(point);
-						for(auto gid : cell_pack.second)
-							cell->addGroupId(gid);
-						api::graph::DistributedNode<AgentPtr>* tmp_node
-							= new graph::DistributedNode<AgentPtr>(cell_pack.first, cell);
-						tmp_node->setLocation(frontier.first);
-						tmp_node = model.graph().insertDistant(tmp_node);
-
-						if(frontier.first < mpi_comm.getRank()) {
-							cell_frontiers[0].push_back(
-									dynamic_cast<CellType*>(tmp_node->data().get())
-									);
-						} else {
-							cell_frontiers[1].push_back(
-									dynamic_cast<CellType*>(tmp_node->data().get())
-									);
-						}
-					}
-				}
-				linkHorizontalFrontiers(model, local_dimensions, cells, cell_frontiers);
 			}
 		}
+		DiscreteCoordinate bottom_y = local_dimensions.getOrigin().y-1;
+		if(bottom_y >= 0) {
+			// bottom frontier
+			for(DiscreteCoordinate x = 1; x < local_dimensions.width()-1; x++) {
+				auto cell = cells[0][x];
+				std::set<int> processes = {
+					tree_process_mapping.process({cell->location().x, bottom_y})
+				};
+				if(cell->location().x+1 < this->width())
+					processes.insert(
+							tree_process_mapping.process({cell->location().x+1, bottom_y})
+					);
+				if(cell->location().x-1 >= 0)
+					processes.insert(
+							tree_process_mapping.process({cell->location().x-1, bottom_y})
+					);
+				for(int process : processes) {
+					mpi_frontiers[process].push_back(
+							{{cell->node()->getId(), cell->location()}, cell->groupIds()});
+				}
+			}
+
+		}
+		DiscreteCoordinate right_x = local_dimensions.getExtent().x;
+		if(right_x < this->width()) {
+			// right frontier
+			for(DiscreteCoordinate y = 1; y < local_dimensions.height()-1; y++) {
+				auto cell = cells[y][local_dimensions.width()-1];
+				std::set<int> processes = {
+					tree_process_mapping.process({right_x, cell->location().y})
+				};
+				if(cell->location().y+1 < this->height())
+					processes.insert(
+							tree_process_mapping.process({right_x, cell->location().y+1})
+					);
+				// if y == 0, this corner is checked at bottom frontier
+				if(cell->location().y-1 >= 0)
+					processes.insert(
+							tree_process_mapping.process({right_x, cell->location().y-1})
+					);
+				for(int process : processes) {
+					mpi_frontiers[process].push_back(
+							{{cell->node()->getId(), cell->location()}, cell->groupIds()});
+				}
+			}
+		}
+		
+		DiscreteCoordinate top_y = local_dimensions.getExtent().y;
+		if(top_y < this->height()) {
+			// top frontier
+			for(DiscreteCoordinate x = 1; x < local_dimensions.width()-1; x++) {
+				auto cell = cells[local_dimensions.height()-1][x];
+				std::set<int> processes = {
+					tree_process_mapping.process({cell->location().x, top_y})
+				};
+				
+				// if x == local_dimensions.width()-1, this corner is checked
+				// by the right frontier
+				if(cell->location().x+1 < this->width())
+					processes.insert(
+							tree_process_mapping.process({cell->location().x+1, top_y})
+							);
+				if(cell->location().x-1 >= 0)
+					processes.insert(
+							tree_process_mapping.process({cell->location().x-1, top_y})
+							);
+
+				for(int process : processes) {
+					mpi_frontiers[process].push_back(
+							{{cell->node()->getId(), cell->location()}, cell->groupIds()});
+				}
+			}
+		}
+
+		/* corners */
+
+		/*
+		 * Note about corners:
+		 *
+		 * When the TreeProcessMapping is used, the distributed grid might have
+		 * the following shape on 4 processes (where 3's width is greater than
+		 * 2's width):
+		 * +------+---+----+
+		 * |  1   |   |    |
+		 * +------| 2 |  3 |
+		 * |  0   |   |    |
+		 * +------+---+----+
+		 *
+		 * In that case, for example, the top right corner of the process 0
+		 * should **not** be sent again to 2, since it has already been sent as
+		 * the right frontier of process 0.
+		 *
+		 * The following cases prevent all those issues.
+		 */
+		if(local_dimensions.height() > 0 && local_dimensions.width() > 0) {
+			// Bottom left corner
+			{
+				auto cell = cells[0][0];
+				std::set<int> processes;
+				auto x = cell->location().x;
+				auto y = cell->location().y;
+				if(y-1 > 0) {
+					processes.insert(
+							tree_process_mapping.process({x, y-1})
+							);
+					if(x-1 > 0)
+						processes.insert(
+								tree_process_mapping.process({x-1, y-1})
+								);
+					if(x+1 < this->width()-1)
+						processes.insert(
+								tree_process_mapping.process({x+1, y-1})
+								);
+				}
+				if(x-1 > 0) {
+					processes.insert(
+							tree_process_mapping.process({x-1, y})
+							);
+					if(y+1 < this->height()-1)
+						processes.insert(
+								tree_process_mapping.process({x-1, y+1})
+								);
+				}
+				for(int process : processes) {
+					mpi_frontiers[process].push_back(
+							{{cell->node()->getId(), cell->location()}, cell->groupIds()});
+				}
+			}
+
+			{
+				// Bottom right corner
+				auto cell = cells[0][local_dimensions.width()-1];
+				std::set<int> processes;
+				auto x = cell->location().x;
+				auto y = cell->location().y;
+				if(y-1 > 0) {
+					processes.insert(
+							tree_process_mapping.process({x, y-1})
+							);
+					if(x-1 > 0)
+						processes.insert(
+								tree_process_mapping.process({x-1, y-1})
+								);
+					if(x+1 < this->width())
+						processes.insert(
+								tree_process_mapping.process({x+1, y-1})
+								);
+				}
+				if(x+1 < this->width()) {
+					processes.insert(
+							tree_process_mapping.process({x+1, y})
+							);
+					if(y+1 < this->height()-1)
+						processes.insert(
+								tree_process_mapping.process({x+1, y+1})
+								);
+				}
+				for(int process : processes) {
+					mpi_frontiers[process].push_back(
+							{{cell->node()->getId(), cell->location()}, cell->groupIds()});
+				}
+			}
+
+			// Top left corner
+			{
+				auto cell = cells[local_dimensions.height()-1][0];
+				std::set<int> processes;
+				auto x = cell->location().x;
+				auto y = cell->location().y;
+				if(y+1 < this->height()) {
+					processes.insert(
+							tree_process_mapping.process({x, y+1})
+							);
+					if(x-1 > 0)
+						processes.insert(
+								tree_process_mapping.process({x-1, y+1})
+								);
+					if(x+1 < this->width()-1)
+						processes.insert(
+								tree_process_mapping.process({x+1, y+1})
+								);
+				}
+				if(x-1 > 0) {
+					processes.insert(
+							tree_process_mapping.process({x-1, y})
+							);
+					if(y-1 > 0)
+						processes.insert(
+								tree_process_mapping.process({x-1, y+1})
+								);
+				}
+				for(int process : processes) {
+					mpi_frontiers[process].push_back(
+							{{cell->node()->getId(), cell->location()}, cell->groupIds()});
+				}
+			}
+
+			// Top right corner
+			{
+				auto cell = cells[local_dimensions.height()-1][local_dimensions.width()-1];
+				std::set<int> processes;
+				auto x = cell->location().x;
+				auto y = cell->location().y;
+				if(y+1 < this->height()) {
+					processes.insert(
+							tree_process_mapping.process({x, y+1})
+							);
+					if(x-1 > 0)
+						processes.insert(
+								tree_process_mapping.process({x-1, y+1})
+								);
+					if(x+1 < this->width())
+						processes.insert(
+								tree_process_mapping.process({x+1, y+1})
+								);
+				}
+				if(x+1 < this->width()) {
+					processes.insert(
+							tree_process_mapping.process({x+1, y})
+							);
+					if(y-1 > 0)
+						processes.insert(
+								tree_process_mapping.process({x+1, y-1})
+								);
+				}
+				for(int process : processes) {
+					mpi_frontiers[process].push_back(
+							{{cell->node()->getId(), cell->location()}, cell->groupIds()});
+				}
+			}
+		}
+
+		
+
+		mpi_frontiers = mpi.allToAll(mpi_frontiers);
+
+		std::vector<CellType*> cell_frontiers;
+		for(auto frontier : mpi_frontiers) {
+			for(auto cell_pack : frontier.second) {
+				// Builds a temporary cell
+				auto cell = cell_factory.build(cell_pack.first.second);
+				// Cells group ids must be updated before it is
+				// inserted in the graph
+				for(auto gid : cell_pack.second)
+					cell->addGroupId(gid);
+
+				// Builds a temporary node representing the node on the
+				// frontier (that is located on an other process)
+				api::graph::DistributedNode<AgentPtr>* tmp_node
+					= new graph::DistributedNode<AgentPtr>(cell_pack.first.first, cell);
+				tmp_node->setLocation(frontier.first);
+				model.graph().insertDistant(tmp_node);
+				cell_frontiers.push_back(cell);
+			}
+		}
+		linkFrontiers(model, local_dimensions, cells, cell_frontiers);
+
 		model.graph().synchronize();
 		std::vector<CellType*> built_cells;
 		for(auto row : cells)
