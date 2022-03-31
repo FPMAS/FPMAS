@@ -49,15 +49,98 @@ class GridBuilderTestBase : public Test {
 
 		}
 
-};
+		/* Trivial cases used both for Moore and VonNeumann grids */
 
-class VonNeumannGridBuilderTest : public GridBuilderTestBase {
-	protected:
+		void checkVerticalLine(
+				fpmas::api::model::SpatialModel<fpmas::model::GridCell>& grid_model,
+				std::vector<fpmas::model::GridCell*> cells, int Y) {
+
+			for(auto grid_cell : cells) {
+				fpmas::model::ReadGuard read(grid_cell);
+				auto location = grid_cell->location();
+				auto cell_successors = grid_cell->successors();
+				std::vector<fpmas::model::DiscretePoint> neighbor_points;
+				for(auto cell : cell_successors) {
+					fpmas::model::ReadGuard read(cell);
+					neighbor_points.push_back(
+							dynamic_cast<fpmas::api::model::GridCell*>(cell)->location());
+				}
+				if(location.y == 0) {
+					ASSERT_THAT(neighbor_points, ElementsAre(
+								fpmas::model::DiscretePoint(0, location.y + 1)
+								));
+				} else if (location.y == Y-1) {
+					ASSERT_THAT(neighbor_points, ElementsAre(
+								fpmas::model::DiscretePoint(0, location.y - 1)
+								));
+				} else {
+					ASSERT_THAT(neighbor_points, UnorderedElementsAre(
+								fpmas::model::DiscretePoint(0, location.y - 1),
+								fpmas::model::DiscretePoint(0, location.y + 1)
+								));
+				}
+			}
+		}
+
+		void checkHorizontalLine(
+				fpmas::api::model::SpatialModel<fpmas::model::GridCell>& grid_model,
+				std::vector<fpmas::model::GridCell*> cells, int X) {
+
+			for(auto grid_cell : cells) {
+				fpmas::model::ReadGuard read(grid_cell);
+				auto location = grid_cell->location();
+				auto cell_successors = grid_cell->successors();
+				std::vector<fpmas::model::DiscretePoint> neighbor_points;
+				for(auto cell : cell_successors) {
+					fpmas::model::ReadGuard read(cell);
+					neighbor_points.push_back(
+							dynamic_cast<fpmas::api::model::GridCell*>(cell)->location());
+				}
+				if(location.x == 0) {
+					ASSERT_THAT(neighbor_points, ElementsAre(
+								fpmas::model::DiscretePoint(location.x + 1, 0)
+								));
+				} else if (location.x == X-1) {
+					ASSERT_THAT(neighbor_points, ElementsAre(
+								fpmas::model::DiscretePoint(location.x - 1, 0)
+								));
+				} else {
+					ASSERT_THAT(neighbor_points, UnorderedElementsAre(
+								fpmas::model::DiscretePoint(location.x - 1, 0),
+								fpmas::model::DiscretePoint(location.x + 1, 0)
+								));
+				}
+			}
+		}
+
+		/* Grid structure in a normal case */
+		virtual void checkGrid(
+				fpmas::api::model::SpatialModel<fpmas::model::GridCell>& grid_model,
+				std::vector<fpmas::model::GridCell*> cells, int X, int Y) = 0;
+
 		void checkGridStructure(
 				fpmas::api::model::SpatialModel<fpmas::model::GridCell>& grid_model,
 				std::vector<fpmas::model::GridCell*> cells, int X, int Y) {
 			checkGridCells(grid_model, X, Y);
+			if(X > 1 && Y > 1)
+				checkGrid(grid_model, cells, X, Y);
+			else if(X == 1)
+				checkVerticalLine(grid_model, cells, Y);
+			else if(Y == 1)
+				checkHorizontalLine(grid_model, cells, X);
 
+		
+			grid_model.graph().synchronize();
+		}
+
+
+};
+
+class VonNeumannGridBuilderTest : public GridBuilderTestBase {
+	protected:
+		void checkGrid(
+				fpmas::api::model::SpatialModel<fpmas::model::GridCell>& grid_model,
+				std::vector<fpmas::model::GridCell*> cells, int X, int Y) override {
 			for(auto grid_cell : cells) {
 				fpmas::model::ReadGuard read(grid_cell);
 				auto location = grid_cell->location();
@@ -132,8 +215,6 @@ class VonNeumannGridBuilderTest : public GridBuilderTestBase {
 					}
 				}
 			}
-
-			grid_model.graph().synchronize();
 		}
 };
 
@@ -157,6 +238,74 @@ TEST_F(VonNeumannGridBuilderTest, regular_grid) {
 
 	int X = fpmas::communication::WORLD.getSize() * 4;
 	int Y = X;
+	VonNeumannGridBuilder<> grid_builder(X, Y);
+
+	ASSERT_EQ(grid_builder.width(), X);
+	ASSERT_EQ(grid_builder.height(), Y);
+
+	auto cells = grid_builder.build(grid_model);
+
+	checkGridStructure(grid_model, cells, X, Y);
+}
+
+TEST_F(VonNeumannGridBuilderTest, two_by_two_grid) {
+	GridModel<fpmas::synchro::GhostMode, fpmas::model::GridCell,
+		StaticEndCondition<VonNeumannRange<VonNeumannGrid<>>, 0, fpmas::model::GridCell>
+			> grid_model;
+
+	int X = 2;
+	int Y = X;
+	VonNeumannGridBuilder<> grid_builder(X, Y);
+
+	ASSERT_EQ(grid_builder.width(), X);
+	ASSERT_EQ(grid_builder.height(), Y);
+
+	auto cells = grid_builder.build(grid_model);
+
+	checkGridStructure(grid_model, cells, X, Y);
+}
+
+TEST_F(VonNeumannGridBuilderTest, four_by_four_grid) {
+	GridModel<fpmas::synchro::GhostMode, fpmas::model::GridCell,
+		StaticEndCondition<VonNeumannRange<VonNeumannGrid<>>, 0, fpmas::model::GridCell>
+			> grid_model;
+
+	int X = 4;
+	int Y = X;
+	VonNeumannGridBuilder<> grid_builder(X, Y);
+
+	ASSERT_EQ(grid_builder.width(), X);
+	ASSERT_EQ(grid_builder.height(), Y);
+
+	auto cells = grid_builder.build(grid_model);
+
+	checkGridStructure(grid_model, cells, X, Y);
+}
+
+TEST_F(VonNeumannGridBuilderTest, horizontal_line_grid) {
+	GridModel<fpmas::synchro::GhostMode, fpmas::model::GridCell,
+		StaticEndCondition<VonNeumannRange<VonNeumannGrid<>>, 0, fpmas::model::GridCell>
+			> grid_model;
+
+	int X = grid_model.getMpiCommunicator().getSize() * 4;
+	int Y = 1;
+	VonNeumannGridBuilder<> grid_builder(X, Y);
+
+	ASSERT_EQ(grid_builder.width(), X);
+	ASSERT_EQ(grid_builder.height(), Y);
+
+	auto cells = grid_builder.build(grid_model);
+
+	checkGridStructure(grid_model, cells, X, Y);
+}
+
+TEST_F(VonNeumannGridBuilderTest, vertical_line_grid) {
+	GridModel<fpmas::synchro::GhostMode, fpmas::model::GridCell,
+		StaticEndCondition<VonNeumannRange<VonNeumannGrid<>>, 0, fpmas::model::GridCell>
+			> grid_model;
+
+	int X = 1;
+	int Y = grid_model.getMpiCommunicator().getSize() * 4;
 	VonNeumannGridBuilder<> grid_builder(X, Y);
 
 	ASSERT_EQ(grid_builder.width(), X);
@@ -255,12 +404,10 @@ TEST_F(VonNeumannGridBuilderTest, build_with_groups) {
 }
 
 class MooreGridBuilderTest : public GridBuilderTestBase {
-	protected:
-		void checkGridStructure(
+	private:
+		void checkGrid(
 				fpmas::api::model::SpatialModel<fpmas::model::GridCell>& grid_model,
-				std::vector<fpmas::model::GridCell*> cells, int X, int Y) {
-			checkGridCells(grid_model, X, Y);
-
+				std::vector<fpmas::model::GridCell*> cells, int X, int Y) override {
 			for(auto grid_cell : cells) {
 				fpmas::model::ReadGuard read(grid_cell);
 				auto location = grid_cell->location();
@@ -361,9 +508,8 @@ class MooreGridBuilderTest : public GridBuilderTestBase {
 					}
 				}
 			}
-
-			grid_model.graph().synchronize();
 		}
+
 };
 
 TEST_F(MooreGridBuilderTest, trivial) {
@@ -386,6 +532,74 @@ TEST_F(MooreGridBuilderTest, regular_grid) {
 
 	int X = fpmas::communication::WORLD.getSize() * 2;
 	int Y = X;
+	MooreGridBuilder<> grid_builder(X, Y);
+
+	ASSERT_EQ(grid_builder.width(), X);
+	ASSERT_EQ(grid_builder.height(), Y);
+
+	auto cells = grid_builder.build(grid_model);
+
+	checkGridStructure(grid_model, cells, X, Y);
+}
+
+TEST_F(MooreGridBuilderTest, two_by_two_grid) {
+	GridModel<fpmas::synchro::GhostMode, fpmas::model::GridCell,
+		StaticEndCondition<MooreRange<MooreGrid<>>, 0, fpmas::model::GridCell>
+			> grid_model;
+
+	int X = 2;
+	int Y = X;
+	MooreGridBuilder<> grid_builder(X, Y);
+
+	ASSERT_EQ(grid_builder.width(), X);
+	ASSERT_EQ(grid_builder.height(), Y);
+
+	auto cells = grid_builder.build(grid_model);
+
+	checkGridStructure(grid_model, cells, X, Y);
+}
+
+TEST_F(MooreGridBuilderTest, four_by_four_grid) {
+	GridModel<fpmas::synchro::GhostMode, fpmas::model::GridCell,
+		StaticEndCondition<MooreRange<MooreGrid<>>, 0, fpmas::model::GridCell>
+			> grid_model;
+
+	int X = 4;
+	int Y = X;
+	MooreGridBuilder<> grid_builder(X, Y);
+
+	ASSERT_EQ(grid_builder.width(), X);
+	ASSERT_EQ(grid_builder.height(), Y);
+
+	auto cells = grid_builder.build(grid_model);
+
+	checkGridStructure(grid_model, cells, X, Y);
+}
+
+TEST_F(MooreGridBuilderTest, horizontal_line_grid) {
+	GridModel<fpmas::synchro::GhostMode, fpmas::model::GridCell,
+		StaticEndCondition<MooreRange<MooreGrid<>>, 0, fpmas::model::GridCell>
+			> grid_model;
+
+	int X = grid_model.getMpiCommunicator().getSize() * 4;
+	int Y = 1;
+	MooreGridBuilder<> grid_builder(X, Y);
+
+	ASSERT_EQ(grid_builder.width(), X);
+	ASSERT_EQ(grid_builder.height(), Y);
+
+	auto cells = grid_builder.build(grid_model);
+
+	checkGridStructure(grid_model, cells, X, Y);
+}
+
+TEST_F(MooreGridBuilderTest, vertical_line_grid) {
+	GridModel<fpmas::synchro::GhostMode, fpmas::model::GridCell,
+		StaticEndCondition<MooreRange<MooreGrid<>>, 0, fpmas::model::GridCell>
+			> grid_model;
+
+	int X = 1;
+	int Y = grid_model.getMpiCommunicator().getSize() * 4;
 	MooreGridBuilder<> grid_builder(X, Y);
 
 	ASSERT_EQ(grid_builder.width(), X);

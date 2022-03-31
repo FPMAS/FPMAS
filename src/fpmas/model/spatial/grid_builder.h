@@ -514,30 +514,31 @@ namespace fpmas { namespace model { namespace detail {
 		 * The following cases prevent all those issues.
 		 */
 		if(local_dimensions.height() > 0 && local_dimensions.width() > 0) {
+			std::set<int> corners_processes;
 			// Bottom left corner
 			{
 				auto cell = cells[0][0];
 				std::set<int> processes;
 				auto x = cell->location().x;
 				auto y = cell->location().y;
-				if(y-1 > 0) {
+				if(y-1 >= 0) {
 					processes.insert(
 							tree_process_mapping.process({x, y-1})
 							);
-					if(x-1 > 0)
+					if(x-1 >= 0)
 						processes.insert(
 								tree_process_mapping.process({x-1, y-1})
 								);
-					if(x+1 < this->width()-1)
+					if(x+1 < this->width())
 						processes.insert(
 								tree_process_mapping.process({x+1, y-1})
 								);
 				}
-				if(x-1 > 0) {
+				if(x-1 >= 0) {
 					processes.insert(
 							tree_process_mapping.process({x-1, y})
 							);
-					if(y+1 < this->height()-1)
+					if(y+1 < this->height())
 						processes.insert(
 								tree_process_mapping.process({x-1, y+1})
 								);
@@ -545,6 +546,7 @@ namespace fpmas { namespace model { namespace detail {
 				for(int process : processes) {
 					mpi_frontiers[process].push_back(
 							{{cell->node()->getId(), cell->location()}, cell->groupIds()});
+					corners_processes.insert(processes.begin(), processes.end());
 				}
 			}
 
@@ -554,11 +556,11 @@ namespace fpmas { namespace model { namespace detail {
 				std::set<int> processes;
 				auto x = cell->location().x;
 				auto y = cell->location().y;
-				if(y-1 > 0) {
+				if(y-1 >= 0) {
 					processes.insert(
 							tree_process_mapping.process({x, y-1})
 							);
-					if(x-1 > 0)
+					if(x-1 >= 0)
 						processes.insert(
 								tree_process_mapping.process({x-1, y-1})
 								);
@@ -571,7 +573,7 @@ namespace fpmas { namespace model { namespace detail {
 					processes.insert(
 							tree_process_mapping.process({x+1, y})
 							);
-					if(y+1 < this->height()-1)
+					if(y+1 < this->height())
 						processes.insert(
 								tree_process_mapping.process({x+1, y+1})
 								);
@@ -579,6 +581,7 @@ namespace fpmas { namespace model { namespace detail {
 				for(int process : processes) {
 					mpi_frontiers[process].push_back(
 							{{cell->node()->getId(), cell->location()}, cell->groupIds()});
+					corners_processes.insert(processes.begin(), processes.end());
 				}
 			}
 
@@ -592,20 +595,20 @@ namespace fpmas { namespace model { namespace detail {
 					processes.insert(
 							tree_process_mapping.process({x, y+1})
 							);
-					if(x-1 > 0)
+					if(x-1 >= 0)
 						processes.insert(
 								tree_process_mapping.process({x-1, y+1})
 								);
-					if(x+1 < this->width()-1)
+					if(x+1 < this->width())
 						processes.insert(
 								tree_process_mapping.process({x+1, y+1})
 								);
 				}
-				if(x-1 > 0) {
+				if(x-1 >= 0) {
 					processes.insert(
 							tree_process_mapping.process({x-1, y})
 							);
-					if(y-1 > 0)
+					if(y-1 >= 0)
 						processes.insert(
 								tree_process_mapping.process({x-1, y+1})
 								);
@@ -613,6 +616,7 @@ namespace fpmas { namespace model { namespace detail {
 				for(int process : processes) {
 					mpi_frontiers[process].push_back(
 							{{cell->node()->getId(), cell->location()}, cell->groupIds()});
+					corners_processes.insert(processes.begin(), processes.end());
 				}
 			}
 
@@ -626,7 +630,7 @@ namespace fpmas { namespace model { namespace detail {
 					processes.insert(
 							tree_process_mapping.process({x, y+1})
 							);
-					if(x-1 > 0)
+					if(x-1 >= 0)
 						processes.insert(
 								tree_process_mapping.process({x-1, y+1})
 								);
@@ -639,7 +643,7 @@ namespace fpmas { namespace model { namespace detail {
 					processes.insert(
 							tree_process_mapping.process({x+1, y})
 							);
-					if(y-1 > 0)
+					if(y-1 >= 0)
 						processes.insert(
 								tree_process_mapping.process({x+1, y-1})
 								);
@@ -647,6 +651,23 @@ namespace fpmas { namespace model { namespace detail {
 				for(int process : processes) {
 					mpi_frontiers[process].push_back(
 							{{cell->node()->getId(), cell->location()}, cell->groupIds()});
+					corners_processes.insert(processes.begin(), processes.end());
+				}
+			}
+			if(local_dimensions.width() <= 2 || local_dimensions.height() <=2) {
+				// Edge case, some corner cells are added several times to some
+				// frontiers
+
+				auto less_grid_cell_pack = [](const GridCellPack& p1, const GridCellPack& p2) {
+					return p1.first.first < p2.first.first;
+				};
+				for(int process : corners_processes) {
+					std::set<GridCellPack, decltype(less_grid_cell_pack)> packs(less_grid_cell_pack);
+					for(auto pack : mpi_frontiers[process])
+						packs.insert(pack);
+					mpi_frontiers[process].clear();
+					for(auto pack : packs)
+						mpi_frontiers[process].push_back(pack);
 				}
 			}
 		}
