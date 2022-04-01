@@ -484,11 +484,20 @@ namespace fpmas { namespace model {
 					api::model::GridAgent<CellType> *,
 					typename std::vector<T>::const_reference
 					)> init_function) const {
-			for(auto agent : agent_index)
-				init_function(
-						agent.second,
-						items[GridAgentIndex::distance(agent_begin, agent.first)]
-						);
+			GridAgentIndex grid_index = agent_begin;
+			auto map_index = agent_index.begin();
+			std::size_t i = 0;
+			while(map_index != agent_index.end()) {
+				if(map_index->first == grid_index) {
+					init_function(
+							map_index->second,
+							items[i]
+							);
+					++map_index;
+				}
+				++grid_index;
+				++i;
+			}
 		}
 
 	/**

@@ -11,7 +11,6 @@
 
 namespace fpmas { namespace model { namespace detail {
 
-
 	/**
 	 * An index representing grid cells.
 	 */
@@ -95,6 +94,7 @@ namespace fpmas { namespace model { namespace detail {
 						) const = 0;
 
 			public:
+
 				/**
 				 * Default GridCellFactory.
 				 */
@@ -374,6 +374,7 @@ namespace fpmas { namespace model { namespace detail {
 		cells = buildLocalCells(
 				model, local_dimensions, groups
 				);
+
 		// Build local links
 		buildLocalGrid(model, local_dimensions, cells);
 
@@ -695,6 +696,7 @@ namespace fpmas { namespace model { namespace detail {
 				cell_frontiers.push_back(cell);
 			}
 		}
+
 		linkFrontiers(model, local_dimensions, cells, cell_frontiers);
 
 		model.graph().synchronize();
@@ -726,11 +728,20 @@ namespace fpmas { namespace model { namespace detail {
 					CellType*,
 					typename std::vector<T>::const_reference
 					)> init_function) const {
-			for(auto cell : cell_index)
-				init_function(
-						cell.second,
-						items[GridCellIndex::distance(cell_begin, cell.first)]
-						);
+			GridCellIndex grid_index = cell_begin;
+			auto map_index = cell_index.begin();
+			std::size_t i = 0;
+			while(map_index != cell_index.end()) {
+				if(map_index->first == grid_index) {
+					init_function(
+							map_index->second,
+							items[i]
+							);
+					++map_index;
+				}
+				++grid_index;
+				++i;
+			}
 		}
 
 }}}
