@@ -76,9 +76,9 @@ namespace fpmas { namespace model { namespace detail {
 				 * 
 				 * @param model model in which cells are built
 				 * @param local_dimensions dimension of the local grid, that is
-				 * only a part of the global grid
-				 * @param cells built cells to link, corresponding to
-				 * local_dimensions
+				 * only a subpart of the global grid
+				 * @param cells matrix containing \LOCAL cells built on the
+				 * current process
 				 */
 				virtual void buildLocalGrid(
 						api::model::SpatialModel<CellType>& model,
@@ -86,6 +86,41 @@ namespace fpmas { namespace model { namespace detail {
 						CellMatrix& cells
 						) const = 0;
 
+				/**
+				 * Links the \DISTANT cells in `frontier` to the appropriate
+				 * `local_cells` to build the required grid shape.
+				 *
+				 * The order of cells in `frontier` is not guaranteed, but it
+				 * is ensured that the provided \DISTANT cells complete, if
+				 * required, the Moore neighborhood of all cells in
+				 * `local_cells`.
+				 *
+				 * For example, if `local_dimensions` and `local_cells` provide
+				 * the following \LOCAL cells:
+				 * ```
+				 * OOOO
+				 * OOOO
+				 * ```
+				 * then the frontier corresponds to the following cells:
+				 * ```
+				 * XXXXXX
+				 * X    X
+				 * X    X
+				 * XXXXXX
+				 * ```
+				 * In this example, _angles_ are provided even if the
+				 * implementation is supposed to build the VonNeumann
+				 * neighborhood of each cells. In other terms, it is safe to
+				 * ignore cells provided in the frontier.
+				 *
+				 * @param model model into which SUCCESSOR links must be built
+				 * @param local_dimensions grid dimensions describing the grid
+				 * part built on the current process
+				 * @param local_cells matrix containing \LOCAL cells built on
+				 * the current process
+				 * @param frontier a list of \DISTANT cells that can be linked
+				 * to `local_cells`
+				 */
 				virtual void linkFrontiers(
 						api::model::SpatialModel<CellType>& model,
 						GridDimensions local_dimensions,

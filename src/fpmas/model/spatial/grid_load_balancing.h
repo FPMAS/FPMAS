@@ -100,6 +100,12 @@ namespace fpmas { namespace model {
 			 */
 			virtual int process(DiscretePoint point) const = 0;
 
+			/**
+			 * Returns the dimensions of the local grid part associated to the
+			 * specified process.
+			 */
+			virtual GridDimensions gridDimensions(int process) const = 0;
+
 			virtual ~GridProcessMapping() {}
 	};
 
@@ -210,7 +216,7 @@ namespace fpmas { namespace model {
 
 			int process(DiscretePoint point) const override;
 
-			GridDimensions gridDimensions(int process) const;
+			GridDimensions gridDimensions(int process) const override;
 
 			~TreeProcessMapping();
 	};
@@ -246,6 +252,7 @@ namespace fpmas { namespace model {
 			};
 			Mode mode;
 			std::map<DiscreteCoordinate, int> process_bounds;
+			std::vector<GridDimensions> process_grid_dimensions;
 
 		public:
 			/**
@@ -273,6 +280,7 @@ namespace fpmas { namespace model {
 			 */
 			int process(DiscretePoint point) const override;
 
+			GridDimensions gridDimensions(int process) const override;
 	};
 	/**
 	 * A grid based load balancing algorithm.

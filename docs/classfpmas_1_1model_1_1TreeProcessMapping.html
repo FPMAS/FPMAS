@@ -109,8 +109,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ae3673c0a9516b22bfa35008150dba9a9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5a55438dd53a4f7df4d22bf921876110"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1TreeProcessMapping.html#a5a55438dd53a4f7df4d22bf921876110">process</a> (<a class="el" href="structfpmas_1_1api_1_1model_1_1DiscretePoint.html">DiscretePoint</a> point) const override</td></tr>
 <tr class="separator:a5a55438dd53a4f7df4d22bf921876110"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c63281394d182edf9afcb15d7b6749d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1model_1_1GridDimensions.html">GridDimensions</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1TreeProcessMapping.html#a8c63281394d182edf9afcb15d7b6749d">gridDimensions</a> (int process) const override</td></tr>
+<tr class="separator:a8c63281394d182edf9afcb15d7b6749d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4e704e6d168a92f82176a4d01df8c45"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1GridProcessMapping.html#af4e704e6d168a92f82176a4d01df8c45">process</a> (<a class="el" href="structfpmas_1_1api_1_1model_1_1DiscretePoint.html">DiscretePoint</a> point) const =0</td></tr>
 <tr class="separator:af4e704e6d168a92f82176a4d01df8c45"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2a3fdb0a7e9821f6e297098df4bd350"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1model_1_1GridDimensions.html">GridDimensions</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1GridProcessMapping.html#aa2a3fdb0a7e9821f6e297098df4bd350">gridDimensions</a> (int <a class="el" href="classfpmas_1_1model_1_1GridProcessMapping.html#af4e704e6d168a92f82176a4d01df8c45">process</a>) const =0</td></tr>
+<tr class="separator:aa2a3fdb0a7e9821f6e297098df4bd350"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Fast and simple algorithm to partition a 2D grid.</p>
@@ -208,6 +212,35 @@ Public Member Functions</h2></td></tr>
 <p >In other terms, this is the rank of the process where the <a class="el" href="classfpmas_1_1api_1_1model_1_1GridCell.html">GridCell</a> located at <code>point</code> and all <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgents</a> located in it will be <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a>. </p>
 
 <p>Implements <a class="el" href="classfpmas_1_1model_1_1GridProcessMapping.html#af4e704e6d168a92f82176a4d01df8c45">fpmas::model::GridProcessMapping</a>.</p>
+
+</div>
+</div>
+<a id="a8c63281394d182edf9afcb15d7b6749d" name="a8c63281394d182edf9afcb15d7b6749d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c63281394d182edf9afcb15d7b6749d">&#9670;&nbsp;</a></span>gridDimensions()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1model_1_1GridDimensions.html">GridDimensions</a> fpmas::model::TreeProcessMapping::gridDimensions </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>process</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Returns the dimensions of the local grid part associated to the specified process. </p>
+
+<p>Implements <a class="el" href="classfpmas_1_1model_1_1GridProcessMapping.html#aa2a3fdb0a7e9821f6e297098df4bd350">fpmas::model::GridProcessMapping</a>.</p>
 
 </div>
 </div>

@@ -115,15 +115,27 @@ namespace fpmas { namespace model {
 	StripProcessMapping::StripProcessMapping(
 			DiscreteCoordinate width, DiscreteCoordinate height,
 			api::communication::MpiCommunicator& comm
-			) : mode(width < height ? Mode::VERTICAL : Mode::HORIZONTAL) {
+			) :
+		mode(width < height ? Mode::VERTICAL : Mode::HORIZONTAL),
+		process_grid_dimensions(comm.getSize()) {
 		switch(mode) {
 			case VERTICAL:
-				for(int i = 0; i < comm.getSize(); i++)
+				for(int i = 0; i < comm.getSize(); i++) {
 					process_bounds[i*height / comm.getSize()] = i;
+					process_grid_dimensions[i] = {
+						{0, i*height/comm.getSize()},
+						{width, (i+1)*height/comm.getSize()}
+					};
+				}
 				break;
 			case HORIZONTAL:
-				for(int i = 0; i < comm.getSize(); i++)
+				for(int i = 0; i < comm.getSize(); i++) {
 					process_bounds[i*width / comm.getSize()] = i;
+					process_grid_dimensions[i] = {
+						{i*width/comm.getSize(), 0},
+						{(i+1)*width/comm.getSize(), height}
+					};
+				}
 		}
 	}
 
@@ -141,6 +153,12 @@ namespace fpmas { namespace model {
 		}
 		return process;
 	}
+
+
+	GridDimensions StripProcessMapping::gridDimensions(int process) const {
+		return process_grid_dimensions[process];
+	}
+
 	GridLoadBalancing::GridLoadBalancing(
 			DiscreteCoordinate width, DiscreteCoordinate height,
 			api::communication::MpiCommunicator& comm

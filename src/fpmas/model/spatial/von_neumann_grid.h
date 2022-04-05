@@ -49,12 +49,37 @@ namespace fpmas { namespace model {
 	class VonNeumannGridBuilder : public detail::GridBuilder<CellType> {
 		private:
 
+			/**
+			 * Links cells on the SUCCESSOR layer so that each cell is linked
+			 * to its VonNeumann neighborhood.
+			 *
+			 * Missing \DISTANT cells are not considered yet, so neighborhoods
+			 * of cells at borders are not completed yet.
+			 *
+			 * @param model model in which cells are built
+			 * @param local_dimensions dimension of the local grid, that is
+			 * only a subpart of the global grid
+			 * @param cells matrix containing \LOCAL cells built on the current
+			 * process
+			 */
 			void buildLocalGrid(
 					api::model::SpatialModel<CellType>& model,
 					GridDimensions local_dimensions,
 					typename detail::GridBuilder<CellType>::CellMatrix& cells
 					) const override;
 
+			/**
+			 * Links \DISTANT cells in `frontier` to `local_cells` in order to
+			 * complete VonNeumann neighborhoods of border cells.
+			 *
+			 * @param model model into which SUCCESSOR links must be built
+			 * @param local_dimensions grid dimensions describing the grid
+			 * part built on the current process
+			 * @param local_cells matrix containing \LOCAL cells built on
+			 * the current process
+			 * @param frontier a list of \DISTANT cells that can be linked
+			 * to `local_cells`
+			 */
 			void linkFrontiers(
 					api::model::SpatialModel<CellType>& model,
 					GridDimensions local_dimensions,

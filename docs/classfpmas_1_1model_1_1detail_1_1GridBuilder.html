@@ -135,12 +135,10 @@ Protected Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr class="memitem:a07cedb4e0f3360858b6faa7483ac6fa9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#a07cedb4e0f3360858b6faa7483ac6fa9">buildLocalGrid</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html">api::model::SpatialModel</a>&lt; CellType &gt; &amp;model, <a class="el" href="classfpmas_1_1model_1_1detail_1_1GridDimensions.html">GridDimensions</a> local_dimensions, <a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#ae57687750677bf10e7b08c49ed374761">CellMatrix</a> &amp;cells) const =0</td></tr>
+<tr class="memitem:a07cedb4e0f3360858b6faa7483ac6fa9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#a07cedb4e0f3360858b6faa7483ac6fa9">buildLocalGrid</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html">api::model::SpatialModel</a>&lt; CellType &gt; &amp;model, <a class="el" href="classfpmas_1_1model_1_1GridDimensions.html">GridDimensions</a> local_dimensions, <a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#ae57687750677bf10e7b08c49ed374761">CellMatrix</a> &amp;cells) const =0</td></tr>
 <tr class="separator:a07cedb4e0f3360858b6faa7483ac6fa9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7fe320094eaed426bef9a34644e58580"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#a7fe320094eaed426bef9a34644e58580">linkVerticalFrontiers</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html">api::model::SpatialModel</a>&lt; CellType &gt; &amp;model, <a class="el" href="classfpmas_1_1model_1_1detail_1_1GridDimensions.html">GridDimensions</a> local_dimensions, <a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#ae57687750677bf10e7b08c49ed374761">CellMatrix</a> &amp;local_cells, const std::array&lt; std::vector&lt; CellType * &gt;, 2 &gt; &amp;frontier) const =0</td></tr>
-<tr class="separator:a7fe320094eaed426bef9a34644e58580"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4d97bef0025b2620cabcc0797cc9b2e4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#a4d97bef0025b2620cabcc0797cc9b2e4">linkHorizontalFrontiers</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html">api::model::SpatialModel</a>&lt; CellType &gt; &amp;model, <a class="el" href="classfpmas_1_1model_1_1detail_1_1GridDimensions.html">GridDimensions</a> local_dimensions, <a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#ae57687750677bf10e7b08c49ed374761">CellMatrix</a> &amp;local_cells, const std::array&lt; std::vector&lt; CellType * &gt;, 2 &gt; &amp;frontier) const =0</td></tr>
-<tr class="separator:a4d97bef0025b2620cabcc0797cc9b2e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a404a7119e4e871a842a0b47c28ca66ea"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#a404a7119e4e871a842a0b47c28ca66ea">linkFrontiers</a> (<a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html">api::model::SpatialModel</a>&lt; CellType &gt; &amp;model, <a class="el" href="classfpmas_1_1model_1_1GridDimensions.html">GridDimensions</a> local_dimensions, <a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#ae57687750677bf10e7b08c49ed374761">CellMatrix</a> &amp;local_cells, std::vector&lt; CellType * &gt; &amp;frontier) const =0</td></tr>
+<tr class="separator:a404a7119e4e871a842a0b47c28ca66ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename CellType&gt;<br />
@@ -299,7 +297,7 @@ template&lt;typename CellType &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classfpmas_1_1model_1_1detail_1_1GridDimensions.html">GridDimensions</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1model_1_1GridDimensions.html">GridDimensions</a>&#160;</td>
           <td class="paramname"><em>local_dimensions</em>, </td>
         </tr>
         <tr>
@@ -326,16 +324,16 @@ template&lt;typename CellType &gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">model</td><td>model in which cells are built </td></tr>
-    <tr><td class="paramname">local_dimensions</td><td>dimension of the local grid, that is only a part of the global grid </td></tr>
-    <tr><td class="paramname">cells</td><td>built cells to link, corresponding to local_dimensions </td></tr>
+    <tr><td class="paramname">local_dimensions</td><td>dimension of the local grid, that is only a subpart of the global grid </td></tr>
+    <tr><td class="paramname">cells</td><td>matrix containing <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> cells built on the current process </td></tr>
   </table>
   </dd>
 </dl>
 
 </div>
 </div>
-<a id="a7fe320094eaed426bef9a34644e58580" name="a7fe320094eaed426bef9a34644e58580"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7fe320094eaed426bef9a34644e58580">&#9670;&nbsp;</a></span>linkVerticalFrontiers()</h2>
+<a id="a404a7119e4e871a842a0b47c28ca66ea" name="a404a7119e4e871a842a0b47c28ca66ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a404a7119e4e871a842a0b47c28ca66ea">&#9670;&nbsp;</a></span>linkFrontiers()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -346,7 +344,7 @@ template&lt;typename CellType &gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void <a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html">fpmas::model::detail::GridBuilder</a>&lt; CellType &gt;::linkVerticalFrontiers </td>
+          <td class="memname">virtual void <a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html">fpmas::model::detail::GridBuilder</a>&lt; CellType &gt;::linkFrontiers </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html">api::model::SpatialModel</a>&lt; CellType &gt; &amp;&#160;</td>
           <td class="paramname"><em>model</em>, </td>
@@ -354,7 +352,7 @@ template&lt;typename CellType &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="classfpmas_1_1model_1_1detail_1_1GridDimensions.html">GridDimensions</a>&#160;</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1model_1_1GridDimensions.html">GridDimensions</a>&#160;</td>
           <td class="paramname"><em>local_dimensions</em>, </td>
         </tr>
         <tr>
@@ -366,7 +364,7 @@ template&lt;typename CellType &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const std::array&lt; std::vector&lt; CellType * &gt;, 2 &gt; &amp;&#160;</td>
+          <td class="paramtype">std::vector&lt; CellType * &gt; &amp;&#160;</td>
           <td class="paramname"><em>frontier</em>&#160;</td>
         </tr>
         <tr>
@@ -381,87 +379,21 @@ template&lt;typename CellType &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Builds links across processes, when the partitioning of the grid is horizontal, i.e. borders are vertical, i.e. along the y axis.</p>
-<p >The <code>frontier</code> parameter already contains temporary nodes that are automatically replicated across processes, so that they can be linked to <code>local_cells</code> in order to build the required grid shape.</p>
-<p >The <code>frontier</code> contains two vectors:</p><ul>
-<li>frontier[0]: column of cells replicated from the left process, that are expected to be link to <code>local_cells[y][0]</code> on this process</li>
-<li>frontier[1]: column of cells replicated from the right process, that are expected to be link to <code>local_cells[y][local_dimensions.width()-1]</code> on this process</li>
-</ul>
-<p >For the two processes that represent the border of the global grid, either frontier[0] or frontier[1] is empty.</p>
-<p ><code>local_cells</code> and <code>local_dimensions</code> are defined as for <a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#a07cedb4e0f3360858b6faa7483ac6fa9">buildLocalGrid()</a>.</p>
+<p >Links the <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> cells in <code>frontier</code> to the appropriate <code>local_cells</code> to build the required grid shape.</p>
+<p >The order of cells in <code>frontier</code> is not guaranteed, but it is ensured that the provided <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> cells complete, if required, the Moore neighborhood of all cells in <code>local_cells</code>.</p>
+<p >For example, if <code>local_dimensions</code> and <code>local_cells</code> provide the following <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> cells: </p><div class="fragment"><div class="line">OOOO</div>
+<div class="line">OOOO</div>
+</div><!-- fragment --><p> then the frontier corresponds to the following cells: </p><div class="fragment"><div class="line">XXXXXX</div>
+<div class="line">X    X</div>
+<div class="line">X    X</div>
+<div class="line">XXXXXX</div>
+</div><!-- fragment --><p> In this example, <em>angles</em> are provided even if the implementation is supposed to build the VonNeumann neighborhood of each cells. In other terms, it is safe to ignore cells provided in the frontier.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">model</td><td>model in which cells are built </td></tr>
-    <tr><td class="paramname">local_dimensions</td><td>dimension of the local grid, that is only a part of the global grid </td></tr>
-    <tr><td class="paramname">local_cells</td><td>built cells to link, corresponding to local_dimensions </td></tr>
-    <tr><td class="paramname">frontier</td><td>temporary DISTANT cells, replicated from other processes, that should be linked to local cells </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a4d97bef0025b2620cabcc0797cc9b2e4" name="a4d97bef0025b2620cabcc0797cc9b2e4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4d97bef0025b2620cabcc0797cc9b2e4">&#9670;&nbsp;</a></span>linkHorizontalFrontiers()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename CellType &gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void <a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html">fpmas::model::detail::GridBuilder</a>&lt; CellType &gt;::linkHorizontalFrontiers </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html">api::model::SpatialModel</a>&lt; CellType &gt; &amp;&#160;</td>
-          <td class="paramname"><em>model</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classfpmas_1_1model_1_1detail_1_1GridDimensions.html">GridDimensions</a>&#160;</td>
-          <td class="paramname"><em>local_dimensions</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#ae57687750677bf10e7b08c49ed374761">CellMatrix</a> &amp;&#160;</td>
-          <td class="paramname"><em>local_cells</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::array&lt; std::vector&lt; CellType * &gt;, 2 &gt; &amp;&#160;</td>
-          <td class="paramname"><em>frontier</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p >Builds links across processes, when the partitioning of the grid is vertical, i.e. borders are horizontal, i.e. along the x axis.</p>
-<p >The <code>frontier</code> parameter already contains temporary nodes that are automatically replicated across processes, so that they can be linked to <code>local_cells</code> in order to build the required grid shape.</p>
-<p >The <code>frontier</code> contains two vectors:</p><ul>
-<li>frontier[0]: row of cells replicated from the bottom process, that are expected to be link to <code>local_cells[0][x]</code> on this process</li>
-<li>frontier[1]: row of cells replicated from the top process, that are expected to be link to <code>local_cells[local_dimensions.height()-1][x]</code> on this process</li>
-</ul>
-<p >For the two processes that represent the border of the global grid, either frontier[0] or frontier[1] is empty.</p>
-<p ><code>local_cells</code> and <code>local_dimensions</code> are defined as for <a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#a07cedb4e0f3360858b6faa7483ac6fa9">buildLocalGrid()</a>.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">model</td><td>model in which cells are built </td></tr>
-    <tr><td class="paramname">local_dimensions</td><td>dimension of the local grid, that is only a part of the global grid </td></tr>
-    <tr><td class="paramname">local_cells</td><td>built cells to link, corresponding to local_dimensions </td></tr>
-    <tr><td class="paramname">frontier</td><td>temporary DISTANT cells, replicated from other processes, that should be linked to local cells </td></tr>
+    <tr><td class="paramname">model</td><td>model into which SUCCESSOR links must be built </td></tr>
+    <tr><td class="paramname">local_dimensions</td><td>grid dimensions describing the grid part built on the current process </td></tr>
+    <tr><td class="paramname">local_cells</td><td>matrix containing <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> cells built on the current process </td></tr>
+    <tr><td class="paramname">frontier</td><td>a list of <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> cells that can be linked to <code>local_cells</code> </td></tr>
   </table>
   </dd>
 </dl>
@@ -549,7 +481,7 @@ template&lt;typename CellType &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Builds a grid into the specified <code>spatial_model</code>, according to the grid shape specified by the <a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#a07cedb4e0f3360858b6faa7483ac6fa9">buildLocalGrid()</a>, <a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#a4d97bef0025b2620cabcc0797cc9b2e4">linkHorizontalFrontiers()</a> and <a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#a7fe320094eaed426bef9a34644e58580">linkVerticalFrontiers()</a> methods.</p>
+<p >Builds a grid into the specified <code>spatial_model</code>, according to the grid shape specified by the <a class="el" href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#a07cedb4e0f3360858b6faa7483ac6fa9">buildLocalGrid()</a>, linkHorizontalFrontiers() and linkVerticalFrontiers() methods.</p>
 <p >The process is distributed so that each available process instantiates a part of the global grid.</p>
 <p >The size of the global grid is equal to <code>width x height</code>, according to the parameters specified in the constructor. The origin of the grid is considered at (0, 0), and so the opposite corner is at (width-1, height-1).</p>
 <p >Each <a class="el" href="classfpmas_1_1model_1_1GridCell.html">GridCell</a> is built using the <code>cell_factory</code> specified in the constructor, the <code>default_cell_factory</code> otherwise.</p>
@@ -665,8 +597,8 @@ template&lt;typename CellType &gt; </div>
 <div class="line">    }</div>
 <div class="line">);</div>
 <div class="ttc" id="aclassfpmas_1_1model_1_1MooreGridBuilder_html"><div class="ttname"><a href="classfpmas_1_1model_1_1MooreGridBuilder.html">fpmas::model::MooreGridBuilder</a></div><div class="ttdef"><b>Definition:</b> moore_grid.h:47</div></div>
-<div class="ttc" id="aclassfpmas_1_1model_1_1detail_1_1GridBuilder_html_a8a5b352f3c08f8314c92808b7ccfce5b"><div class="ttname"><a href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#a8a5b352f3c08f8314c92808b7ccfce5b">fpmas::model::detail::GridBuilder::width</a></div><div class="ttdeci">DiscreteCoordinate width() const</div><div class="ttdef"><b>Definition:</b> grid_builder.h:281</div></div>
-<div class="ttc" id="aclassfpmas_1_1model_1_1detail_1_1GridBuilder_html_ad28ed48a0361b3985cf8979368fb392c"><div class="ttname"><a href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#ad28ed48a0361b3985cf8979368fb392c">fpmas::model::detail::GridBuilder::height</a></div><div class="ttdeci">DiscreteCoordinate height() const</div><div class="ttdef"><b>Definition:</b> grid_builder.h:287</div></div>
+<div class="ttc" id="aclassfpmas_1_1model_1_1detail_1_1GridBuilder_html_a8a5b352f3c08f8314c92808b7ccfce5b"><div class="ttname"><a href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#a8a5b352f3c08f8314c92808b7ccfce5b">fpmas::model::detail::GridBuilder::width</a></div><div class="ttdeci">DiscreteCoordinate width() const</div><div class="ttdef"><b>Definition:</b> grid_builder.h:176</div></div>
+<div class="ttc" id="aclassfpmas_1_1model_1_1detail_1_1GridBuilder_html_ad28ed48a0361b3985cf8979368fb392c"><div class="ttname"><a href="classfpmas_1_1model_1_1detail_1_1GridBuilder.html#ad28ed48a0361b3985cf8979368fb392c">fpmas::model::detail::GridBuilder::height</a></div><div class="ttdeci">DiscreteCoordinate height() const</div><div class="ttdef"><b>Definition:</b> grid_builder.h:182</div></div>
 </div><!-- fragment --></dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">

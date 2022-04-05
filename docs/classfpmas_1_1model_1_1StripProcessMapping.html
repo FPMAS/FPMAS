@@ -100,8 +100,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a19bd50b7db109e4ee491bd79250737b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afc9923b288013d5c1bfbcd0c3884b624"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1StripProcessMapping.html#afc9923b288013d5c1bfbcd0c3884b624">process</a> (<a class="el" href="structfpmas_1_1api_1_1model_1_1DiscretePoint.html">DiscretePoint</a> point) const override</td></tr>
 <tr class="separator:afc9923b288013d5c1bfbcd0c3884b624"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f58020d28909012b0907e1726b60281"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1model_1_1GridDimensions.html">GridDimensions</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1StripProcessMapping.html#a0f58020d28909012b0907e1726b60281">gridDimensions</a> (int <a class="el" href="classfpmas_1_1model_1_1StripProcessMapping.html#afc9923b288013d5c1bfbcd0c3884b624">process</a>) const override</td></tr>
+<tr class="separator:a0f58020d28909012b0907e1726b60281"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4e704e6d168a92f82176a4d01df8c45"><td class="memItemLeft" align="right" valign="top">virtual int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1GridProcessMapping.html#af4e704e6d168a92f82176a4d01df8c45">process</a> (<a class="el" href="structfpmas_1_1api_1_1model_1_1DiscretePoint.html">DiscretePoint</a> point) const =0</td></tr>
 <tr class="separator:af4e704e6d168a92f82176a4d01df8c45"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa2a3fdb0a7e9821f6e297098df4bd350"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1model_1_1GridDimensions.html">GridDimensions</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1GridProcessMapping.html#aa2a3fdb0a7e9821f6e297098df4bd350">gridDimensions</a> (int <a class="el" href="classfpmas_1_1model_1_1GridProcessMapping.html#af4e704e6d168a92f82176a4d01df8c45">process</a>) const =0</td></tr>
+<tr class="separator:aa2a3fdb0a7e9821f6e297098df4bd350"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >1D <a class="el" href="classfpmas_1_1model_1_1GridProcessMapping.html">GridProcessMapping</a> implementation, that produces horizontal or vertical strip shaped partitions.</p>
@@ -187,6 +191,35 @@ Public Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>process associated to <code>point</code> </dd></dl>
 
 <p>Implements <a class="el" href="classfpmas_1_1model_1_1GridProcessMapping.html#af4e704e6d168a92f82176a4d01df8c45">fpmas::model::GridProcessMapping</a>.</p>
+
+</div>
+</div>
+<a id="a0f58020d28909012b0907e1726b60281" name="a0f58020d28909012b0907e1726b60281"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f58020d28909012b0907e1726b60281">&#9670;&nbsp;</a></span>gridDimensions()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1model_1_1GridDimensions.html">GridDimensions</a> fpmas::model::StripProcessMapping::gridDimensions </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>process</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p >Returns the dimensions of the local grid part associated to the specified process. </p>
+
+<p>Implements <a class="el" href="classfpmas_1_1model_1_1GridProcessMapping.html#aa2a3fdb0a7e9821f6e297098df4bd350">fpmas::model::GridProcessMapping</a>.</p>
 
 </div>
 </div>

@@ -276,7 +276,7 @@ $(function() {
 <div class="line"><a id="l00470" name="l00470"></a><span class="lineno">  470</span>    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> K&gt;</div>
 <div class="line"><a id="l00471" name="l00471"></a><span class="lineno"><a class="line" href="classfpmas_1_1random_1_1Index.html#afc2e8eed872723187d93880116c1a564">  471</a></span>        <a class="code hl_class" href="classfpmas_1_1random_1_1Index.html">Index&lt;K&gt;</a> <a class="code hl_function" href="classfpmas_1_1random_1_1Index.html#afc2e8eed872723187d93880116c1a564">Index&lt;K&gt;::begin</a>(<span class="keyword">const</span> std::map&lt;K, std::size_t&gt;* item_counts) { </div>
 <div class="line"><a id="l00472" name="l00472"></a><span class="lineno">  472</span>            <a class="code hl_class" href="classfpmas_1_1random_1_1Index.html">Index&lt;K&gt;</a> _begin(item_counts, item_counts-&gt;begin());</div>
-<div class="line"><a id="l00473" name="l00473"></a><span class="lineno">  473</span>            <span class="keywordflow">while</span>(_begin.it-&gt;second == 0)</div>
+<div class="line"><a id="l00473" name="l00473"></a><span class="lineno">  473</span>            <span class="keywordflow">while</span>(_begin.it != item_counts-&gt;end() &amp;&amp; _begin.it-&gt;second == 0)</div>
 <div class="line"><a id="l00474" name="l00474"></a><span class="lineno">  474</span>                ++_begin.it;</div>
 <div class="line"><a id="l00475" name="l00475"></a><span class="lineno">  475</span>            <span class="keywordflow">return</span> _begin;</div>
 <div class="line"><a id="l00476" name="l00476"></a><span class="lineno">  476</span>        }</div>

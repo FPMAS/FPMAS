@@ -173,22 +173,41 @@ namespace nlohmann {
 
 namespace fpmas { namespace io { namespace datapack {
 
+	/**
+	 * ObjectPack serialization rules for std::chrono::duration.
+	 */
 	template<typename Rep, typename Ratio>
 		struct Serializer<std::chrono::duration<Rep, Ratio>> {
+			/**
+			 * Returns the buffer size required to serialize a duration into the
+			 * specified pack, i.e. `pack.size<Rep>()`.
+			 */
 			template<typename Pack>
 				static std::size_t size(
 						const Pack& pack,
 						const std::chrono::duration<Rep, Ratio>&) {
 					return pack.template size<Rep>();
 				}
-
+			/**
+			 * Serializes an std::chrono::duration instance to the specified
+			 * `pack`.
+			 *
+			 * @param pack ObjectPack output
+			 * @param duration duration to serialize
+			 */
 			template<typename Pack>
 				static void to_datapack(
 						Pack& pack,
 						const std::chrono::duration<Rep, Ratio>& duration) {
 					pack.put(duration.count());
 				}
-
+			/**
+			 * Unserializes an std::chrono::duration instance from the
+			 * specified `pack`.
+			 *
+			 * @param pack input ObjectPack
+			 * @return unserialized duration
+			 */
 			template<typename Pack>
 				static std::chrono::duration<Rep, Ratio> from_datapack(
 						const Pack& pack) {

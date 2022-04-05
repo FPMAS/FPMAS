@@ -32,7 +32,7 @@ var searchData=
   ['gridcellfactory_3c_20gridcell_20_3e_29',['GridCellFactory&lt; GridCell &gt;',['../classfpmas_1_1api_1_1model_1_1GridCellFactory.html',1,'fpmas::api::model']]],
   ['gridcellfactory_3c_20model_3a_3agridcell_20_3e_30',['GridCellFactory&lt; model::GridCell &gt;',['../classfpmas_1_1api_1_1model_1_1GridCellFactory.html',1,'fpmas::api::model']]],
   ['gridconfig_31',['GridConfig',['../structfpmas_1_1model_1_1GridConfig.html',1,'fpmas::model']]],
-  ['griddimensions_32',['GridDimensions',['../classfpmas_1_1model_1_1detail_1_1GridDimensions.html',1,'fpmas::model::detail']]],
+  ['griddimensions_32',['GridDimensions',['../classfpmas_1_1model_1_1GridDimensions.html',1,'fpmas::model']]],
   ['gridloadbalancing_33',['GridLoadBalancing',['../classfpmas_1_1model_1_1GridLoadBalancing.html',1,'fpmas::model']]],
   ['gridprocessmapping_34',['GridProcessMapping',['../classfpmas_1_1model_1_1GridProcessMapping.html',1,'fpmas::model']]],
   ['gridrange_35',['GridRange',['../classfpmas_1_1model_1_1GridRange.html',1,'fpmas::model']]],
