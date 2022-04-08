@@ -146,7 +146,7 @@ template&lt;typename AgentType , typename CellType , typename Derived &gt; </div
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Serializes the pointer to the polymorphic GridAgent using the following JSON schema: </p><div class="fragment"><div class="line">[&lt;Derived json serialization&gt;, ptr-&gt;locationPoint()]</div>
+<p >Serializes the pointer to the polymorphic GridAgent using the following JSON schema: </p><div class="fragment"><div class="line">[&lt;Derived json serialization&gt;, ptr-&gt;locationPoint(), ptr-&gt;rd()]</div>
 </div><!-- fragment --><p >The <code>&lt;Derived json serialization&gt;</code> is computed using the <code>adl_serializer&lt;<a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">fpmas::api::utils::PtrWrapper</a>&lt;Derived&gt;&gt;</code> specialization, that can be user defined without additional constraint.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -184,7 +184,7 @@ template&lt;typename AgentType , typename CellType , typename Derived &gt; </div
 </table>
 </div><div class="memdoc">
 <p >Unserializes a polymorphic GridAgent from the specified Json.</p>
-<p >First, the <code>Derived</code> part, that extends <code>GridAgent</code> by definition, is unserialized from <code>j[0]</code> using the <code>adl_serializer&lt;<a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">fpmas::api::utils::PtrWrapper</a>&lt;Derived&gt;</code> specialization, that can be defined externally without any constraint. During this operation, a <code>Derived</code> instance is dynamically allocated, that might leave the <code>GridAgent</code> members undefined. The specific <code>GridAgent</code> member <code>location_point</code> is then initialized from <code>j[1]</code>, and the unserialized <code>Derived</code> instance is returned in the form of a polymorphic <code>GridAgent</code> pointer.</p>
+<p >First, the <code>Derived</code> part, that extends <code>GridAgent</code> by definition, is unserialized from <code>j[0]</code> using the <code>adl_serializer&lt;<a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">fpmas::api::utils::PtrWrapper</a>&lt;Derived&gt;</code> specialization, that can be defined externally without any constraint. During this operation, a <code>Derived</code> instance is dynamically allocated, that might leave the <code>GridAgent</code> members undefined. The specific <code>GridAgent</code> member <code>location_point</code> is then initialized from <code>j[1]</code>, the internal random number generator is unserialized from <code>j[2]</code>, and the unserialized <code>Derived</code> instance is returned in the form of a polymorphic <code>GridAgent</code> pointer.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">j</td><td>json input </td></tr>

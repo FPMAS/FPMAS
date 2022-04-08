@@ -70,69 +70,58 @@ $(function() {
   <div class="summary">
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#namespaces">Namespaces</a> &#124;
+<a href="#define-members">Macros</a> &#124;
 <a href="#typedef-members">Typedefs</a>  </div>
   <div class="headertitle"><div class="title">model.h File Reference</div></div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><code>#include &lt;typeindex&gt;</code><br />
 <code>#include &lt;list&gt;</code><br />
+<code>#include &lt;random&gt;</code><br />
 <code>#include &quot;<a class="el" href="api_2graph_2distributed__graph_8h_source.html">fpmas/api/graph/distributed_graph.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="api_2runtime_2runtime_8h_source.html">fpmas/api/runtime/runtime.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ptr__wrapper_8h_source.html">fpmas/api/utils/ptr_wrapper.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="random_8h_source.html">fpmas/random/random.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="api_2random_2generator_8h_source.html">fpmas/api/random/generator.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for model.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="api_2model_2model_8h__incl.png" border="0" usemap="#asrc_2fpmas_2api_2model_2model_8h" alt=""/></div>
 <map name="asrc_2fpmas_2api_2model_2model_8h" id="asrc_2fpmas_2api_2model_2model_8h">
-<area shape="rect" title=" " alt="" coords="520,5,660,47"/>
-<area shape="rect" title=" " alt="" coords="5,95,84,121"/>
-<area shape="rect" title=" " alt="" coords="248,534,287,561"/>
-<area shape="rect" href="api_2graph_2distributed__graph_8h.html" title=" " alt="" coords="762,169,941,211"/>
-<area shape="rect" href="api_2runtime_2runtime_8h.html" title=" " alt="" coords="109,95,293,121"/>
-<area shape="rect" href="ptr__wrapper_8h.html" title=" " alt="" coords="1715,527,1841,568"/>
-<area shape="rect" href="random_8h.html" title=" " alt="" coords="1631,95,1794,121"/>
-<area shape="rect" href="api_2communication_2communication_8h.html" title=" " alt="" coords="1322,527,1493,568"/>
-<area shape="rect" href="api_2graph_2location__manager_8h.html" title=" " alt="" coords="769,259,933,300"/>
-<area shape="rect" href="load__balancing_8h.html" title=" " alt="" coords="603,259,745,300"/>
-<area shape="rect" href="sync__mode_8h.html" title=" " alt="" coords="957,259,1119,300"/>
-<area shape="rect" href="distributed__id_8h.html" title=" " alt="" coords="856,616,1063,643"/>
-<area shape="rect" title=" " alt="" coords="714,691,826,717"/>
-<area shape="rect" title=" " alt="" coords="1121,691,1200,717"/>
-<area shape="rect" title=" " alt="" coords="1421,691,1551,717"/>
-<area shape="rect" title=" " alt="" coords="851,691,905,717"/>
-<area shape="rect" title=" " alt="" coords="929,691,989,717"/>
-<area shape="rect" title=" " alt="" coords="1014,691,1097,717"/>
-<area shape="rect" href="api_2graph_2graph_8h.html" title=" " alt="" coords="818,355,981,382"/>
-<area shape="rect" href="api_2graph_2distributed__node_8h.html" title=" " alt="" coords="531,348,710,389"/>
-<area shape="rect" title=" " alt="" coords="1255,445,1365,471"/>
-<area shape="rect" href="api_2graph_2node_8h.html" title=" " alt="" coords="508,445,667,471"/>
-<area shape="rect" href="id_8h.html" title=" " alt="" coords="1091,445,1231,471"/>
-<area shape="rect" href="api_2utils_2callback_8h.html" title=" " alt="" coords="895,445,1066,471"/>
-<area shape="rect" title=" " alt="" coords="689,534,747,561"/>
-<area shape="rect" href="api_2graph_2edge_8h.html" title=" " alt="" coords="505,534,664,561"/>
-<area shape="rect" title=" " alt="" coords="1243,534,1297,561"/>
-<area shape="rect" href="api_2graph_2distributed__edge_8h.html" title=" " alt="" coords="305,437,483,479"/>
-<area shape="rect" href="mutex_8h.html" title=" " alt="" coords="691,445,871,471"/>
-<area shape="rect" href="location__state_8h.html" title=" " alt="" coords="315,534,430,561"/>
-<area shape="rect" title=" " alt="" coords="337,616,409,643"/>
-<area shape="rect" title=" " alt="" coords="1005,355,1109,382"/>
-<area shape="rect" href="api_2scheduler_2scheduler_8h.html" title=" " alt="" coords="147,259,286,300"/>
-<area shape="rect" href="random_2generator_8h.html" title=" " alt="" coords="1619,177,1705,203"/>
-<area shape="rect" href="random_2distribution_8h.html" title=" " alt="" coords="1822,177,1918,203"/>
-<area shape="rect" title=" " alt="" coords="1729,177,1797,203"/>
-<area shape="rect" title=" " alt="" coords="1821,445,1882,471"/>
-<area shape="rect" title=" " alt="" coords="1795,266,1860,293"/>
-<area shape="rect" title=" " alt="" coords="1405,266,1474,293"/>
-<area shape="rect" href="api_2random_2generator_8h.html" title=" " alt="" coords="1889,355,2083,382"/>
-<area shape="rect" href="communication_2communication_8h.html" title=" " alt="" coords="1499,259,1649,300"/>
-<area shape="rect" title=" " alt="" coords="1399,355,1517,382"/>
-<area shape="rect" href="json__datapack_8h.html" title=" " alt="" coords="1593,355,1763,382"/>
-<area shape="rect" href="datapack_8h.html" title=" " alt="" coords="1543,445,1629,471"/>
-<area shape="rect" href="json_8h.html" title=" " alt="" coords="1653,445,1711,471"/>
-<area shape="rect" title=" " alt="" coords="1599,534,1639,561"/>
-<area shape="rect" title=" " alt="" coords="1517,534,1575,561"/>
-<area shape="rect" href="api_2random_2distribution_8h.html" title=" " alt="" coords="1884,266,2088,293"/>
+<area shape="rect" title=" " alt="" coords="387,5,527,47"/>
+<area shape="rect" title=" " alt="" coords="5,102,84,129"/>
+<area shape="rect" title=" " alt="" coords="108,281,147,307"/>
+<area shape="rect" title=" " alt="" coords="571,102,636,129"/>
+<area shape="rect" href="api_2graph_2distributed__graph_8h.html" title=" " alt="" coords="367,95,546,136"/>
+<area shape="rect" href="api_2runtime_2runtime_8h.html" title=" " alt="" coords="159,102,343,129"/>
+<area shape="rect" href="ptr__wrapper_8h.html" title=" " alt="" coords="660,95,787,136"/>
+<area shape="rect" href="api_2random_2generator_8h.html" title=" " alt="" coords="830,102,1025,129"/>
+<area shape="rect" href="api_2communication_2communication_8h.html" title=" " alt="" coords="174,273,345,315"/>
+<area shape="rect" href="api_2graph_2location__manager_8h.html" title=" " alt="" coords="559,184,723,225"/>
+<area shape="rect" href="load__balancing_8h.html" title=" " alt="" coords="747,184,889,225"/>
+<area shape="rect" href="sync__mode_8h.html" title=" " alt="" coords="373,184,535,225"/>
+<area shape="rect" href="distributed__id_8h.html" title=" " alt="" coords="284,452,491,479"/>
+<area shape="rect" title=" " alt="" coords="393,527,505,553"/>
+<area shape="rect" title=" " alt="" coords="684,527,763,553"/>
+<area shape="rect" title=" " alt="" coords="529,527,659,553"/>
+<area shape="rect" title=" " alt="" coords="123,527,177,553"/>
+<area shape="rect" title=" " alt="" coords="201,527,261,553"/>
+<area shape="rect" title=" " alt="" coords="286,527,369,553"/>
+<area shape="rect" href="api_2graph_2graph_8h.html" title=" " alt="" coords="806,281,969,307"/>
+<area shape="rect" href="api_2graph_2distributed__node_8h.html" title=" " alt="" coords="549,273,727,315"/>
+<area shape="rect" title=" " alt="" coords="888,370,999,397"/>
+<area shape="rect" href="api_2graph_2node_8h.html" title=" " alt="" coords="705,370,864,397"/>
+<area shape="rect" href="id_8h.html" title=" " alt="" coords="1219,370,1359,397"/>
+<area shape="rect" href="api_2utils_2callback_8h.html" title=" " alt="" coords="1023,370,1194,397"/>
+<area shape="rect" title=" " alt="" coords="857,452,915,479"/>
+<area shape="rect" href="api_2graph_2edge_8h.html" title=" " alt="" coords="673,452,832,479"/>
+<area shape="rect" title=" " alt="" coords="1261,452,1316,479"/>
+<area shape="rect" href="api_2graph_2distributed__edge_8h.html" title=" " alt="" coords="502,363,681,404"/>
+<area shape="rect" href="mutex_8h.html" title=" " alt="" coords="297,370,477,397"/>
+<area shape="rect" href="location__state_8h.html" title=" " alt="" coords="534,452,649,479"/>
+<area shape="rect" title=" " alt="" coords="787,527,859,553"/>
+<area shape="rect" title=" " alt="" coords="369,281,473,307"/>
+<area shape="rect" href="api_2scheduler_2scheduler_8h.html" title=" " alt="" coords="159,184,298,225"/>
+<area shape="rect" title=" " alt="" coords="914,191,975,218"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -200,6 +189,11 @@ Namespaces</h2></td></tr>
 <tr class="memitem:namespacefpmas_1_1api_1_1model"><td class="memItemLeft" align="right" valign="top">namespace &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1model.html">fpmas::api::model</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a86f456e72fb40d958b49483599dc1da0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="api_2model_2model_8h.html#a86f456e72fb40d958b49483599dc1da0">FPMAS_AGENT_RNG</a>&#160;&#160;&#160;minstd_rand</td></tr>
+<tr class="separator:a86f456e72fb40d958b49483599dc1da0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:a30d59218cc71aa4332700b0cf150d98a"><td class="memItemLeft" align="right" valign="top">typedef api::graph::DistributedNode&lt; AgentPtr &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1api_1_1model.html#a30d59218cc71aa4332700b0cf150d98a">fpmas::api::model::AgentNode</a></td></tr>
@@ -229,7 +223,28 @@ Typedefs</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >Model API </p>
-</div></div><!-- contents -->
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a86f456e72fb40d958b49483599dc1da0" name="a86f456e72fb40d958b49483599dc1da0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a86f456e72fb40d958b49483599dc1da0">&#9670;&nbsp;</a></span>FPMAS_AGENT_RNG</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define FPMAS_AGENT_RNG&#160;&#160;&#160;minstd_rand</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Defines the random number generator embedded in each <a class="el" href="classfpmas_1_1api_1_1model_1_1RandomAgent.html">fpmas::api::model::RandomAgent</a>.</p>
+<p >The following parameters can be specified:</p><ul>
+<li><a href="https://en.cppreference.com/w/cpp/numeric/random/linear_congruential_engine">minstd_rand</a> (default): not the best quality random number generator, but very efficient.</li>
+<li><a href="https://en.cppreference.com/w/cpp/numeric/random/mersenne_twister_engine">mt19937, mt19937_64</a>: high quality random number engine, but very costly. Serializing a mersenne twister notably requires to serialize 312 64-bit integers, what represents at least 2496 bits <b>for each agent</b>.</li>
+<li><a href="https://en.cppreference.com/w/cpp/numeric/random/random_device">random_device</a>: Non deterministic and non reproducible random number generator. </li>
+</ul>
+
+</div>
+</div>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.3

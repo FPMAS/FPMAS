@@ -42,8 +42,8 @@ set(FPMAS_ID_TYPE "unsigned long" CACHE STRING "FPMAS ID type (unsigned)")
 set(FPMAS_TYPE_INDEX "std::uint_fast8_t" CACHE STRING
 	"FPMAS type used to serialize std::type_index instances (unsigned)"
 	)
-set(FPMAS_AGENT_RNG "mt19937_64" CACHE STRING
-	"Random generator used by Agents (mt19937_64, minstd_rand, random_device)"
+set(FPMAS_AGENT_RNG "minstd_rand" CACHE STRING
+	"Random generator used by Agents (mt19937, mt19937_64, minstd_rand, random_device)"
 	)
 message("-- LOG_LEVEL : ${LOG_LEVEL}")
 message("-- FPMAS_ID_TYPE : ${FPMAS_ID_TYPE}")

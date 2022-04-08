@@ -149,7 +149,7 @@ namespace fpmas { namespace model {
 				return _rd;
 			}
 
-			void seed(random::FPMAS_AGENT_RNG::result_type seed) override {
+			void seed(std::FPMAS_AGENT_RNG::result_type seed) override {
 				_rd.seed(seed);
 			}
 		};

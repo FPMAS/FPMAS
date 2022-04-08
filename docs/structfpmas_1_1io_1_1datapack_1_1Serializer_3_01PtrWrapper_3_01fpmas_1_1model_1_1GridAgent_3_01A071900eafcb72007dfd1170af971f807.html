@@ -94,12 +94,7 @@ Static Public Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename AgentType, typename CellType, typename Derived&gt;<br />
 struct fpmas::io::datapack::Serializer&lt; PtrWrapper&lt; fpmas::model::GridAgent&lt; AgentType, CellType, Derived &gt; &gt; &gt;</div><p >Polymorphic GridAgent ObjectPack serializer specialization.</p>
-<table class="markdownTable">
-<tr class="markdownTableHead">
-<th class="markdownTableHeadNone" colspan="2">Serialization Scheme    </th></tr>
-<tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>Derived</code> ObjectPack serialization   </td><td class="markdownTableBodyNone">GridAgent::locationPoint()   </td></tr>
-</table>
+<p >| Serialization Scheme || |-------------------&mdash;|| | <code>Derived</code> ObjectPack serialization | GridAgent::locationPoint() | GridAgent::rd() |</p>
 <p >The <code>Derived</code> part is serialized using the Serializer&lt;PtrWrapper&lt;Derived&gt;&gt; serialization, that can be defined externally without additional constraint. The input GridAgent pointer is cast to <code>Derived</code> when required to call the proper <a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">Serializer</a> specialization.</p>
 <dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
@@ -239,7 +234,7 @@ template&lt;typename AgentType , typename CellType , typename Derived &gt; </div
 </table>
 </div><div class="memdoc">
 <p >Unserializes a polymorphic GridAgent from the specified ObjectPack.</p>
-<p >First, the <code>Derived</code> part, that extends <code>GridAgent</code> by definition, is unserialized from the ObjectPack using the <code><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">Serializer</a>&lt;<a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">fpmas::api::utils::PtrWrapper</a>&lt;Derived&gt;</code> specialization. During this operation, a <code>Derived</code> instance is dynamically allocated, that might leave the <code>GridAgent</code> members undefined. The specific <code>GridAgent</code> member <code>location_point</code> is then initialized from the second ObjectPack field, and the unserialized <code>Derived</code> instance is returned in the form of a polymorphic <code>GridAgent</code> pointer.</p>
+<p >First, the <code>Derived</code> part, that extends <code>GridAgent</code> by definition, is unserialized from the ObjectPack using the <code><a class="el" href="structfpmas_1_1io_1_1datapack_1_1Serializer.html">Serializer</a>&lt;<a class="el" href="classfpmas_1_1api_1_1utils_1_1PtrWrapper.html">fpmas::api::utils::PtrWrapper</a>&lt;Derived&gt;</code> specialization. During this operation, a <code>Derived</code> instance is dynamically allocated, that might leave the <code>GridAgent</code> members undefined. The specific <code>GridAgent</code> member <code>location_point</code> is then initialized from the second ObjectPack field, the internal random number generator from the third, and the unserialized <code>Derived</code> instance is returned in the form of a polymorphic <code>GridAgent</code> pointer.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">pack</td><td>source ObjectPack </td></tr>

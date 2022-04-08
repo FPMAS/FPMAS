@@ -113,10 +113,10 @@ Collaboration diagram for fpmas::model::GridAgent&lt; AgentType, GridCellType, D
 Public Member Functions</h2></td></tr>
 <tr class="memitem:accfa102f0b53b7a10ac3d4ac95befb0a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structfpmas_1_1api_1_1model_1_1DiscretePoint.html">DiscretePoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1GridAgent.html#accfa102f0b53b7a10ac3d4ac95befb0a">locationPoint</a> () const override</td></tr>
 <tr class="separator:accfa102f0b53b7a10ac3d4ac95befb0a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5b2f6ab5095306553df5fced458268ce"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacefpmas_1_1random.html#a958313953011bd7eb5d1b6225928cf55">random::mt19937_64</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1GridAgent.html#a5b2f6ab5095306553df5fced458268ce">rd</a> () override</td></tr>
-<tr class="separator:a5b2f6ab5095306553df5fced458268ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad5e78b4d0b48b046981c3fb9fbedf439"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1GridAgent.html#ad5e78b4d0b48b046981c3fb9fbedf439">seed</a> (std::mt19937_64::result_type seed) override</td></tr>
-<tr class="separator:ad5e78b4d0b48b046981c3fb9fbedf439"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78d8dcd2db3fb253eeff7f9cc4f908a0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="api_2model_2model_8h.html#a86f456e72fb40d958b49483599dc1da0">random::FPMAS_AGENT_RNG</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1GridAgent.html#a78d8dcd2db3fb253eeff7f9cc4f908a0">rd</a> () override</td></tr>
+<tr class="separator:a78d8dcd2db3fb253eeff7f9cc4f908a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50e556d03bc736138ef7f0d7f3ab7c47"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1GridAgent.html#a50e556d03bc736138ef7f0d7f3ab7c47">seed</a> (std::FPMAS_AGENT_RNG::result_type seed) override</td></tr>
+<tr class="separator:a50e556d03bc736138ef7f0d7f3ab7c47"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classfpmas_1_1model_1_1SpatialAgentBase"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classfpmas_1_1model_1_1SpatialAgentBase')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html">fpmas::model::SpatialAgentBase&lt; api::model::GridAgent&lt; model::GridCell &gt;, AgentType, model::GridCell, GridAgent&lt; AgentType, model::GridCell, AgentType &gt; &gt;</a></td></tr>
 <tr class="memitem:a6cb372723c3a798fffe9a9c95b8198ba inherit pub_methods_classfpmas_1_1model_1_1SpatialAgentBase"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1SpatialAgentBase.html#a6cb372723c3a798fffe9a9c95b8198ba">initLocation</a> (<a class="el" href="classfpmas_1_1model_1_1GridCell.html">model::GridCell</a> *cell) override</td></tr>
 <tr class="separator:a6cb372723c3a798fffe9a9c95b8198ba inherit pub_methods_classfpmas_1_1model_1_1SpatialAgentBase"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -289,10 +289,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aaf7a8ebf72a49ceebebdb869b4f373ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afaad249efb0ae410af6481d986e7d008"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="structfpmas_1_1api_1_1model_1_1DiscretePoint.html">DiscretePoint</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1GridAgentBase.html#afaad249efb0ae410af6481d986e7d008">locationPoint</a> () const =0</td></tr>
 <tr class="separator:afaad249efb0ae410af6481d986e7d008"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0e21fd116f71a835271273eb851bfc35"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1random_1_1Generator.html">random::Generator</a>&lt; std::mt19937_64::result_type &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1RandomAgent.html#a0e21fd116f71a835271273eb851bfc35">rd</a> ()=0</td></tr>
-<tr class="separator:a0e21fd116f71a835271273eb851bfc35"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac4a5bd9d52cca6c6b4495c0ef1deffd2"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1RandomAgent.html#ac4a5bd9d52cca6c6b4495c0ef1deffd2">seed</a> (std::mt19937_64::result_type seed)=0</td></tr>
-<tr class="separator:ac4a5bd9d52cca6c6b4495c0ef1deffd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2ea2824e709b0b4df1cfb2e918f3513"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classfpmas_1_1api_1_1random_1_1Generator.html">api::random::Generator</a>&lt; std::FPMAS_AGENT_RNG::result_type &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1RandomAgent.html#af2ea2824e709b0b4df1cfb2e918f3513">rd</a> ()=0</td></tr>
+<tr class="separator:af2ea2824e709b0b4df1cfb2e918f3513"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd0e6f2938c12272d21f3bddc41d457c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1model_1_1RandomAgent.html#acd0e6f2938c12272d21f3bddc41d457c">seed</a> (std::FPMAS_AGENT_RNG::result_type seed)=0</td></tr>
+<tr class="separator:acd0e6f2938c12272d21f3bddc41d457c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-methods" name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
@@ -476,8 +476,8 @@ template&lt;typename AgentType , typename GridCellType  = model::GridCell, typen
 
 </div>
 </div>
-<a id="a5b2f6ab5095306553df5fced458268ce" name="a5b2f6ab5095306553df5fced458268ce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5b2f6ab5095306553df5fced458268ce">&#9670;&nbsp;</a></span>rd()</h2>
+<a id="a78d8dcd2db3fb253eeff7f9cc4f908a0" name="a78d8dcd2db3fb253eeff7f9cc4f908a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a78d8dcd2db3fb253eeff7f9cc4f908a0">&#9670;&nbsp;</a></span>rd()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -488,7 +488,7 @@ template&lt;typename AgentType , typename GridCellType  = model::GridCell, typen
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="namespacefpmas_1_1random.html#a958313953011bd7eb5d1b6225928cf55">random::mt19937_64</a> &amp; <a class="el" href="classfpmas_1_1model_1_1GridAgent.html">fpmas::model::GridAgent</a>&lt; AgentType, GridCellType, Derived &gt;::rd </td>
+          <td class="memname"><a class="el" href="api_2model_2model_8h.html#a86f456e72fb40d958b49483599dc1da0">random::FPMAS_AGENT_RNG</a> &amp; <a class="el" href="classfpmas_1_1model_1_1GridAgent.html">fpmas::model::GridAgent</a>&lt; AgentType, GridCellType, Derived &gt;::rd </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -503,16 +503,16 @@ template&lt;typename AgentType , typename GridCellType  = model::GridCell, typen
 <p >Returns a reference to the sequential random number bound to this agent.</p>
 <p >The implementation should ensure that each agent produces an indenpendent random number sequence.</p>
 <p >This can be perfomed:</p><ul>
-<li>Bounding a sequential generator to all agents, and <a class="el" href="classfpmas_1_1model_1_1GridAgent.html#ad5e78b4d0b48b046981c3fb9fbedf439">seed()</a> them independently.</li>
+<li>Bounding a sequential generator to all agents, and <a class="el" href="classfpmas_1_1model_1_1GridAgent.html#a50e556d03bc736138ef7f0d7f3ab7c47">seed()</a> them independently.</li>
 <li>Using a global DistributedGenerator </li>
 </ul>
 
-<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1RandomAgent.html#a0e21fd116f71a835271273eb851bfc35">fpmas::api::model::RandomAgent</a>.</p>
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1RandomAgent.html#af2ea2824e709b0b4df1cfb2e918f3513">fpmas::api::model::RandomAgent</a>.</p>
 
 </div>
 </div>
-<a id="ad5e78b4d0b48b046981c3fb9fbedf439" name="ad5e78b4d0b48b046981c3fb9fbedf439"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad5e78b4d0b48b046981c3fb9fbedf439">&#9670;&nbsp;</a></span>seed()</h2>
+<a id="a50e556d03bc736138ef7f0d7f3ab7c47" name="a50e556d03bc736138ef7f0d7f3ab7c47"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a50e556d03bc736138ef7f0d7f3ab7c47">&#9670;&nbsp;</a></span>seed()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -525,7 +525,7 @@ template&lt;typename AgentType , typename GridCellType  = model::GridCell, typen
         <tr>
           <td class="memname">void <a class="el" href="classfpmas_1_1model_1_1GridAgent.html">fpmas::model::GridAgent</a>&lt; AgentType, GridCellType, Derived &gt;::seed </td>
           <td>(</td>
-          <td class="paramtype">std::mt19937_64::result_type&#160;</td>
+          <td class="paramtype">std::FPMAS_AGENT_RNG::result_type&#160;</td>
           <td class="paramname"><em>seed</em></td><td>)</td>
           <td></td>
         </tr>
@@ -539,7 +539,7 @@ template&lt;typename AgentType , typename GridCellType  = model::GridCell, typen
 <p >Seeds the generator bound to this agent.</p>
 <dl class="section note"><dt>Note</dt><dd>The generator is seeded from this agent, even if it is shared by several agents, for example in the case of a DistributedGenerator. </dd></dl>
 
-<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1RandomAgent.html#ac4a5bd9d52cca6c6b4495c0ef1deffd2">fpmas::api::model::RandomAgent</a>.</p>
+<p>Implements <a class="el" href="classfpmas_1_1api_1_1model_1_1RandomAgent.html#acd0e6f2938c12272d21f3bddc41d457c">fpmas::api::model::RandomAgent</a>.</p>
 
 </div>
 </div>

@@ -15,7 +15,15 @@
 #include "fpmas/api/random/generator.h"
 
 #ifndef FPMAS_AGENT_RNG
-	#define FPMAS_AGENT_RNG mt19937_64
+	/**
+	 * Defines the random number generator embedded in each fpmas::api::model::RandomAgent.
+	 *
+	 * The following parameters can be specified:
+	 * - [minstd_rand](https://en.cppreference.com/w/cpp/numeric/random/linear_congruential_engine) (default): not the best quality random number generator, but very efficient.
+	 * - [mt19937, mt19937_64](https://en.cppreference.com/w/cpp/numeric/random/mersenne_twister_engine): high quality random number engine, but very costly. Serializing a mersenne twister notably requires to serialize 312 64-bit integers, what represents at least 2496 bits **for each agent**.
+	 * - [random_device](https://en.cppreference.com/w/cpp/numeric/random/random_device): Non deterministic and non reproducible random number generator.
+	 */
+	#define FPMAS_AGENT_RNG minstd_rand
 #endif
 
 namespace fpmas { namespace api {namespace model {
@@ -441,6 +449,9 @@ namespace fpmas { namespace api {namespace model {
 	/**
 	 * Interface from which \Agents can inherit to embed their own random
 	 * number generator.
+	 *
+	 * The type of random number generator used is determined at compile time
+	 * by the #FPMAS_AGENT_RNG parameter.
 	 */
 	class RandomAgent {
 		public:
