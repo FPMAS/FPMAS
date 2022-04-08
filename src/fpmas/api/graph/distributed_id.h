@@ -17,8 +17,9 @@
 	 * It can be user defined at compile time using
 	 * `cmake -DFPMAS_ID_TYPE=<unsigned integer type> ..`
 	 *
-	 * By default, the `unsigned long` type is used, that can be 32 or 64 bit
-	 * depending on systems.
+	 * By default, the `std::uint_fast32_t` type is used, that can be 32 or 64 bit
+	 * depending on the fastest unsigned integer type of at least 32 bits that
+	 * can be processed by the current system.
 	 *
 	 * Any unsigned integer type can be specified. The std::uintN_t like
 	 * types defined in the [C++
@@ -28,7 +29,7 @@
 	 *
 	 * FPMAS currently supports 16, 32 and 64 unsigned integer types.
 	 */
-	#define FPMAS_ID_TYPE unsigned long
+	#define FPMAS_ID_TYPE std::uint_fast32_t
 #endif
 
 #include <functional>

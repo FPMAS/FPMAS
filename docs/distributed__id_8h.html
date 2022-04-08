@@ -181,7 +181,7 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:af1f79f0ccd7aab198c60b5f7aa431322"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="distributed__id_8h.html#af1f79f0ccd7aab198c60b5f7aa431322">FPMAS_ID_TYPE</a>&#160;&#160;&#160;unsigned long</td></tr>
+<tr class="memitem:af1f79f0ccd7aab198c60b5f7aa431322"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="distributed__id_8h.html#af1f79f0ccd7aab198c60b5f7aa431322">FPMAS_ID_TYPE</a>&#160;&#160;&#160;std::uint_fast32_t</td></tr>
 <tr class="separator:af1f79f0ccd7aab198c60b5f7aa431322"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
@@ -201,14 +201,14 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define FPMAS_ID_TYPE&#160;&#160;&#160;unsigned long</td>
+          <td class="memname">#define FPMAS_ID_TYPE&#160;&#160;&#160;std::uint_fast32_t</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p >Type used to represent the "id" part of an <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">fpmas::api::graph::DistributedId</a>.</p>
 <p >This type defines the maximum count of Nodes and Edges that might be created during a single simulation. (e.g. 65535 for a 16 bit unsigned integer)</p>
 <p >It can be user defined at compile time using <code>cmake -DFPMAS_ID_TYPE=&lt;unsigned integer type&gt; ..</code></p>
-<p >By default, the <code>unsigned long</code> type is used, that can be 32 or 64 bit depending on systems.</p>
+<p >By default, the <code>std::uint_fast32_t</code> type is used, that can be 32 or 64 bit depending on the fastest unsigned integer type of at least 32 bits that can be processed by the current system.</p>
 <p >Any unsigned integer type can be specified. The std::uintN_t like types defined in the <a href="https://en.cppreference.com/w/cpp/types/integer">C++ standard</a> can notably be used to fix the <a class="el" href="distributed__id_8h.html#af1f79f0ccd7aab198c60b5f7aa431322">FPMAS_ID_TYPE</a> size independently of the underlying system.</p>
 <p >FPMAS currently supports 16, 32 and 64 unsigned integer types. </p>
 

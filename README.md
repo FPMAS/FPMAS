@@ -135,13 +135,13 @@ FPMAS can be configured at compile time using the `cmake -D<option>=<value> ..`
 syntax.
 
 - [`FPMAS_ID_TYPE`](https://fpmas.github.io/FPMAS/distributed__id_8h.html#af1f79f0ccd7aab198c60b5f7aa431322)
-  (default: `unsigned long`): defines the unsigned integer type used to represent
-  node ids. Values such as
-  [`std::uint64_t`](https://en.cppreference.com/w/cpp/types/integer)
-  might be used to raise the total number of nodes and edges created during a
-  simulation. Since a large number of edges can be created internally in
-  `SpatialModels`, the usage of a 64-bit integer is recommended, to avois
-  unexpected issues, even if it represents a significant amount of memory usage.
+  (default: `std::uint_fast32_t`): defines the unsigned integer type used to
+  represent ids of nodes and edges. The default `std::uint_fast32_t` type is at
+  least 32-bit. Values such as
+  [`std::uint64_t`](https://en.cppreference.com/w/cpp/types/integer) might be
+  used to raise the total number of nodes and edges created during a
+  simulation, what might be necessary in the context of large `SpatialModels`
+  simulations over a long period.
 - [`FPMAS_TYPE_INDEX`](https://fpmas.github.io/FPMAS/serializer__set__up_8h.html#a131c60e225ccbcfb2864277cea80b9dd)
   (default: `std::uint_fast8_t`): defines the type used to serialize
   [`std::type_index`](https://en.cppreference.com/w/cpp/types/type_index). The
