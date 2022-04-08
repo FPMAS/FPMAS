@@ -7,11 +7,16 @@
 
 #include <typeindex>
 #include <list>
+#include <random>
 
 #include "fpmas/api/graph/distributed_graph.h"
 #include "fpmas/api/runtime/runtime.h"
 #include "fpmas/api/utils/ptr_wrapper.h"
-#include "fpmas/random/random.h"
+#include "fpmas/api/random/generator.h"
+
+#ifndef FPMAS_AGENT_RNG
+	#define FPMAS_AGENT_RNG mt19937_64
+#endif
 
 namespace fpmas { namespace api {namespace model {
 	using api::graph::DistributedId;
@@ -451,7 +456,7 @@ namespace fpmas { namespace api {namespace model {
 			 *   independently.
 			 * - Using a global DistributedGenerator
 			 */
-			virtual random::Generator<std::mt19937_64::result_type>& rd() = 0;
+			virtual api::random::Generator<std::FPMAS_AGENT_RNG::result_type>& rd() = 0;
 
 			/**
 			 * Seeds the generator bound to this agent.
@@ -460,7 +465,7 @@ namespace fpmas { namespace api {namespace model {
 			 * shared by several agents, for example in the case of a
 			 * DistributedGenerator.
 			 */
-			virtual void seed(std::mt19937_64::result_type seed) = 0;
+			virtual void seed(std::FPMAS_AGENT_RNG::result_type seed) = 0;
 
 			virtual ~RandomAgent() {
 			}

@@ -54,7 +54,7 @@ namespace fpmas { namespace model {
 
 		private:
 			DiscretePoint _location;
-			random::mt19937_64 _rd;
+			random::FPMAS_AGENT_RNG _rd;
 
 		public:
 			/**
@@ -85,14 +85,14 @@ namespace fpmas { namespace model {
 			/**
 			 * \copydoc fpmas::api::model::RandomAgent::rd
 			 */
-			random::mt19937_64& rd() override {
+			random::FPMAS_AGENT_RNG& rd() override {
 				return _rd;
 			}
 
 			/**
 			 * \copydoc fpmas::api::model::RandomAgent::seed
 			 */
-			void seed(std::mt19937_64::result_type seed) override {
+			void seed(random::FPMAS_AGENT_RNG::result_type seed) override {
 				_rd.seed(seed);
 			}
 	};
@@ -125,7 +125,7 @@ namespace fpmas { namespace model {
 					"The specified GridCellType must extend api::model::GridCell.");
 
 			private:
-			random::mt19937_64 _rd;
+			random::FPMAS_AGENT_RNG _rd;
 			DiscretePoint location_point {0, 0};
 
 			protected:
@@ -145,11 +145,11 @@ namespace fpmas { namespace model {
 			 */
 			DiscretePoint locationPoint() const override {return location_point;}
 
-			random::mt19937_64& rd() override {
+			random::FPMAS_AGENT_RNG& rd() override {
 				return _rd;
 			}
 
-			void seed(std::mt19937_64::result_type seed) override {
+			void seed(random::FPMAS_AGENT_RNG::result_type seed) override {
 				_rd.seed(seed);
 			}
 		};
@@ -763,7 +763,7 @@ namespace nlohmann {
 			 * Serializes the pointer to the polymorphic GridCellBase using
 			 * the following JSON schema:
 			 * ```json
-			 * [<Derived json serialization>, ptr->location()]
+			 * [<Derived json serialization>, ptr->location(), ptr->rd()]
 			 * ```
 			 *
 			 * The `<Derived json serialization>` is computed using the
@@ -791,11 +791,12 @@ namespace nlohmann {
 			 * `adl_serializer<fpmas::api::utils::PtrWrapper<Derived>`
 			 * specialization, that can be defined externally without any
 			 * constraint. During this operation, a `Derived` instance is
-			 * dynamically allocated, that might leave the `GridAgent`
-			 * members undefined. The specific `GridAgent` member
-			 * `location_point` is then initialized from `j[1]`, and the
-			 * unserialized `Derived` instance is returned in the form of a
-			 * polymorphic `GridCellBase` pointer.
+			 * dynamically allocated, that might leave the `GridAgent` members
+			 * undefined. The specific `GridAgent` member `location_point` is
+			 * then initialized from `j[1]`, the internal random number
+			 * generator is unserialized from `j[2]`, and the unserialized
+			 * `Derived` instance is returned in the form of a polymorphic
+			 * `GridCellBase` pointer.
 			 *
 			 * @param j json input
 			 * @return unserialized pointer to a polymorphic `GridCellBase`
@@ -808,7 +809,7 @@ namespace nlohmann {
 
 				// Initializes the current base
 				derived_ptr->_location = j[1].get<fpmas::api::model::DiscretePoint>();
-				derived_ptr->_rd = j[2].get<fpmas::random::mt19937_64>();
+				derived_ptr->_rd = j[2].get<fpmas::random::FPMAS_AGENT_RNG>();
 				return derived_ptr.get();
 			}
 		};
@@ -827,7 +828,7 @@ namespace nlohmann {
 			 * Serializes the pointer to the polymorphic GridAgent using
 			 * the following JSON schema:
 			 * ```json
-			 * [<Derived json serialization>, ptr->locationPoint()]
+			 * [<Derived json serialization>, ptr->locationPoint(), ptr->rd()]
 			 * ```
 			 *
 			 * The `<Derived json serialization>` is computed using the
@@ -855,11 +856,12 @@ namespace nlohmann {
 			 * `adl_serializer<fpmas::api::utils::PtrWrapper<Derived>`
 			 * specialization, that can be defined externally without any
 			 * constraint. During this operation, a `Derived` instance is
-			 * dynamically allocated, that might leave the `GridAgent`
-			 * members undefined. The specific `GridAgent` member
-			 * `location_point` is then initialized from `j[1]`, and the
-			 * unserialized `Derived` instance is returned in the form of a
-			 * polymorphic `GridAgent` pointer.
+			 * dynamically allocated, that might leave the `GridAgent` members
+			 * undefined. The specific `GridAgent` member `location_point` is
+			 * then initialized from `j[1]`, the internal random number
+			 * generator is unserialized from `j[2]`, and the unserialized
+			 * `Derived` instance is returned in the form of a polymorphic
+			 * `GridAgent` pointer.
 			 *
 			 * @param j json input
 			 * @return unserialized pointer to a polymorphic `GridAgent`
@@ -872,7 +874,7 @@ namespace nlohmann {
 
 				// Initializes the current base
 				derived_ptr->location_point = j[1].get<fpmas::api::model::DiscretePoint>();
-				derived_ptr->_rd = j[2].get<fpmas::random::mt19937_64>();
+				derived_ptr->_rd = j[2].get<fpmas::random::FPMAS_AGENT_RNG>();
 				return derived_ptr.get();
 			}
 		};
@@ -1005,7 +1007,7 @@ namespace fpmas { namespace io { namespace datapack {
 	 *
 	 * | Serialization Scheme ||
 	 * |----------------------||
-	 * | `Derived` ObjectPack serialization | GridCellBase::location() |
+	 * | `Derived` ObjectPack serialization | GridCellBase::location() | GridCellBase::rd() |
 	 *
 	 * The `Derived` part is serialized using the
 	 * Serializer<PtrWrapper<Derived>> serialization, that can be defined
@@ -1062,9 +1064,10 @@ namespace fpmas { namespace io { namespace datapack {
 			 * specialization. During this operation, a `Derived` instance is
 			 * dynamically allocated, that might leave the `GridAgent` members
 			 * undefined. The specific `GridAgent` member `location_point` is
-			 * then initialized from the second ObjectPack field, and the
-			 * unserialized `Derived` instance is returned in the form of a
-			 * polymorphic `GridCellBase` pointer.
+			 * then initialized from the second ObjectPack field, the internal
+			 * random number generator from the third, and the unserialized
+			 * `Derived` instance is returned in the form of a polymorphic
+			 * `GridCellBase` pointer.
 			 *
 			 * @param pack source ObjectPack
 			 * @return unserialized pointer to a polymorphic `GridCellBase`
@@ -1077,7 +1080,7 @@ namespace fpmas { namespace io { namespace datapack {
 
 				// Initializes the current base
 				derived_ptr->_location = pack.get<fpmas::api::model::DiscretePoint>();
-				derived_ptr->_rd = pack.get<fpmas::random::mt19937_64>();
+				derived_ptr->_rd = pack.get<fpmas::random::FPMAS_AGENT_RNG>();
 				return derived_ptr.get();
 			}
 		};
@@ -1087,7 +1090,7 @@ namespace fpmas { namespace io { namespace datapack {
 	 *
 	 * | Serialization Scheme ||
 	 * |----------------------||
-	 * | `Derived` ObjectPack serialization | GridAgent::locationPoint() |
+	 * | `Derived` ObjectPack serialization | GridAgent::locationPoint() | GridAgent::rd() |
 	 *
 	 * The `Derived` part is serialized using the
 	 * Serializer<PtrWrapper<Derived>> serialization, that can be defined
@@ -1145,9 +1148,10 @@ namespace fpmas { namespace io { namespace datapack {
 			 * specialization. During this operation, a `Derived` instance is
 			 * dynamically allocated, that might leave the `GridAgent` members
 			 * undefined. The specific `GridAgent` member `location_point` is
-			 * then initialized from the second ObjectPack field, and the
-			 * unserialized `Derived` instance is returned in the form of a
-			 * polymorphic `GridAgent` pointer.
+			 * then initialized from the second ObjectPack field, the internal
+			 * random number generator from the third, and the unserialized
+			 * `Derived` instance is returned in the form of a polymorphic
+			 * `GridAgent` pointer.
 			 *
 			 * @param pack source ObjectPack
 			 * @return unserialized pointer to a polymorphic `GridAgent`
@@ -1161,7 +1165,7 @@ namespace fpmas { namespace io { namespace datapack {
 				// Initializes the current base
 				derived_ptr->location_point =
 					pack.get<fpmas::api::model::DiscretePoint>();
-				derived_ptr->_rd = pack.get<fpmas::random::mt19937_64>();
+				derived_ptr->_rd = pack.get<fpmas::random::FPMAS_AGENT_RNG>();
 				return derived_ptr.get();
 			}
 		};

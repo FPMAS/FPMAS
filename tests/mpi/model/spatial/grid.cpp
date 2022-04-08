@@ -51,9 +51,7 @@ class GridBuilderTestBase : public Test {
 
 		/* Trivial cases used both for Moore and VonNeumann grids */
 
-		void checkVerticalLine(
-				fpmas::api::model::SpatialModel<fpmas::model::GridCell>& grid_model,
-				std::vector<fpmas::model::GridCell*> cells, int Y) {
+		void checkVerticalLine(std::vector<fpmas::model::GridCell*> cells, int Y) {
 
 			for(auto grid_cell : cells) {
 				fpmas::model::ReadGuard read(grid_cell);
@@ -82,9 +80,7 @@ class GridBuilderTestBase : public Test {
 			}
 		}
 
-		void checkHorizontalLine(
-				fpmas::api::model::SpatialModel<fpmas::model::GridCell>& grid_model,
-				std::vector<fpmas::model::GridCell*> cells, int X) {
+		void checkHorizontalLine(std::vector<fpmas::model::GridCell*> cells, int X) {
 
 			for(auto grid_cell : cells) {
 				fpmas::model::ReadGuard read(grid_cell);
@@ -115,7 +111,6 @@ class GridBuilderTestBase : public Test {
 
 		/* Grid structure in a normal case */
 		virtual void checkGrid(
-				fpmas::api::model::SpatialModel<fpmas::model::GridCell>& grid_model,
 				std::vector<fpmas::model::GridCell*> cells, int X, int Y) = 0;
 
 		void checkGridStructure(
@@ -123,11 +118,11 @@ class GridBuilderTestBase : public Test {
 				std::vector<fpmas::model::GridCell*> cells, int X, int Y) {
 			checkGridCells(grid_model, X, Y);
 			if(X > 1 && Y > 1)
-				checkGrid(grid_model, cells, X, Y);
+				checkGrid(cells, X, Y);
 			else if(X == 1)
-				checkVerticalLine(grid_model, cells, Y);
+				checkVerticalLine(cells, Y);
 			else if(Y == 1)
-				checkHorizontalLine(grid_model, cells, X);
+				checkHorizontalLine(cells, X);
 
 		
 			grid_model.graph().synchronize();
@@ -139,7 +134,6 @@ class GridBuilderTestBase : public Test {
 class VonNeumannGridBuilderTest : public GridBuilderTestBase {
 	protected:
 		void checkGrid(
-				fpmas::api::model::SpatialModel<fpmas::model::GridCell>& grid_model,
 				std::vector<fpmas::model::GridCell*> cells, int X, int Y) override {
 			for(auto grid_cell : cells) {
 				fpmas::model::ReadGuard read(grid_cell);
@@ -406,7 +400,6 @@ TEST_F(VonNeumannGridBuilderTest, build_with_groups) {
 class MooreGridBuilderTest : public GridBuilderTestBase {
 	private:
 		void checkGrid(
-				fpmas::api::model::SpatialModel<fpmas::model::GridCell>& grid_model,
 				std::vector<fpmas::model::GridCell*> cells, int X, int Y) override {
 			for(auto grid_cell : cells) {
 				fpmas::model::ReadGuard read(grid_cell);
@@ -715,7 +708,7 @@ class GridBuilderTest : public Test {
 };
 
 TEST_F(GridBuilderTest, random_initialization) {
-	std::vector<fpmas::random::mt19937_64> random_generators;
+	std::vector<fpmas::random::FPMAS_AGENT_RNG> random_generators;
 	for(auto cell : model.cells())
 		random_generators.push_back(cell->rd());
 
@@ -811,7 +804,7 @@ class GridAgentBuilderTest : public GridBuilderTest {
 };
 
 TEST_F(GridAgentBuilderTest, random_initialization) {
-	std::vector<fpmas::random::mt19937_64> random_generators;
+	std::vector<fpmas::random::FPMAS_AGENT_RNG> random_generators;
 	for(auto agent : model.getGroup(1).localAgents())
 		random_generators.push_back(((TestGridAgent*) agent)->rd());
 
