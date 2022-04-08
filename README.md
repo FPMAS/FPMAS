@@ -134,9 +134,34 @@ sudo cmake --install .
 FPMAS can be configured at compile time using the `cmake -D<option>=<value> ..`
 syntax.
 
-- `FPMAS_ID_TYPE` (default: unsigned long): defines the unsigned integer type used to
-  represent node ids. Values such as
+- [`FPMAS_ID_TYPE`](https://fpmas.github.io/FPMAS/distributed__id_8h.html#af1f79f0ccd7aab198c60b5f7aa431322)
+  (default: `unsigned long`): defines the unsigned integer type used to represent
+  node ids. Values such as
   [`std::uint64_t`](https://en.cppreference.com/w/cpp/types/integer)
+  might be used to raise the total number of nodes and edges created during a
+  simulation. Since a large number of edges can be created internally in
+  `SpatialModels`, the usage of a 64-bit integer is recommended, to avois
+  unexpected issues, even if it represents a significant amount of memory usage.
+- [`FPMAS_TYPE_INDEX`](https://fpmas.github.io/FPMAS/serializer__set__up_8h.html#a131c60e225ccbcfb2864277cea80b9dd)
+  (default: `std::uint_fast8_t`): defines the type used to serialize
+  [`std::type_index`](https://en.cppreference.com/w/cpp/types/type_index). The
+  size of the integer notably determines how many types can be passed to the
+  [`FPMAS_REGISTER_AGENT_TYPES()`](https://fpmas.github.io/FPMAS/serializer_8h.html#aa1f4073e73128e2a9af8cc819f677b89)
+  macro, so it actually limits the maximum agent types count in the simulation.
+  In practice, an 8-bit integer is thus widely sufficient. However,
+  `std::uint8_t` might be used for example to limit memory usage, since the
+  default `std::uint_fast8_t` might be bigger (but faster) than `std::uint8_t`.
+- [`FPMAS_AGENT_RNG`]() (default: `minstd_rand`) defines the type of random
+  number generator embedded in each [`GridAgent`]() and [`GridCell`](). Several
+  values are possible:
+  - [`minstd_rand`](https://en.cppreference.com/w/cpp/numeric/random/linear_congruential_engine):
+	not the best quality random number generator, but very efficient.
+  - [`mt19937,mt19937_64`](https://en.cppreference.com/w/cpp/numeric/random/mersenne_twister_engine):
+	high quality random number engine, but very costly. Serializing a mersenne
+	twister notably requires to serialize 312 64-bit integers, what represents
+	at least 2496 bits **for each agent**.
+  - [`random_device`](https://en.cppreference.com/w/cpp/numeric/random/random_device):
+	Non deterministic and non reproducible random number generator.
 
 ## Custom Installation Path
 
