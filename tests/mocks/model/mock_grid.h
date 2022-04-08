@@ -7,8 +7,8 @@
 class MockGridCell : public MockCell<fpmas::api::model::GridCell> {
 	public:
 		MOCK_METHOD(fpmas::api::model::DiscretePoint, location, (), (const, override));
-		MOCK_METHOD(fpmas::random::Generator<std::mt19937_64>&, rd, (), (override));
-		MOCK_METHOD(void, seed, (std::mt19937_64::result_type), (override));
+		MOCK_METHOD(fpmas::random::Generator<std::FPMAS_AGENT_RNG>&, rd, (), (override));
+		MOCK_METHOD(void, seed, (std::FPMAS_AGENT_RNG::result_type), (override));
 };
 
 template<typename GridCell>

@@ -168,6 +168,28 @@ namespace fpmas { namespace random {
 		};
 
 	/**
+	 * random_device specialization of the generator output stream operator.
+	 *
+	 * Does not need to serialize anything.
+	 */
+	template<class CharT, class Traits>
+		std::basic_ostream<CharT, Traits>& operator<<(
+				std::basic_ostream<CharT,Traits>& ost, const Generator<std::random_device>&) {
+			return ost;
+		}
+
+	/**
+	 * random_device specialization of the generator input stream operator.
+	 *
+	 * Does not need to unserialize anything.
+	 */
+	template<class CharT, class Traits>
+		std::basic_istream<CharT,Traits>&
+		operator>>(std::basic_istream<CharT,Traits>& ost, Generator<std::random_device>& g ) {
+			return ost;
+		}
+
+	/**
 	 * std::random_device Generator specialization.
 	 *
 	 * Seeding this genererator has **no effect** but methods are still define
@@ -189,6 +211,48 @@ namespace fpmas { namespace random {
 				}
 
 				/**
+				 * Generator<std::random_device> specialization copy
+				 * constructor.
+				 *
+				 * Does not copy the internal std::random_device, since the
+				 * next generated values in non-deterministic anyway.
+				 */
+				Generator(const Generator<std::random_device>&) {
+				}
+
+				/**
+				 * Generator<std::random_device> specialization copy
+				 * constructor.
+				 *
+				 * Does not move the internal std::random_device, since the
+				 * next generated values in non-deterministic anyway.
+				 */
+				Generator(Generator<std::random_device>&&) {
+				}
+
+				/**
+				 * Generator<std::random_device> specialization copy
+				 * assignment operator.
+				 *
+				 * Does not copy assign the internal std::random_device, since
+				 * the next generated values in non-deterministic anyway.
+				 */
+				Generator<std::random_device>& operator=(const Generator<std::random_device>&) {
+					return *this;
+				}
+
+				/**
+				 * Generator<std::random_device> specialization move
+				 * assignment operator.
+				 *
+				 * Does not move assign the internal std::random_device, since
+				 * the next generated values in non-deterministic anyway.
+				 */
+				Generator<std::random_device>& operator=(Generator<std::random_device>&&) {
+					return *this;
+				}
+
+				/**
 				 * No effect in the case of the random_device generator.
 				 */
 				void seed(std::random_device::result_type) override {
@@ -199,6 +263,15 @@ namespace fpmas { namespace random {
 				 */
 				void discard(unsigned long long) override {
 				}
+
+				template<typename Gen, class CharT, class Traits>
+					friend std::basic_ostream<CharT,Traits>&
+					operator<<(std::basic_ostream<CharT,Traits>& ost, const Generator<Gen>& g );
+
+				template<typename Gen, class CharT, class Traits>
+					friend std::basic_istream<CharT,Traits>&
+					operator>>(std::basic_istream<CharT,Traits>& ost, Generator<Gen>& g );
+
 		};
 
 	/**

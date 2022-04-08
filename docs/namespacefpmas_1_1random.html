@@ -135,6 +135,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a8455f911cba813e6b9031c8f24281fbf"><td class="memTemplParams" colspan="2">template&lt;typename Gen , class CharT , class Traits &gt; </td></tr>
 <tr class="memitem:a8455f911cba813e6b9031c8f24281fbf"><td class="memTemplItemLeft" align="right" valign="top">std::basic_istream&lt; CharT, Traits &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1random.html#a8455f911cba813e6b9031c8f24281fbf">operator&gt;&gt;</a> (std::basic_istream&lt; CharT, Traits &gt; &amp;ost, <a class="el" href="classfpmas_1_1random_1_1Generator.html">Generator</a>&lt; Gen &gt; &amp;g)</td></tr>
 <tr class="separator:a8455f911cba813e6b9031c8f24281fbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a06ff5eaf6186a87dce7c5a5ff9a866a0"><td class="memTemplParams" colspan="2">template&lt;class CharT , class Traits &gt; </td></tr>
+<tr class="memitem:a06ff5eaf6186a87dce7c5a5ff9a866a0"><td class="memTemplItemLeft" align="right" valign="top">std::basic_ostream&lt; CharT, Traits &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1random.html#a06ff5eaf6186a87dce7c5a5ff9a866a0">operator&lt;&lt;</a> (std::basic_ostream&lt; CharT, Traits &gt; &amp;ost, const <a class="el" href="classfpmas_1_1random_1_1Generator.html">Generator</a>&lt; std::random_device &gt; &amp;)</td></tr>
+<tr class="separator:a06ff5eaf6186a87dce7c5a5ff9a866a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a32b7331252adb99aca849fa6f9e8c99d"><td class="memTemplParams" colspan="2">template&lt;class CharT , class Traits &gt; </td></tr>
+<tr class="memitem:a32b7331252adb99aca849fa6f9e8c99d"><td class="memTemplItemLeft" align="right" valign="top">std::basic_istream&lt; CharT, Traits &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1random.html#a32b7331252adb99aca849fa6f9e8c99d">operator&gt;&gt;</a> (std::basic_istream&lt; CharT, Traits &gt; &amp;ost, <a class="el" href="classfpmas_1_1random_1_1Generator.html">Generator</a>&lt; std::random_device &gt; &amp;g)</td></tr>
+<tr class="separator:a32b7331252adb99aca849fa6f9e8c99d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa46a1b282247ff439983cca5e8b73dc8"><td class="memTemplParams" colspan="2">template&lt;typename T , typename Generator_t &gt; </td></tr>
 <tr class="memitem:aa46a1b282247ff439983cca5e8b73dc8"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1random.html#aa46a1b282247ff439983cca5e8b73dc8">local_choices</a> (const std::vector&lt; T &gt; &amp;local_items, std::size_t n, Generator_t &amp;gen)</td></tr>
 <tr class="separator:aa46a1b282247ff439983cca5e8b73dc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -355,7 +361,7 @@ template&lt;typename IntType  = int&gt; </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="a98dbd6bb5ae394eb141185d8a6b1f954" name="a98dbd6bb5ae394eb141185d8a6b1f954"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a98dbd6bb5ae394eb141185d8a6b1f954">&#9670;&nbsp;</a></span>operator&lt;&lt;()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a98dbd6bb5ae394eb141185d8a6b1f954">&#9670;&nbsp;</a></span>operator&lt;&lt;() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -387,7 +393,7 @@ template&lt;typename Gen , class CharT , class Traits &gt; </div>
 </div>
 </div>
 <a id="a8455f911cba813e6b9031c8f24281fbf" name="a8455f911cba813e6b9031c8f24281fbf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8455f911cba813e6b9031c8f24281fbf">&#9670;&nbsp;</a></span>operator&gt;&gt;()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8455f911cba813e6b9031c8f24281fbf">&#9670;&nbsp;</a></span>operator&gt;&gt;() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -416,6 +422,70 @@ template&lt;typename Gen , class CharT , class Traits &gt; </div>
 <p >Unserializes a generator from an input stream.</p>
 <p >The produced generator continues to generate its random number sequence from the state it had when serialized.</p>
 <p >The implementation is directly based on the C++11 standard <a href="https://en.cppreference.com/w/cpp/named_req/RandomNumberEngine">RandomNumberEngine operator&gt;&gt;</a> specification. </p>
+
+</div>
+</div>
+<a id="a06ff5eaf6186a87dce7c5a5ff9a866a0" name="a06ff5eaf6186a87dce7c5a5ff9a866a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a06ff5eaf6186a87dce7c5a5ff9a866a0">&#9670;&nbsp;</a></span>operator&lt;&lt;() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class CharT , class Traits &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::basic_ostream&lt; CharT, Traits &gt; &amp; fpmas::random::operator&lt;&lt; </td>
+          <td>(</td>
+          <td class="paramtype">std::basic_ostream&lt; CharT, Traits &gt; &amp;&#160;</td>
+          <td class="paramname"><em>ost</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classfpmas_1_1random_1_1Generator.html">Generator</a>&lt; std::random_device &gt; &amp;&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >random_device specialization of the generator output stream operator.</p>
+<p >Does not need to serialize anything. </p>
+
+</div>
+</div>
+<a id="a32b7331252adb99aca849fa6f9e8c99d" name="a32b7331252adb99aca849fa6f9e8c99d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a32b7331252adb99aca849fa6f9e8c99d">&#9670;&nbsp;</a></span>operator&gt;&gt;() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class CharT , class Traits &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::basic_istream&lt; CharT, Traits &gt; &amp; fpmas::random::operator&gt;&gt; </td>
+          <td>(</td>
+          <td class="paramtype">std::basic_istream&lt; CharT, Traits &gt; &amp;&#160;</td>
+          <td class="paramname"><em>ost</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1random_1_1Generator.html">Generator</a>&lt; std::random_device &gt; &amp;&#160;</td>
+          <td class="paramname"><em>g</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >random_device specialization of the generator input stream operator.</p>
+<p >Does not need to unserialize anything. </p>
 
 </div>
 </div>

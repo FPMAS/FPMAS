@@ -10,6 +10,12 @@
 using namespace testing;
 using namespace fpmas::model;
 
+namespace fpmas { namespace random {
+	bool operator==(const Generator<std::random_device>&, const Generator<std::random_device>&) {
+		return true;
+	}
+}}
+
 template<typename GridCellType>
 class BaseGridCellTest : public Test {
 	protected:

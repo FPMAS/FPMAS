@@ -15,6 +15,12 @@
 using namespace testing;
 using namespace fpmas::model;
 
+namespace fpmas { namespace random {
+	bool operator!=(const Generator<std::random_device>&, const Generator<std::random_device>&) {
+		return true;
+	}
+}}
+
 class GridBuilderTestBase : public Test {
 	protected:
 		void checkGridCells(
@@ -812,6 +818,7 @@ TEST_F(GridAgentBuilderTest, random_initialization) {
 				model.getMpiCommunicator());
 	random_generators
 		= fpmas::communication::all_reduce(mpi, random_generators, fpmas::utils::Concat());
+
 	for(std::size_t i = 0; i < random_generators.size()-1; i++) {
 		for(std::size_t j = i+1; j < random_generators.size(); j++) {
 			ASSERT_NE(random_generators[i], random_generators[j]);
