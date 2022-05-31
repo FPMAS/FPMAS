@@ -655,12 +655,12 @@ namespace fpmas { namespace io { namespace datapack {
 			 * @return deserialized node view
 			 */
 			static graph::detail::LocalizedNodeView<T> from_datapack(const ObjectPack& pack) {
-				return {
-					{pack.get<double>(), pack.get<double>()},
-					pack.get<DistributedId>(),
-					pack.get<int>()
-				};
-
+				// Call order guaranteed, DO NOT CALL gets FROM THE CONSTRUCTOR
+				double x = pack.get<double>();
+				double y = pack.get<double>();
+				DistributedId id = pack.get<DistributedId>();
+				int location = pack.get<int>();
+				return {{x, y}, id, location};
 			}
 
 		};

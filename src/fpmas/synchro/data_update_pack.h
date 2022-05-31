@@ -151,10 +151,9 @@ namespace fpmas { namespace io { namespace datapack {
 			 * @return deserialized data update
 			 */
 			static DataUpdatePack<T> from_datapack(const ObjectPack& pack) {
-				return {
-					pack.get<DistributedId>(),
-					pack.get<T>()
-				};
+				DistributedId id = pack.get<DistributedId>();
+				T data = pack.get<T>();
+				return {std::move(id), std::move(data)};
 			}
 		};
 

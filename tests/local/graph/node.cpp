@@ -4,6 +4,8 @@
 #include "graph/mock_edge.h"
 #include "utils/mock_callback.h"
 
+#include <array>
+
 using ::testing::SizeIs;
 using ::testing::IsEmpty;
 using ::testing::ElementsAre;

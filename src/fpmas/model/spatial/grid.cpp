@@ -33,10 +33,9 @@ namespace fpmas { namespace io { namespace datapack {
 
 	api::model::DiscretePoint Serializer<api::model::DiscretePoint>::from_datapack(
 			const ObjectPack& pack) {
-		return {
-			pack.get<api::model::DiscreteCoordinate>(),
-			pack.get<api::model::DiscreteCoordinate>()
-		};
+		api::model::DiscreteCoordinate x = pack.get<api::model::DiscreteCoordinate>();
+		api::model::DiscreteCoordinate y = pack.get<api::model::DiscreteCoordinate>();
+		return {x, y};
 	}
 }}}
 

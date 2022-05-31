@@ -217,9 +217,10 @@ namespace fpmas { namespace io {
 				 * @return deserialized and dynamically allocated node
 				 */
 				static NodePtrWrapper<T> from_datapack(const ObjectPack& pack) {
+					DistributedId id = pack.get<DistributedId>();
+					T data = pack.get<T>();
 					auto node = new fpmas::graph::DistributedNode<T>(
-							pack.get<DistributedId>(),
-							pack.get<T>()
+							std::move(id), std::move(data)
 							);
 					node->setWeight(pack.get<float>());
 					return node;
@@ -272,9 +273,11 @@ namespace fpmas { namespace io {
 				 * @return deserialized and dynamically allocated node
 				 */
 				static NodePtrWrapper<T> from_datapack(const LightObjectPack& pack) {
+					// Call order guaranteed, DO NOT CALL gets FROM THE CONSTRUCTOR
+					DistributedId id = pack.get<DistributedId>();
+					T data = pack.get<T>();
 					auto node = new fpmas::graph::DistributedNode<T>(
-							pack.get<DistributedId>(),
-							pack.get<T>()
+							std::move(id), std::move(data)
 							);
 					return node;
 				}

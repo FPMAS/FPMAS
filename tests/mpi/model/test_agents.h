@@ -350,10 +350,9 @@ class TestSpatialAgent : public fpmas::model::SpatialAgent<TestSpatialAgent, Tes
 		}
 
 		static TestSpatialAgent* from_datapack(const fpmas::io::datapack::ObjectPack& p) {
-			return new TestSpatialAgent(
-					p.get<unsigned int>(),
-					p.get<unsigned int>()
-					);
+			unsigned int range_size = p.get<unsigned int>();
+			unsigned int num_cells_in_ring = p.get<unsigned int>();
+			return new TestSpatialAgent(range_size, num_cells_in_ring);
 		}
 };
 

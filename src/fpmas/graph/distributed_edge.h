@@ -309,25 +309,27 @@ namespace fpmas { namespace io { namespace datapack {
 			 */
 			template<typename PackType>
 				static EdgePtrWrapper<T> from_datapack(const PackType& pack) {
+					// Call order guaranteed, DO NOT CALL gets FROM THE CONSTRUCTORS
+					DistributedId id = pack.template get<DistributedId>();
+					int i = pack.template get<int>();
 					fpmas::api::graph::DistributedEdge<T>* edge
-						= new fpmas::graph::DistributedEdge<T>(
-								pack.template get<DistributedId>(),
-								pack.template get<int>()
-								);
+						= new fpmas::graph::DistributedEdge<T>(id, i);
 					edge->setWeight(pack.template get<float>());
 
+					id = pack.template get<DistributedId>();
+					i = pack.template get<int>();
 					edge->setTempSourceNode(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>(
 								new fpmas::graph::TemporaryNode<T, PackType>(
-									pack.template get<DistributedId>(),
-									pack.template get<int>(),
+									id, i,
 									pack.extract(pack.template get<std::size_t>())
 									)
 								));
 
+					id = pack.template get<DistributedId>();
+					i = pack.template get<int>();
 					edge->setTempTargetNode(std::unique_ptr<fpmas::api::graph::TemporaryNode<T>>(
 								new fpmas::graph::TemporaryNode<T, PackType>(
-									pack.template get<DistributedId>(),
-									pack.template get<int>(),
+									id, i,
 									pack.extract(pack.template get<std::size_t>())
 									)
 								));

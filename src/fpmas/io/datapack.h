@@ -127,6 +127,32 @@ namespace fpmas { namespace io { namespace datapack {
 	 * very complex data schemes, what is very efficient in terms of memory
 	 * usage and execution time.
 	 *
+	 * put() and get() must be called in the same order to retrieve data at the
+	 * appropriate place. Indeed, a get() call automatically advances the
+	 * internal cursor to point to the next piece of data. readOffset() and
+	 * seekRead() can eventually be used to handle very specific cases.
+	 *
+	 * In particular, it might be tempting to call get() several times in a
+	 * constructor for example, but the following example will produce an
+	 * **unexpected behavior**, since nothing guarantees in C++ that
+	 * `pack.get<int>()` will be called before `pack.get<std::string>()` (see
+	 * https://stackoverflow.com/questions/2934904/order-of-evaluation-in-c-function-parameters):
+	 * ```cpp
+	 * ObjectPack pack;
+	 * int i = 12;
+	 * std::string str = "hello";
+	 * pack.allocate(pack.size<int>() + pack.size(str));
+	 * pack.put(i);
+	 * pack.put(str);
+	 * MyData data = {pack.get<int>(), pack.get<std::string>()} // DO NOT DO THIS
+	 * ```
+	 * `MyData` can be constructed as follows instead, to respect call orders:
+	 * ```cpp
+	 * int u_i = pack.get<int>();
+	 * std::string u_str = pack.get<std::string>();
+	 * MyData data = {u_i, u_str};
+	 * ```
+	 *
 	 * @section constructor_and_eq_operator Constructor and operator=
 	 *
 	 * The allocation operator can be performed automatically using the
@@ -1106,10 +1132,10 @@ namespace fpmas { namespace io { namespace datapack {
 			 */
 			template<typename PackType>
 				static std::pair<T1, T2> from_datapack(const PackType& pack) {
-					return {
-						pack.template get<T1>(),
-						pack.template get<T2>()
-					};
+					// Call order guaranteed, DO NOT CALL gets FROM THE CONSTRUCTOR
+					T1 first = pack.template get<T1>();
+					T2 second = pack.template get<T2>();
+					return {std::move(first), std::move(second)};
 				}
 		};
 
@@ -1348,9 +1374,10 @@ namespace fpmas { namespace io { namespace datapack {
 			 */
 			template<typename PackType>
 				static DistributedId from_datapack(const PackType& pack) {
-					return {
-						pack.template get<int>(), pack.template get<FPMAS_ID_TYPE>()
-					};
+					// Call order guaranteed, DO NOT CALL gets FROM THE CONSTRUCTOR
+					int p = pack.template get<int>();
+					FPMAS_ID_TYPE id = pack.template get<FPMAS_ID_TYPE>();
+					return {p, id};
 				}
 		};
 

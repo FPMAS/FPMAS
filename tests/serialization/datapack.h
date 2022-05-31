@@ -68,7 +68,10 @@ namespace fpmas { namespace io { namespace datapack {
 			}
 
 			static PtrWrapper<CustomAgentWithLightPack> from_datapack(const ObjectPack& p) {
-				return new CustomAgentWithLightPack(p.get<float>(), p.get<int>());
+				// Call order guaranteed, DO NOT CALL gets FROM THE CONSTRUCTOR
+				float f = p.get<float>();
+				int i = p.get<int>();
+				return new CustomAgentWithLightPack(f, i);
 			}
 		};
 
