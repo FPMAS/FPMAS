@@ -1,32 +1,13 @@
 #include "fpmas/graph/ring_graph_builder.h"
-#include "fpmas/graph/graph_builder.h"
+#include "fpmas/graph/analysis.h"
 #include "fpmas/graph/distributed_graph.h"
 #include "fpmas/synchro/hard/hard_sync_mode.h"
+#include "fpmas/graph/graph_builder.h"
 
 #include "gmock/gmock.h"
+#include <gtest/gtest.h>
 
 using namespace testing;
-
-class DistributedNodeBuilder : public fpmas::graph::DistributedNodeBuilder<int> {
-	public:
-		using fpmas::graph::DistributedNodeBuilder<int>::DistributedNodeBuilder;
-
-		fpmas::api::graph::DistributedNode<int>* buildNode(
-				fpmas::api::graph::DistributedGraph<int>& graph) override {
-			this->local_node_count--;
-			return graph.buildNode(0);
-		}
-
-		fpmas::api::graph::DistributedNode<int>* buildDistantNode(
-				fpmas::api::graph::DistributedId id,
-				int location,
-				fpmas::api::graph::DistributedGraph<int>& graph) override {
-			auto new_node = new fpmas::graph::DistributedNode<int>(id, 0);
-			new_node->setLocation(location);
-			return graph.insertDistant(new_node);
-		}
-
-};
 
 /*
  * Builds a "simple" loop: the k required distant neighbors are all located on
@@ -41,7 +22,7 @@ TEST(RingGraphBuilder, build_loop) {
 	fpmas::graph::RingGraphBuilder<int> builder(2, fpmas::graph::LOOP);
 	// 4 nodes by process, so there is only a need to import 2 nodes from the
 	// next process to link the loop
-	DistributedNodeBuilder node_builder(
+	fpmas::graph::DefaultDistributedNodeBuilder<int> node_builder(
 			4*graph.getMpiCommunicator().getSize(),
 			graph.getMpiCommunicator()
 			);
@@ -59,6 +40,8 @@ TEST(RingGraphBuilder, build_loop) {
 			in_neighbors.insert(edge->getSourceNode()->getId());
 		ASSERT_THAT(in_neighbors, SizeIs(2));
 	}
+	// clustering coefficient check
+	ASSERT_FLOAT_EQ(fpmas::graph::clustering_coefficient(graph, 0), 0.25);
 }
 
 /*
@@ -75,7 +58,7 @@ TEST(RingGraphBuilder, build_complete_loop) {
 	// K = N_NODES-1, so each nodes will be linked to all other except itself
 	std::size_t n_edges = 2*graph.getMpiCommunicator().getSize()-1;
 	fpmas::graph::RingGraphBuilder<int> builder(n_edges, fpmas::graph::LOOP);
-	DistributedNodeBuilder node_builder(
+	fpmas::graph::DefaultDistributedNodeBuilder<int> node_builder(
 			2*graph.getMpiCommunicator().getSize(),
 			graph.getMpiCommunicator()
 			);
@@ -86,6 +69,9 @@ TEST(RingGraphBuilder, build_complete_loop) {
 		ASSERT_THAT(node.second->getOutgoingEdges(0), SizeIs(n_edges));
 		ASSERT_THAT(node.second->getIncomingEdges(0), SizeIs(n_edges));
 	}
+
+	// clustering coefficient check
+	ASSERT_FLOAT_EQ(fpmas::graph::clustering_coefficient(graph, 0), 1);
 }
 
 /*
@@ -97,7 +83,7 @@ TEST(RingGraphBuilder, build_cycle) {
 			);
 
 	fpmas::graph::RingGraphBuilder<int> builder(2);
-	DistributedNodeBuilder node_builder(
+	fpmas::graph::DefaultDistributedNodeBuilder<int> node_builder(
 			4*graph.getMpiCommunicator().getSize(),
 			graph.getMpiCommunicator()
 			);
@@ -115,6 +101,9 @@ TEST(RingGraphBuilder, build_cycle) {
 			in_neighbors.insert(edge->getSourceNode()->getId());
 		ASSERT_THAT(in_neighbors, SizeIs(4));
 	}
+
+	// clustering coefficient check
+	ASSERT_FLOAT_EQ(fpmas::graph::clustering_coefficient(graph, 0), 0.5);
 }
 
 /*
@@ -127,7 +116,7 @@ TEST(RingGraphBuilder, build_complete_cycle) {
 
 	std::size_t n_edges = 2*graph.getMpiCommunicator().getSize()-1;
 	fpmas::graph::RingGraphBuilder<int> builder(n_edges);
-	DistributedNodeBuilder node_builder(
+	fpmas::graph::DefaultDistributedNodeBuilder<int> node_builder(
 			2*graph.getMpiCommunicator().getSize(),
 			graph.getMpiCommunicator()
 			);
@@ -138,4 +127,9 @@ TEST(RingGraphBuilder, build_complete_cycle) {
 		ASSERT_THAT(node.second->getOutgoingEdges(0), SizeIs(2*n_edges));
 		ASSERT_THAT(node.second->getIncomingEdges(0), SizeIs(2*n_edges));
 	}
+
+	// clustering coefficient check
+	// Extreme case where c=2 since every node is connected to all others with an
+	// in/out edge so all edges are actually duplicated.
+	ASSERT_FLOAT_EQ(fpmas::graph::clustering_coefficient(graph, 0), 2);
 }

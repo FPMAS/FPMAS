@@ -63,6 +63,26 @@ namespace fpmas { namespace graph {
 			}
 	};
 
+	template<typename T>
+		class DefaultDistributedNodeBuilder : public DistributedNodeBuilder<int> {
+			public:
+				using fpmas::graph::DistributedNodeBuilder<int>::DistributedNodeBuilder;
+
+				fpmas::api::graph::DistributedNode<int>* buildNode(
+						fpmas::api::graph::DistributedGraph<int>& graph) override {
+					this->local_node_count--;
+					return graph.buildNode(T());
+				}
+
+				fpmas::api::graph::DistributedNode<int>* buildDistantNode(
+						fpmas::api::graph::DistributedId id,
+						int location,
+						fpmas::api::graph::DistributedGraph<int>& graph) override {
+					auto new_node = new fpmas::graph::DistributedNode<int>(id, T());
+					new_node->setLocation(location);
+					return graph.insertDistant(new_node);
+				}
+		};
 
 
 	/**
