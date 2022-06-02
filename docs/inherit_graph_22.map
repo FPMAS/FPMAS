@@ -1,7 +1,9 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classfpmas_1_1api_1_1graph_1_1NodeBuilder.html" title=" " alt="" coords="5,39,136,80"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1graph_1_1DistributedNodeBuilder.html" title=" " alt="" coords="184,39,371,80"/>
+<area shape="rect" id="node1" href="$classfpmas_1_1api_1_1graph_1_1NodeBuilder.html" title=" " alt="" coords="5,71,136,112"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1graph_1_1DistributedNodeBuilder.html" title=" " alt="" coords="184,71,371,112"/>
 <area shape="rect" id="node3" href="$classfpmas_1_1graph_1_1DistributedNodeBuilder.html" title=" " alt="" coords="419,5,588,47"/>
 <area shape="rect" id="node5" href="$classfpmas_1_1graph_1_1DistributedNodeBuilder.html" title=" " alt="" coords="419,71,588,112"/>
-<area shape="rect" id="node4" href="$classfpmas_1_1model_1_1DistributedAgentNodeBuilder.html" title=" " alt="" coords="636,5,808,47"/>
+<area shape="rect" id="node7" href="$classfpmas_1_1graph_1_1DistributedNodeBuilder.html" title=" " alt="" coords="419,136,588,177"/>
+<area shape="rect" id="node4" href="$classfpmas_1_1graph_1_1DefaultDistributedNodeBuilder.html" title=" " alt="" coords="636,5,847,47"/>
+<area shape="rect" id="node6" href="$classfpmas_1_1model_1_1DistributedAgentNodeBuilder.html" title=" " alt="" coords="655,71,827,112"/>
 </map>

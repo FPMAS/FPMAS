@@ -1,23 +1,24 @@
 <map id="src/fpmas/utils/functional.h" name="src/fpmas/utils/functional.h">
-<area shape="rect" id="node1" title=" " alt="" coords="184,5,363,32"/>
+<area shape="rect" id="node1" title=" " alt="" coords="195,5,373,32"/>
 <area shape="rect" id="node2" href="$clustered__graph__builder_8h.html" title=" " alt="" coords="5,80,179,121"/>
-<area shape="rect" id="node20" href="$ring__graph__builder_8h.html" title=" " alt="" coords="203,80,344,121"/>
-<area shape="rect" id="node21" href="$uniform__graph__builder_8h.html" title=" " alt="" coords="368,80,531,121"/>
-<area shape="rect" id="node3" href="$graph_2graph__builder_8h.html" title=" " alt="" coords="197,169,349,211"/>
-<area shape="rect" id="node4" href="$fpmas_8h.html" title=" " alt="" coords="295,966,385,993"/>
-<area shape="rect" id="node5" href="$model_2model_8h.html" title=" " alt="" coords="343,259,513,285"/>
-<area shape="rect" id="node6" href="$datapack__serializer_8h.html" title=" " alt="" coords="248,333,424,375"/>
-<area shape="rect" id="node18" href="$json__serializer_8h.html" title=" " alt="" coords="448,333,595,375"/>
-<area shape="rect" id="node19" href="$dist__move__algo_8h.html" title=" " alt="" coords="527,423,689,464"/>
-<area shape="rect" id="node7" href="$serializer_8h.html" title=" " alt="" coords="293,430,480,457"/>
-<area shape="rect" id="node8" href="$model_2spatial_2spatial__model_8h.html" title=" " alt="" coords="414,512,575,553"/>
-<area shape="rect" id="node9" href="$model_2spatial_2graph_8h.html" title=" " alt="" coords="339,691,501,732"/>
-<area shape="rect" id="node10" href="$model_2spatial_2grid_8h.html" title=" " alt="" coords="507,601,669,643"/>
-<area shape="rect" id="node11" href="$grid__builder_8h.html" title=" " alt="" coords="525,691,686,732"/>
-<area shape="rect" id="node12" href="$moore__grid_8h.html" title=" " alt="" coords="434,780,595,821"/>
-<area shape="rect" id="node17" href="$von__neumann__grid_8h.html" title=" " alt="" coords="598,869,759,911"/>
-<area shape="rect" id="node13" href="$moore_8h.html" title=" " alt="" coords="390,869,551,911"/>
-<area shape="rect" id="node14" href="$moore__range_8h.html" title=" " alt="" coords="359,1137,521,1179"/>
-<area shape="rect" id="node15" href="$von__neumann__range_8h.html" title=" " alt="" coords="490,959,651,1000"/>
-<area shape="rect" id="node16" href="$von__neumann_8h.html" title=" " alt="" coords="490,1048,651,1089"/>
+<area shape="rect" id="node20" href="$ring__graph__builder_8h.html" title=" " alt="" coords="389,80,531,121"/>
+<area shape="rect" id="node22" href="$uniform__graph__builder_8h.html" title=" " alt="" coords="203,80,365,121"/>
+<area shape="rect" id="node3" href="$graph_2graph__builder_8h.html" title=" " alt="" coords="207,169,359,211"/>
+<area shape="rect" id="node4" href="$fpmas_8h.html" title=" " alt="" coords="304,966,395,993"/>
+<area shape="rect" id="node5" href="$model_2model_8h.html" title=" " alt="" coords="353,259,522,285"/>
+<area shape="rect" id="node6" href="$datapack__serializer_8h.html" title=" " alt="" coords="257,333,433,375"/>
+<area shape="rect" id="node18" href="$json__serializer_8h.html" title=" " alt="" coords="457,333,604,375"/>
+<area shape="rect" id="node19" href="$dist__move__algo_8h.html" title=" " alt="" coords="537,423,698,464"/>
+<area shape="rect" id="node7" href="$serializer_8h.html" title=" " alt="" coords="303,430,489,457"/>
+<area shape="rect" id="node8" href="$model_2spatial_2spatial__model_8h.html" title=" " alt="" coords="423,512,585,553"/>
+<area shape="rect" id="node9" href="$model_2spatial_2graph_8h.html" title=" " alt="" coords="349,691,510,732"/>
+<area shape="rect" id="node10" href="$model_2spatial_2grid_8h.html" title=" " alt="" coords="517,601,678,643"/>
+<area shape="rect" id="node11" href="$grid__builder_8h.html" title=" " alt="" coords="534,691,695,732"/>
+<area shape="rect" id="node12" href="$moore__grid_8h.html" title=" " alt="" coords="443,780,605,821"/>
+<area shape="rect" id="node17" href="$von__neumann__grid_8h.html" title=" " alt="" coords="607,869,769,911"/>
+<area shape="rect" id="node13" href="$moore_8h.html" title=" " alt="" coords="399,869,561,911"/>
+<area shape="rect" id="node14" href="$moore__range_8h.html" title=" " alt="" coords="369,1137,530,1179"/>
+<area shape="rect" id="node15" href="$von__neumann__range_8h.html" title=" " alt="" coords="499,959,661,1000"/>
+<area shape="rect" id="node16" href="$von__neumann_8h.html" title=" " alt="" coords="499,1048,661,1089"/>
+<area shape="rect" id="node21" href="$small__world__graph__builder_8h_source.html" title=" " alt="" coords="383,169,537,211"/>
 </map>

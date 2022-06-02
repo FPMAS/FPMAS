@@ -185,7 +185,7 @@ namespace fpmas { namespace random {
 	 */
 	template<class CharT, class Traits>
 		std::basic_istream<CharT,Traits>&
-		operator>>(std::basic_istream<CharT,Traits>& ost, Generator<std::random_device>& g ) {
+		operator>>(std::basic_istream<CharT,Traits>& ost, Generator<std::random_device>& ) {
 			return ost;
 		}
 
