@@ -667,9 +667,9 @@ namespace fpmas { namespace graph {
 				std::unordered_map<int, communication::DataPack> serial_nodes;
 				std::unordered_map<int, communication::DataPack> serial_edges;
 
+				std::vector<NodeType*> exported_nodes;
 				{
 					// Builds node and edges export maps
-					std::vector<NodeType*> exported_nodes;
 					std::unordered_map<int, std::vector<NodePtrWrapper<T>>> node_export_map;
 					std::unordered_map<int, std::set<DistributedId>> edge_ids_to_export;
 					std::unordered_map<int, std::vector<EdgePtrWrapper<T>>> edge_export_map;
@@ -684,12 +684,20 @@ namespace fpmas { namespace graph {
 								exported_nodes.push_back(node_to_export);
 								node_export_map[item.second].emplace_back(node_to_export);
 								for(auto edge :  node_to_export->getIncomingEdges()) {
-									// Insert or replace in the IDs set
-									edge_ids_to_export[item.second].insert(edge->getId());
+									// If the target node is local on the
+									// destination process, it already owns this
+									// edge so no need to transmit it
+									if(edge->getSourceNode()->location() != item.second) {
+										// Insert or replace in the IDs set
+										edge_ids_to_export[item.second].insert(edge->getId());
+									}
 								}
 								for(auto edge :  node_to_export->getOutgoingEdges()) {
-									// Insert or replace in the IDs set
-									edge_ids_to_export[item.second].insert(edge->getId());
+									// Same as above
+									if(edge->getTargetNode()->location() != item.second) {
+										// Insert or replace in the IDs set
+										edge_ids_to_export[item.second].insert(edge->getId());
+									}
 								}
 							}
 						}
@@ -719,11 +727,6 @@ namespace fpmas { namespace graph {
 
 					for(auto node : exported_nodes) {
 						setDistant(node, api::graph::SetDistantNodeEvent<T>::EXPORT_DISTANT);
-					}
-
-					FPMAS_LOGD(getMpiCommunicator().getRank(), "DIST_GRAPH", "Clearing exported nodes...", "");
-					for(auto node : exported_nodes) {
-						clearNode(node);
 					}
 
 					// Clears buffers required for serialization
@@ -768,6 +771,12 @@ namespace fpmas { namespace graph {
 					// edge_import is deleted at the end of this scope
 				}
 				
+
+				FPMAS_LOGD(getMpiCommunicator().getRank(), "DIST_GRAPH", "Clearing exported nodes...", "");
+				for(auto node : exported_nodes) {
+					clearNode(node);
+				}
+
 				FPMAS_LOGD(getMpiCommunicator().getRank(), "DIST_GRAPH", "Exported nodes cleared.", "");
 
 
