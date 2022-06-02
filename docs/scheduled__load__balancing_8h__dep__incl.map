@@ -1,10 +1,11 @@
 <map id="src/fpmas/graph/scheduled_load_balancing.h" name="src/fpmas/graph/scheduled_load_balancing.h">
-<area shape="rect" id="node1" title=" " alt="" coords="189,5,368,47"/>
-<area shape="rect" id="node2" href="$model_2detail_2model_8h.html" title=" " alt="" coords="201,95,356,136"/>
-<area shape="rect" id="node3" href="$model_2model_8h.html" title=" " alt="" coords="194,184,363,211"/>
+<area shape="rect" id="node1" title=" " alt="" coords="244,5,423,47"/>
+<area shape="rect" id="node2" href="$model_2detail_2model_8h.html" title=" " alt="" coords="256,95,411,136"/>
+<area shape="rect" id="node3" href="$model_2model_8h.html" title=" " alt="" coords="249,184,418,211"/>
 <area shape="rect" id="node4" href="$datapack__serializer_8h.html" title=" " alt="" coords="5,259,181,300"/>
 <area shape="rect" id="node17" href="$json__serializer_8h.html" title=" " alt="" coords="205,259,352,300"/>
 <area shape="rect" id="node18" href="$dist__move__algo_8h.html" title=" " alt="" coords="309,348,470,389"/>
+<area shape="rect" id="node19" href="$model_2spatial_2graph__builder_8h.html" title=" " alt="" coords="427,259,589,300"/>
 <area shape="rect" id="node5" href="$serializer_8h.html" title=" " alt="" coords="97,355,284,382"/>
 <area shape="rect" id="node6" href="$fpmas_8h.html" title=" " alt="" coords="232,891,323,918"/>
 <area shape="rect" id="node7" href="$model_2spatial_2spatial__model_8h.html" title=" " alt="" coords="269,437,430,479"/>

@@ -1,8 +1,9 @@
 <map id="src/fpmas/model/model.h" name="src/fpmas/model/model.h">
-<area shape="rect" id="node1" title=" " alt="" coords="194,5,363,32"/>
+<area shape="rect" id="node1" title=" " alt="" coords="249,5,418,32"/>
 <area shape="rect" id="node2" href="$datapack__serializer_8h.html" title=" " alt="" coords="5,80,181,121"/>
 <area shape="rect" id="node15" href="$json__serializer_8h.html" title=" " alt="" coords="205,80,352,121"/>
 <area shape="rect" id="node16" href="$dist__move__algo_8h.html" title=" " alt="" coords="309,169,470,211"/>
+<area shape="rect" id="node17" href="$model_2spatial_2graph__builder_8h.html" title=" " alt="" coords="427,80,589,121"/>
 <area shape="rect" id="node3" href="$serializer_8h.html" title=" " alt="" coords="97,177,284,203"/>
 <area shape="rect" id="node4" href="$fpmas_8h.html" title=" " alt="" coords="232,713,323,739"/>
 <area shape="rect" id="node5" href="$model_2spatial_2spatial__model_8h.html" title=" " alt="" coords="269,259,430,300"/>
