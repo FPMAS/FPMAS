@@ -71,7 +71,8 @@ $(function() {
 <a href="#namespaces">Namespaces</a> &#124;
 <a href="#nested-classes">Classes</a> &#124;
 <a href="#typedef-members">Typedefs</a> &#124;
-<a href="#enum-members">Enumerations</a>  </div>
+<a href="#enum-members">Enumerations</a> &#124;
+<a href="#func-members">Functions</a>  </div>
   <div class="headertitle"><div class="title">fpmas::graph Namespace Reference</div></div>
 </div><!--header-->
 <div class="contents">
@@ -88,6 +89,8 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1BipartiteGraphBuilder.html">BipartiteGraphBuilder</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1ClusteredGraphBuilder.html">ClusteredGraphBuilder</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1DefaultDistributedNodeBuilder.html">DefaultDistributedNodeBuilder</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1DistributedClusteredGraphBuilder.html">DistributedClusteredGraphBuilder</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -115,6 +118,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1ScheduledLoadBalancing.html">ScheduledLoadBalancing</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1SmallWorldGraphBuilder.html">SmallWorldGraphBuilder</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1TemporaryNode.html">TemporaryNode</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1UniformGraphBuilder.html">UniformGraphBuilder</a></td></tr>
@@ -140,6 +145,21 @@ Enumerations</h2></td></tr>
 , <a class="el" href="namespacefpmas_1_1graph.html#a40fbd0af030c98f1dd5b0023a40f0a3daa37f334755ee4cbdc0bd2c24401aa3d4">CYCLE</a>
  }</td></tr>
 <tr class="separator:a40fbd0af030c98f1dd5b0023a40f0a3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
+Functions</h2></td></tr>
+<tr class="memitem:aeb5be762c3f0cd22cac42bbac0f748c5"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:aeb5be762c3f0cd22cac42bbac0f748c5"><td class="memTemplItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1graph.html#aeb5be762c3f0cd22cac42bbac0f748c5">node_count</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph</a>&lt; T &gt; &amp;graph)</td></tr>
+<tr class="separator:aeb5be762c3f0cd22cac42bbac0f748c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5ee94b462bf91fce59f56359f84bcf88"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a5ee94b462bf91fce59f56359f84bcf88"><td class="memTemplItemLeft" align="right" valign="top">std::size_t&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1graph.html#a5ee94b462bf91fce59f56359f84bcf88">edge_count</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph</a>&lt; T &gt; &amp;graph)</td></tr>
+<tr class="separator:a5ee94b462bf91fce59f56359f84bcf88"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa15bedc5a3ccb164e91f38f3b1dd077b"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:aa15bedc5a3ccb164e91f38f3b1dd077b"><td class="memTemplItemLeft" align="right" valign="top">std::unordered_map&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1graph.html#aa15bedc5a3ccb164e91f38f3b1dd077b">distant_nodes_outgoing_neighbors</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt; &amp;graph, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">fpmas::api::graph::LayerId</a> layer)</td></tr>
+<tr class="separator:aa15bedc5a3ccb164e91f38f3b1dd077b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66019b0ede0efc7e7bd1f89e2fd41407"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a66019b0ede0efc7e7bd1f89e2fd41407"><td class="memTemplItemLeft" align="right" valign="top">double&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1graph.html#a66019b0ede0efc7e7bd1f89e2fd41407">clustering_coefficient</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt; &amp;graph, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">fpmas::api::graph::LayerId</a> layer)</td></tr>
+<tr class="separator:a66019b0ede0efc7e7bd1f89e2fd41407"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p ><a class="el" href="namespacefpmas_1_1api_1_1graph.html">fpmas::api::graph</a> implementations. </p>
@@ -215,6 +235,132 @@ template&lt;typename T &gt; </div>
 <tr><td class="fieldname"><a id="a40fbd0af030c98f1dd5b0023a40f0a3daa37f334755ee4cbdc0bd2c24401aa3d4" name="a40fbd0af030c98f1dd5b0023a40f0a3daa37f334755ee4cbdc0bd2c24401aa3d4"></a>CYCLE&#160;</td><td class="fielddoc"><p >A ring graph linked in both directions. </p>
 </td></tr>
 </table>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
+<a id="aeb5be762c3f0cd22cac42bbac0f748c5" name="aeb5be762c3f0cd22cac42bbac0f748c5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeb5be762c3f0cd22cac42bbac0f748c5">&#9670;&nbsp;</a></span>node_count()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::size_t fpmas::graph::node_count </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>graph</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Counts the total number of nodes contained in the distributed graph. </p>
+
+</div>
+</div>
+<a id="a5ee94b462bf91fce59f56359f84bcf88" name="a5ee94b462bf91fce59f56359f84bcf88"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5ee94b462bf91fce59f56359f84bcf88">&#9670;&nbsp;</a></span>edge_count()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::size_t fpmas::graph::edge_count </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>graph</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Counts the total number of edges contained in the distributed graph. </p>
+
+</div>
+</div>
+<a id="aa15bedc5a3ccb164e91f38f3b1dd077b" name="aa15bedc5a3ccb164e91f38f3b1dd077b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa15bedc5a3ccb164e91f38f3b1dd077b">&#9670;&nbsp;</a></span>distant_nodes_outgoing_neighbors()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unordered_map&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &gt; &gt; fpmas::graph::distant_nodes_outgoing_neighbors </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>graph</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">fpmas::api::graph::LayerId</a>&#160;</td>
+          <td class="paramname"><em>layer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Utility method used to retrieve the ids of outgoing neighbors of <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> nodes in the graph.</p>
+<p >This can be used to build a representation of neighbors of <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> nodes, since such information is not supposed to be preserved by the DistributedGraph distribution process (only edges between <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> and <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> nodes are preserved).</p>
+<p >Only edges on the specified layer are considered.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">graph</td><td>distributed graph input </td></tr>
+    <tr><td class="paramname">layer</td><td>graph layer </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>a map containing an entry for each <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> node, in the form {node_id: {list of ids of outgoing neighbors}} </dd></dl>
+
+</div>
+</div>
+<a id="a66019b0ede0efc7e7bd1f89e2fd41407" name="a66019b0ede0efc7e7bd1f89e2fd41407"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66019b0ede0efc7e7bd1f89e2fd41407">&#9670;&nbsp;</a></span>clustering_coefficient()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">double fpmas::graph::clustering_coefficient </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>graph</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">fpmas::api::graph::LayerId</a>&#160;</td>
+          <td class="paramname"><em>layer</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Computes the <a href="https://en.wikipedia.org/wiki/Clustering_coefficient#Local_clustering_coefficient">local clustering coefficient</a> of the specified distributed graph, as specified by Duncan J. Watts and Steven H. Strogatz to characterize small world networks. Only the edges on the specified layer are considered, so that a clustering coefficient can be computed independently for each layer.</p>
+<p >The purpose of the measure for a single node is to evaluate how its neighbors are connected together, computing the proportion of existing edges between them. The algorithm returns the average value for all nodes in the graph.</p>
+<p >This method is synchronous: it can't return before it as been initiated by all processes in graph.getMpiCommunicator(), since it requires collective communications.</p>
+<p >This distributed implementation guarantees scalability, since the amount of additionnal data imported is only proportionnal to the count of <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> nodes in the graph.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">graph</td><td>distributed graph input </td></tr>
+    <tr><td class="paramname">layer</td><td>layer on which the coefficient is computed </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>local clustering coefficient </dd></dl>
 
 </div>
 </div>

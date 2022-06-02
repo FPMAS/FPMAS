@@ -12,6 +12,28 @@
 
 namespace fpmas { namespace graph {
 	/**
+	 * Counts the total number of nodes contained in the distributed graph.
+	 */
+	template<typename T>
+		std::size_t node_count(api::graph::DistributedGraph<T>& graph) {
+			communication::TypedMpi<std::size_t> int_mpi(graph.getMpiCommunicator());
+			return communication::all_reduce(
+					int_mpi, graph.getLocationManager().getLocalNodes().size());
+		}
+	/**
+	 * Counts the total number of edges contained in the distributed graph.
+	 */
+	template<typename T>
+		std::size_t edge_count(api::graph::DistributedGraph<T>& graph) {
+			std::size_t local_count = 0;
+			for(auto node : graph.getLocationManager().getLocalNodes())
+				local_count += node.second->getOutgoingEdges().size();
+
+			communication::TypedMpi<std::size_t> int_mpi(graph.getMpiCommunicator());
+			return communication::all_reduce(int_mpi, local_count);
+		}
+
+	/**
 	 * Utility method used to retrieve the ids of outgoing neighbors of \DISTANT
 	 * nodes in the graph.
 	 *
@@ -95,6 +117,7 @@ namespace fpmas { namespace graph {
 	 * \DISTANT nodes in the graph.
 	 *
 	 * @param graph distributed graph input
+	 * @param layer layer on which the coefficient is computed
 	 * @return local clustering coefficient
 	 */
 	template<typename T>

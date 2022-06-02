@@ -1,6 +1,7 @@
 <map id="src/fpmas/graph/ring_graph_builder.h" name="src/fpmas/graph/ring_graph_builder.h">
-<area shape="rect" id="node1" title=" " alt="" coords="11,5,152,47"/>
+<area shape="rect" id="node1" title=" " alt="" coords="99,5,240,47"/>
 <area shape="rect" id="node2" href="$graph_2graph__builder_8h.html" title=" " alt="" coords="5,95,157,136"/>
+<area shape="rect" id="node19" href="$small__world__graph__builder_8h_source.html" title=" " alt="" coords="181,95,336,136"/>
 <area shape="rect" id="node3" href="$fpmas_8h.html" title=" " alt="" coords="107,891,197,918"/>
 <area shape="rect" id="node4" href="$model_2model_8h.html" title=" " alt="" coords="151,184,321,211"/>
 <area shape="rect" id="node5" href="$datapack__serializer_8h.html" title=" " alt="" coords="56,259,232,300"/>

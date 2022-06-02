@@ -7,6 +7,7 @@ set(SOURCES
 	graph/graph_builder.cpp
 	graph/analysis.cpp
 	graph/ring_graph_builder.cpp
+	graph/small_world_graph_builder.cpp
 	synchro/ghost/ghost_mode.cpp
 	synchro/hard/termination.cpp
 	synchro/hard/hard_sync_mode.cpp

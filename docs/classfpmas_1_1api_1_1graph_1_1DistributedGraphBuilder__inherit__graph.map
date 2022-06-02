@@ -1,6 +1,7 @@
 <map id="fpmas::api::graph::DistributedGraphBuilder&lt; T &gt;" name="fpmas::api::graph::DistributedGraphBuilder&lt; T &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="5,71,196,112"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,100,196,141"/>
 <area shape="rect" id="node2" href="$classfpmas_1_1graph_1_1DistributedClusteredGraphBuilder.html" title=" " alt="" coords="271,5,455,47"/>
 <area shape="rect" id="node3" href="$classfpmas_1_1graph_1_1DistributedUniformGraphBuilder.html" title=" " alt="" coords="276,71,451,112"/>
 <area shape="rect" id="node4" href="$classfpmas_1_1graph_1_1RingGraphBuilder.html" title=" " alt="" coords="244,137,483,163"/>
+<area shape="rect" id="node5" href="$classfpmas_1_1graph_1_1SmallWorldGraphBuilder.html" title=" " alt="" coords="277,188,449,229"/>
 </map>
