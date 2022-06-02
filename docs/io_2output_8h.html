@@ -178,10 +178,10 @@ Namespaces</h2></td></tr>
 <div class="textblock"><p >fpmas::api::output related implementations.</p>
 <p >FPMAS defines a powerful output system that can be used to efficiently and easily collect data accross processes.</p>
 <p >Data can be locally fetched on each process using a Watcher instance. Data can then be gathered, summed, filtered or any other operation thanks to the usage of <code>DistributedOperation</code> types, described below. For concrete usage and implementations, see fpmas::output::Local, fpmas::output::Reduce and fpmas::output::DistributedCsvOutput.</p>
-<h2><a class="anchor" id="autotoc_md1"></a>
+<h2><a class="anchor" id="autotoc_md3"></a>
 DistributedOperation Trait</h2>
 <p >A <code>DistributedOperation</code>, that can for example be used by fpmas::output::DistributedCsvOutput to specify distributed CSV fields, must satisfy the following requirements.</p>
-<h3><a class="anchor" id="autotoc_md2"></a>
+<h3><a class="anchor" id="autotoc_md4"></a>
 Member types</h3>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -196,9 +196,9 @@ Member types</h3>
 <td class="markdownTableBodyNone">All   </td><td class="markdownTableBodyNone">Operator used when data must be returned on <b>all</b> processes   </td></tr>
 </table>
 <p >In addition, <code>Single</code> and <code>All</code> must satisfy the following requirements:</p>
-<h3><a class="anchor" id="autotoc_md3"></a>
+<h3><a class="anchor" id="autotoc_md5"></a>
 Single</h3>
-<h4><a class="anchor" id="autotoc_md4"></a>
+<h4><a class="anchor" id="autotoc_md6"></a>
 Constructor</h4>
 <p ><code>Single</code> must define a constructor with the following signature: </p><div class="fragment"><div class="line">Single(</div>
 <div class="line">    <a class="code hl_class" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">fpmas::api::communication::MpiCommunicator</a>&amp; comm,</div>
@@ -216,13 +216,13 @@ Constructor</h4>
   </table>
   </dd>
 </dl>
-<h4><a class="anchor" id="autotoc_md5"></a>
+<h4><a class="anchor" id="autotoc_md7"></a>
 Call operator</h4>
 <p ><code>Single</code> must define a call operator that does not take any parameter and returns a instance of Type: </p><div class="fragment"><div class="line">Type operator()();</div>
 </div><!-- fragment --><p> This method must return fetched data if the current process is <code>root</code>: results returned on other processes are undefined.</p>
-<h3><a class="anchor" id="autotoc_md6"></a>
+<h3><a class="anchor" id="autotoc_md8"></a>
 All</h3>
-<h4><a class="anchor" id="autotoc_md7"></a>
+<h4><a class="anchor" id="autotoc_md9"></a>
 Constructor</h4>
 <p ><code>All</code> must define a constructor with the following signature: </p><div class="fragment"><div class="line">Single(</div>
 <div class="line">    <a class="code hl_class" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">fpmas::api::communication::MpiCommunicator</a>&amp; comm,</div>
@@ -237,7 +237,7 @@ Constructor</h4>
   </table>
   </dd>
 </dl>
-<h4><a class="anchor" id="autotoc_md8"></a>
+<h4><a class="anchor" id="autotoc_md10"></a>
 Call operator</h4>
 <p ><code>All</code> must define a call operator that does not take any parameter and returns a instance of Type: </p><div class="fragment"><div class="line">Type operator()();</div>
 </div><!-- fragment --><p> This method must return fetched data on <b>all</b> processes. Notice that this does not mean that fetched data is the same on all processes (see for example fpmas::output::Local). </p>
