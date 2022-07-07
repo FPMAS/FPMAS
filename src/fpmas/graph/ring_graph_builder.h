@@ -179,6 +179,10 @@ namespace fpmas { namespace graph {
 			std::vector<api::graph::DistributedNode<T>*> built_nodes;
 			for(auto rank : ranks)
 				for(auto node_id : ids_requests[rank])
+					// If a node corresponding to node_id was already in the
+					// graph, nothing is done but the returned node is the one
+					// actually contained in the graph, so built_nodes stays
+					// consistent
 					built_nodes.push_back(
 							node_builder.buildDistantNode(node_id, rank, graph));
 

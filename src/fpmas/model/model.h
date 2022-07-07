@@ -1194,7 +1194,7 @@ namespace fpmas { namespace model {
 		private:
 			std::function<api::model::Agent*()> allocator;
 			std::function<api::model::Agent*()> distant_allocator;
-			api::model::AgentGroup& group;
+			api::model::GroupList groups;
 
 		public:
 			/**
@@ -1236,7 +1236,7 @@ namespace fpmas { namespace model {
 			 * @param comm MPI communicator
 			 */
 			DistributedAgentNodeBuilder(
-					api::model::AgentGroup& group,
+					const api::model::GroupList& groups,
 					std::size_t agent_count,
 					std::function<api::model::Agent*()> allocator,
 					api::communication::MpiCommunicator& comm);
@@ -1284,7 +1284,7 @@ namespace fpmas { namespace model {
 			 * @param comm MPI communicator
 			 */
 			DistributedAgentNodeBuilder(
-					api::model::AgentGroup& group,
+					const api::model::GroupList& groups,
 					std::size_t agent_count,
 					std::function<api::model::Agent*()> allocator,
 					std::function<api::model::Agent*()> distant_allocator,
@@ -1331,6 +1331,12 @@ namespace fpmas { namespace model {
 	 */
 	using RingGraphBuilder
 		= graph::RingGraphBuilder<AgentPtr>;
+
+	/**
+	 * graph::SmallWorldGraphBuilder AgentPtr specialization.
+	 */
+	using SmallWorldGraphBuilder
+		= graph::SmallWorldGraphBuilder<AgentPtr>;
 
 	/**
 	 * graph::ZoltanLoadBalancing AgentPtr specialization.

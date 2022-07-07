@@ -6,7 +6,7 @@
  */
 
 #include "grid.h"
-#include <fpmas/random/random.h>
+#include "fpmas/random/random.h"
 #include "grid_load_balancing.h"
 
 namespace fpmas { namespace model { namespace detail {
@@ -216,6 +216,7 @@ namespace fpmas { namespace model { namespace detail {
 						api::model::GroupList groups) const override {
 					return this->_build(spatial_model, groups);
 				}
+
 				/**
 				 * Initializes a sample of `n` cells selected from the
 				 * previously built cells with the provided `init_function`.

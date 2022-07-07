@@ -36,7 +36,7 @@ TEST(UniformAgentMappingTest, build) {
 	// Node builder: used to dynamically instantiate GraphCells on each process
 	fpmas::model::DistributedAgentNodeBuilder cell_builder(
 			// Group to which Cells are added
-			model.cellGroup(),
+			{model.cellGroup()},
 			// Cell count
 			5*model.getMpiCommunicator().getSize(),
 			// Cell allocator. DefaultCells are used
