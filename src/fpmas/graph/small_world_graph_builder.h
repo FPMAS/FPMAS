@@ -141,8 +141,10 @@ namespace fpmas { namespace graph {
 							if(existing_node != graph_nodes.end()) {
 								new_target = existing_node->second;
 							} else {
-								new_target = graph.insertDistant(new DistributedNode<T>(random_nodes[i].first, T()));
-								new_target->setLocation(random_nodes[i].second);
+								new_target = node_builder.buildDistantNode(
+										random_nodes[i].first, random_nodes[i].second,
+										graph
+										);
 							}
 
 							auto new_edge = graph.link(edges_to_rewire[i]->getSourceNode(), new_target, layer);
@@ -194,8 +196,10 @@ namespace fpmas { namespace graph {
 							if(existing_node != graph_nodes.end()) {
 								new_source = existing_node->second;
 							} else {
-								new_source = graph.insertDistant(new DistributedNode<T>(random_nodes[i].first, T()));
-								new_source->setLocation(random_nodes[i].second);
+								new_source = node_builder.buildDistantNode(
+										random_nodes[i].first, random_nodes[i].second,
+										graph
+										);
 							}
 
 							graph.link(new_source, edges_to_rewire[i]->getTargetNode(), layer);
