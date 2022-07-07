@@ -1,5 +1,7 @@
 #include "fpmas.h"
 
+#include "fpmas/graph/distributed_graph.h"
+#include "fpmas/model/model.h"
 #include "graph/mock_distributed_edge.h"
 #include "graph/mock_distributed_node.h"
 #include "graph/mock_distributed_graph.h"
@@ -10,6 +12,7 @@
 #include "io/mock_breakpoint.h"
 #include "scheduler/mock_scheduler.h"
 #include "runtime/mock_runtime.h"
+#include "synchro/mock_sync_mode.h"
 
 using namespace testing;
 
@@ -1291,4 +1294,41 @@ TEST_F(AutoBreakpointTest, test) {
 
 	std::remove("test.2.7.msgpack");
 	std::remove("test.2.12.msgpack");
+}
+
+
+template<typename T>
+using NiceMockSyncMode = NiceMock<MockSyncMode<T>>;
+
+TEST(DistributedAgentNodeBuilder, double_buildDistantNode) {
+	NiceMock<MockMpiCommunicator<0, 4>> comm;
+
+	fpmas::graph::DistributedGraph<fpmas::model::AgentPtr, NiceMockSyncMode>
+		graph(comm);
+	MockScheduler scheduler;
+	MockRuntime runtime;
+	MockLoadBalancing<fpmas::model::AgentPtr> lb;
+
+	// Regiters insert/remove callbacks so that agents are properly added to
+	// group
+	fpmas::model::detail::Model model(
+			graph, scheduler, runtime, lb
+			);
+	fpmas::model::IdleBehavior behavior;
+	auto& group = model.buildGroup(1, behavior);
+
+	fpmas::model::DistributedAgentNodeBuilder agent_node_builder(
+			{group}, 1, [] () {return new DefaultMockAgentBase<>;}, comm);
+
+	auto* first_node = agent_node_builder.buildDistantNode({0, 0}, 0, graph);
+	// build same node with different location
+	auto* second_node = agent_node_builder.buildDistantNode({0, 0}, 2, graph);
+
+	// Consistency: no node is inserted the second time, and the returned node
+	// must be the one already contained in the graph, as specified in the
+	// DistributedGraph::insertDistant() method
+	ASSERT_EQ(first_node, second_node);
+
+	ASSERT_THAT(second_node->data()->groups(), ElementsAre(&group));
+	ASSERT_THAT(second_node->location(), 2);
 }

@@ -532,7 +532,7 @@ TEST(DistributedAgentNodeBuilder, test) {
 			);
 
 	fpmas::model::DistributedAgentNodeBuilder node_builder(
-			group, N_AGENT, []() {return new ReaderAgent;}, model.getMpiCommunicator()
+			{group}, N_AGENT, []() {return new ReaderAgent;}, model.getMpiCommunicator()
 			);
 	builder.build(node_builder, 0, model.graph());
 

@@ -30,7 +30,7 @@ namespace fpmas { namespace model {
 		}
 
 	DistributedAgentNodeBuilder::DistributedAgentNodeBuilder(
-			api::model::AgentGroup& group,
+			const api::model::GroupList& groups,
 			std::size_t agent_count,
 			std::function<api::model::Agent*()> allocator,
 			api::communication::MpiCommunicator& comm
@@ -38,11 +38,11 @@ namespace fpmas { namespace model {
 		graph::DistributedNodeBuilder<AgentPtr>(agent_count, comm),
 		allocator(allocator),
 		distant_allocator(allocator),
-		group(group) {
+		groups(groups) {
 	}
 
 	DistributedAgentNodeBuilder::DistributedAgentNodeBuilder(
-			api::model::AgentGroup& group,
+			const api::model::GroupList& groups,
 			std::size_t agent_count,
 			std::function<api::model::Agent*()> allocator,
 			std::function<api::model::Agent*()> distant_allocator,
@@ -51,14 +51,15 @@ namespace fpmas { namespace model {
 		graph::DistributedNodeBuilder<AgentPtr>(agent_count, comm),
 		allocator(allocator),
 		distant_allocator(distant_allocator),
-		group(group) {
+		groups(groups) {
 	}
 
 	api::model::AgentNode* DistributedAgentNodeBuilder::buildNode(api::graph::DistributedGraph<AgentPtr> &) {
 		auto* agent = allocator();
 
 		// Implicitly builds and insert agent node into the graph
-		group.add(agent);
+		for(auto& group : groups)
+			group.get().add(agent);
 
 		local_node_count--;
 		return agent->node();
@@ -69,13 +70,25 @@ namespace fpmas { namespace model {
 			api::graph::DistributedGraph<AgentPtr> & graph) {
 		auto* agent = distant_allocator();
 		// Registers the id of the group to which the agent should be added
-		agent->addGroupId(group.groupId());
+		for(auto& group : groups)
+			agent->addGroupId(group.get().groupId());
 
-		auto* node = new fpmas::graph::DistributedNode<AgentPtr>(id, agent);
+		fpmas::model::AgentNode* node
+			= new fpmas::graph::DistributedNode<AgentPtr>(id, agent);
+		// No insertion is performed if a distant node with id was already
+		// contained in the graph. In this case, `agent` is ignored and deleted,
+		// and the agent already contained in the graph is assumed to have been
+		// built by this DistributedAgentNodeBuilder and so to be already
+		// contained in `group`.
+		//
+		// If the node was not contained in the graph, the agent is
+		// automatically inserted into the group when InsertAgentNodeCallback is
+		// triggered
+		node = graph.insertDistant(node);
+
+		// In any case, the location of the node is updated, even if it was
+		// already contained in the graph
 		node->setLocation(location);
-		// The agent is automatically inserted into the group when
-		// InsertAgentNodeCallback is triggered
-		graph.insertDistant(node);
 
 		return node;
 	}

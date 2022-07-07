@@ -8,6 +8,7 @@
 #include "uniform_graph_builder.h"
 #include "clustered_graph_builder.h"
 #include "ring_graph_builder.h"
+#include "small_world_graph_builder.h"
 
 namespace fpmas { namespace graph {
 
