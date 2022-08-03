@@ -67,13 +67,14 @@ var searchData=
   ['spatialagentmapping_64',['SpatialAgentMapping',['../classfpmas_1_1api_1_1model_1_1SpatialAgentMapping.html',1,'fpmas::api::model']]],
   ['spatialagentmapping_3c_20api_3a_3amodel_3a_3acell_20_3e_65',['SpatialAgentMapping&lt; api::model::Cell &gt;',['../classfpmas_1_1api_1_1model_1_1SpatialAgentMapping.html',1,'fpmas::api::model']]],
   ['spatialagentmapping_3c_20api_3a_3amodel_3a_3agridcell_20_3e_66',['SpatialAgentMapping&lt; api::model::GridCell &gt;',['../classfpmas_1_1api_1_1model_1_1SpatialAgentMapping.html',1,'fpmas::api::model']]],
-  ['spatialmodel_67',['SpatialModel',['../classfpmas_1_1api_1_1model_1_1SpatialModel.html',1,'fpmas::api::model::SpatialModel&lt; CellType &gt;'],['../classfpmas_1_1model_1_1SpatialModel.html',1,'fpmas::model::SpatialModel&lt; SyncMode, CellType, EndCondition &gt;']]],
-  ['spatialmodel_3c_20api_3a_3amodel_3a_3acell_20_3e_68',['SpatialModel&lt; api::model::Cell &gt;',['../classfpmas_1_1api_1_1model_1_1SpatialModel.html',1,'fpmas::api::model']]],
-  ['staticendcondition_69',['StaticEndCondition',['../classfpmas_1_1model_1_1StaticEndCondition.html',1,'fpmas::model']]],
-  ['status_70',['Status',['../structfpmas_1_1api_1_1communication_1_1Status.html',1,'fpmas::api::communication']]],
-  ['stringoutput_71',['StringOutput',['../classfpmas_1_1io_1_1StringOutput.html',1,'fpmas::io']]],
-  ['stripprocessmapping_72',['StripProcessMapping',['../classfpmas_1_1model_1_1StripProcessMapping.html',1,'fpmas::model']]],
-  ['synchronizegraphtask_73',['SynchronizeGraphTask',['../classfpmas_1_1model_1_1detail_1_1SynchronizeGraphTask.html',1,'fpmas::model::detail']]],
-  ['synclinker_74',['SyncLinker',['../classfpmas_1_1api_1_1synchro_1_1SyncLinker.html',1,'fpmas::api::synchro']]],
-  ['syncmode_75',['SyncMode',['../classfpmas_1_1api_1_1synchro_1_1SyncMode.html',1,'fpmas::api::synchro']]]
+  ['spatialgraphbuilder_67',['SpatialGraphBuilder',['../classfpmas_1_1model_1_1SpatialGraphBuilder.html',1,'fpmas::model']]],
+  ['spatialmodel_68',['SpatialModel',['../classfpmas_1_1api_1_1model_1_1SpatialModel.html',1,'fpmas::api::model::SpatialModel&lt; CellType &gt;'],['../classfpmas_1_1model_1_1SpatialModel.html',1,'fpmas::model::SpatialModel&lt; SyncMode, CellType, EndCondition &gt;']]],
+  ['spatialmodel_3c_20api_3a_3amodel_3a_3acell_20_3e_69',['SpatialModel&lt; api::model::Cell &gt;',['../classfpmas_1_1api_1_1model_1_1SpatialModel.html',1,'fpmas::api::model']]],
+  ['staticendcondition_70',['StaticEndCondition',['../classfpmas_1_1model_1_1StaticEndCondition.html',1,'fpmas::model']]],
+  ['status_71',['Status',['../structfpmas_1_1api_1_1communication_1_1Status.html',1,'fpmas::api::communication']]],
+  ['stringoutput_72',['StringOutput',['../classfpmas_1_1io_1_1StringOutput.html',1,'fpmas::io']]],
+  ['stripprocessmapping_73',['StripProcessMapping',['../classfpmas_1_1model_1_1StripProcessMapping.html',1,'fpmas::model']]],
+  ['synchronizegraphtask_74',['SynchronizeGraphTask',['../classfpmas_1_1model_1_1detail_1_1SynchronizeGraphTask.html',1,'fpmas::model::detail']]],
+  ['synclinker_75',['SyncLinker',['../classfpmas_1_1api_1_1synchro_1_1SyncLinker.html',1,'fpmas::api::synchro']]],
+  ['syncmode_76',['SyncMode',['../classfpmas_1_1api_1_1synchro_1_1SyncMode.html',1,'fpmas::api::synchro']]]
 ];

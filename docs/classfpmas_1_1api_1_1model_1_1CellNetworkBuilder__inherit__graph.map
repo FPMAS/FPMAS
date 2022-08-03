@@ -1,4 +1,5 @@
 <map id="fpmas::api::model::CellNetworkBuilder&lt; CellType &gt;" name="fpmas::api::model::CellNetworkBuilder&lt; CellType &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="19,5,161,61"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1model_1_1detail_1_1GridBuilder.html" title=" " alt="" coords="5,109,175,151"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,31,148,87"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1model_1_1SpatialGraphBuilder.html" title=" " alt="" coords="196,5,380,47"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1model_1_1detail_1_1GridBuilder.html" title=" " alt="" coords="203,71,373,112"/>
 </map>

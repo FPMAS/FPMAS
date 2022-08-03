@@ -205,145 +205,149 @@ $(function() {
 <div class="line"><a id="l00179" name="l00179"></a><span class="lineno">  179</span>            std::vector&lt;api::graph::DistributedNode&lt;T&gt;*&gt; built_nodes;</div>
 <div class="line"><a id="l00180" name="l00180"></a><span class="lineno">  180</span>            <span class="keywordflow">for</span>(<span class="keyword">auto</span> rank : ranks)</div>
 <div class="line"><a id="l00181" name="l00181"></a><span class="lineno">  181</span>                <span class="keywordflow">for</span>(<span class="keyword">auto</span> node_id : ids_requests[rank])</div>
-<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>                    built_nodes.push_back(</div>
-<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>                            node_builder.<a class="code hl_function" href="classfpmas_1_1api_1_1graph_1_1DistributedNodeBuilder.html#aa2b6c24aa14b97a5441b0c5546564f36">buildDistantNode</a>(node_id, rank, graph));</div>
-<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span> </div>
-<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>            <span class="keywordflow">return</span> built_nodes;</div>
-<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>        }</div>
-<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>                </div>
-<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span>    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> NodeIterator&gt;</div>
-<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>        <span class="keywordtype">void</span> RingGraphBuilder&lt;T&gt;::link_loop(</div>
-<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>                api::graph::DistributedGraph&lt;T&gt;&amp; graph,</div>
-<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>                NodeIterator local_node_iterator,</div>
-<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>                std::size_t local_node_count,</div>
-<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>                NodeIterator link_node_iterator,</div>
-<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>                <a class="code hl_typedef" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">api::graph::LayerId</a> layer</div>
-<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>                ) {</div>
-<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>            <span class="comment">// Create links between nodes to build a loop</span></div>
-<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>            <span class="comment">//</span></div>
-<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>            <span class="comment">// At this point, the link_node list contains exactly k distant</span></div>
-<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>            <span class="comment">// nodes in addition to the local_node list. Depending of the</span></div>
-<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>            <span class="comment">// current orientation of the built loop, the k additional distant</span></div>
-<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>            <span class="comment">// nodes might be at the beginning or at the end of the link_node</span></div>
-<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>            <span class="comment">// list, but this is not important here: the algorithm starts from</span></div>
-<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>            <span class="comment">// the provided `local_node_iterator`, and links each of the</span></div>
-<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>            <span class="comment">// `local_node_count` local node to its k nearest neighbors in the</span></div>
-<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>            <span class="comment">// loop. The last local nodes will notably be linked to the last k</span></div>
-<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>            <span class="comment">// distant nodes of the link_node list.</span></div>
-<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>            NodeIterator local_node = local_node_iterator;</div>
-<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>            <span class="keywordflow">for</span>(std::size_t n = 0; n &lt; local_node_count; n++) {</div>
-<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>                NodeIterator link_node = link_node_iterator;</div>
-<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>                <span class="comment">// Puts the `link_node` iterator at the same position as</span></div>
-<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>                <span class="comment">// `local_node` in the local node list</span></div>
-<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>                std::advance(link_node, n);</div>
-<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>                <span class="comment">// Links the local_node to the k next nodes in the link node</span></div>
-<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>                <span class="comment">// list</span></div>
-<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>                <span class="keywordflow">for</span>(std::size_t i = 0; i &lt; k; i++) {</div>
-<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>                    <span class="comment">// Selects the next link node</span></div>
-<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>                    link_node++;</div>
-<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>                    <span class="comment">// Links the local node to the link node</span></div>
-<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>                    graph.link(*local_node, *link_node, layer);</div>
-<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>                }</div>
-<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>                local_node++;</div>
-<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>            }</div>
-<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span> </div>
-<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>            graph.synchronizationMode().getSyncLinker().synchronize();</div>
-<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>        }</div>
-<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span> </div>
-<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span>    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a id="l00229" name="l00229"></a><span class="lineno"><a class="line" href="classfpmas_1_1graph_1_1RingGraphBuilder.html#a8db71725d4b02dea7ec78f88ab08739a">  229</a></span>        std::vector&lt;api::graph::DistributedNode&lt;T&gt;*&gt; <a class="code hl_function" href="classfpmas_1_1graph_1_1RingGraphBuilder.html#a8db71725d4b02dea7ec78f88ab08739a">RingGraphBuilder&lt;T&gt;::build</a>(</div>
-<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>                <a class="code hl_class" href="classfpmas_1_1api_1_1graph_1_1DistributedNodeBuilder.html">api::graph::DistributedNodeBuilder&lt;T&gt;</a>&amp; node_builder,</div>
-<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span>                <a class="code hl_typedef" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">api::graph::LayerId</a> layer,</div>
-<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>                <a class="code hl_class" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph&lt;T&gt;</a>&amp; graph) {</div>
-<div class="line"><a id="l00233" name="l00233"></a><span class="lineno">  233</span>            <span class="comment">// Builds local nodes</span></div>
-<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>            std::list&lt;api::graph::DistributedNode&lt;T&gt;*&gt; local_nodes;</div>
-<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>            <span class="keywordflow">while</span>(node_builder.<a class="code hl_function" href="classfpmas_1_1api_1_1graph_1_1DistributedNodeBuilder.html#a5a7d5c780fd08380fe4c022763181f2f">localNodeCount</a>() &gt; 0)</div>
-<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>                local_nodes.push_back(node_builder.<a class="code hl_function" href="classfpmas_1_1api_1_1graph_1_1NodeBuilder.html#ae9d61b5184e5780c4ea5b7ad533f93f7">buildNode</a>(graph));</div>
-<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span> </div>
-<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>            <span class="comment">// MPI related set up</span></div>
-<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>            <span class="keywordtype">int</span> rank = graph.<a class="code hl_function" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a2b3f0478c07635b3594d7592167050b0">getMpiCommunicator</a>().<a class="code hl_function" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a5d0a8ba6389d11dda81add366f6fc9b9">getRank</a>();</div>
-<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>            <span class="keywordtype">int</span> size = graph.<a class="code hl_function" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a2b3f0478c07635b3594d7592167050b0">getMpiCommunicator</a>().<a class="code hl_function" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#adaa99abca527281fe2b7993a524c31c4">getSize</a>();</div>
+<div class="line"><a id="l00182" name="l00182"></a><span class="lineno">  182</span>                    <span class="comment">// If a node corresponding to node_id was already in the</span></div>
+<div class="line"><a id="l00183" name="l00183"></a><span class="lineno">  183</span>                    <span class="comment">// graph, nothing is done but the returned node is the one</span></div>
+<div class="line"><a id="l00184" name="l00184"></a><span class="lineno">  184</span>                    <span class="comment">// actually contained in the graph, so built_nodes stays</span></div>
+<div class="line"><a id="l00185" name="l00185"></a><span class="lineno">  185</span>                    <span class="comment">// consistent</span></div>
+<div class="line"><a id="l00186" name="l00186"></a><span class="lineno">  186</span>                    built_nodes.push_back(</div>
+<div class="line"><a id="l00187" name="l00187"></a><span class="lineno">  187</span>                            node_builder.<a class="code hl_function" href="classfpmas_1_1api_1_1graph_1_1DistributedNodeBuilder.html#aa2b6c24aa14b97a5441b0c5546564f36">buildDistantNode</a>(node_id, rank, graph));</div>
+<div class="line"><a id="l00188" name="l00188"></a><span class="lineno">  188</span> </div>
+<div class="line"><a id="l00189" name="l00189"></a><span class="lineno">  189</span>            <span class="keywordflow">return</span> built_nodes;</div>
+<div class="line"><a id="l00190" name="l00190"></a><span class="lineno">  190</span>        }</div>
+<div class="line"><a id="l00191" name="l00191"></a><span class="lineno">  191</span>                </div>
+<div class="line"><a id="l00192" name="l00192"></a><span class="lineno">  192</span>    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00193" name="l00193"></a><span class="lineno">  193</span>        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> NodeIterator&gt;</div>
+<div class="line"><a id="l00194" name="l00194"></a><span class="lineno">  194</span>        <span class="keywordtype">void</span> RingGraphBuilder&lt;T&gt;::link_loop(</div>
+<div class="line"><a id="l00195" name="l00195"></a><span class="lineno">  195</span>                api::graph::DistributedGraph&lt;T&gt;&amp; graph,</div>
+<div class="line"><a id="l00196" name="l00196"></a><span class="lineno">  196</span>                NodeIterator local_node_iterator,</div>
+<div class="line"><a id="l00197" name="l00197"></a><span class="lineno">  197</span>                std::size_t local_node_count,</div>
+<div class="line"><a id="l00198" name="l00198"></a><span class="lineno">  198</span>                NodeIterator link_node_iterator,</div>
+<div class="line"><a id="l00199" name="l00199"></a><span class="lineno">  199</span>                <a class="code hl_typedef" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">api::graph::LayerId</a> layer</div>
+<div class="line"><a id="l00200" name="l00200"></a><span class="lineno">  200</span>                ) {</div>
+<div class="line"><a id="l00201" name="l00201"></a><span class="lineno">  201</span>            <span class="comment">// Create links between nodes to build a loop</span></div>
+<div class="line"><a id="l00202" name="l00202"></a><span class="lineno">  202</span>            <span class="comment">//</span></div>
+<div class="line"><a id="l00203" name="l00203"></a><span class="lineno">  203</span>            <span class="comment">// At this point, the link_node list contains exactly k distant</span></div>
+<div class="line"><a id="l00204" name="l00204"></a><span class="lineno">  204</span>            <span class="comment">// nodes in addition to the local_node list. Depending of the</span></div>
+<div class="line"><a id="l00205" name="l00205"></a><span class="lineno">  205</span>            <span class="comment">// current orientation of the built loop, the k additional distant</span></div>
+<div class="line"><a id="l00206" name="l00206"></a><span class="lineno">  206</span>            <span class="comment">// nodes might be at the beginning or at the end of the link_node</span></div>
+<div class="line"><a id="l00207" name="l00207"></a><span class="lineno">  207</span>            <span class="comment">// list, but this is not important here: the algorithm starts from</span></div>
+<div class="line"><a id="l00208" name="l00208"></a><span class="lineno">  208</span>            <span class="comment">// the provided `local_node_iterator`, and links each of the</span></div>
+<div class="line"><a id="l00209" name="l00209"></a><span class="lineno">  209</span>            <span class="comment">// `local_node_count` local node to its k nearest neighbors in the</span></div>
+<div class="line"><a id="l00210" name="l00210"></a><span class="lineno">  210</span>            <span class="comment">// loop. The last local nodes will notably be linked to the last k</span></div>
+<div class="line"><a id="l00211" name="l00211"></a><span class="lineno">  211</span>            <span class="comment">// distant nodes of the link_node list.</span></div>
+<div class="line"><a id="l00212" name="l00212"></a><span class="lineno">  212</span>            NodeIterator local_node = local_node_iterator;</div>
+<div class="line"><a id="l00213" name="l00213"></a><span class="lineno">  213</span>            <span class="keywordflow">for</span>(std::size_t n = 0; n &lt; local_node_count; n++) {</div>
+<div class="line"><a id="l00214" name="l00214"></a><span class="lineno">  214</span>                NodeIterator link_node = link_node_iterator;</div>
+<div class="line"><a id="l00215" name="l00215"></a><span class="lineno">  215</span>                <span class="comment">// Puts the `link_node` iterator at the same position as</span></div>
+<div class="line"><a id="l00216" name="l00216"></a><span class="lineno">  216</span>                <span class="comment">// `local_node` in the local node list</span></div>
+<div class="line"><a id="l00217" name="l00217"></a><span class="lineno">  217</span>                std::advance(link_node, n);</div>
+<div class="line"><a id="l00218" name="l00218"></a><span class="lineno">  218</span>                <span class="comment">// Links the local_node to the k next nodes in the link node</span></div>
+<div class="line"><a id="l00219" name="l00219"></a><span class="lineno">  219</span>                <span class="comment">// list</span></div>
+<div class="line"><a id="l00220" name="l00220"></a><span class="lineno">  220</span>                <span class="keywordflow">for</span>(std::size_t i = 0; i &lt; k; i++) {</div>
+<div class="line"><a id="l00221" name="l00221"></a><span class="lineno">  221</span>                    <span class="comment">// Selects the next link node</span></div>
+<div class="line"><a id="l00222" name="l00222"></a><span class="lineno">  222</span>                    link_node++;</div>
+<div class="line"><a id="l00223" name="l00223"></a><span class="lineno">  223</span>                    <span class="comment">// Links the local node to the link node</span></div>
+<div class="line"><a id="l00224" name="l00224"></a><span class="lineno">  224</span>                    graph.link(*local_node, *link_node, layer);</div>
+<div class="line"><a id="l00225" name="l00225"></a><span class="lineno">  225</span>                }</div>
+<div class="line"><a id="l00226" name="l00226"></a><span class="lineno">  226</span>                local_node++;</div>
+<div class="line"><a id="l00227" name="l00227"></a><span class="lineno">  227</span>            }</div>
+<div class="line"><a id="l00228" name="l00228"></a><span class="lineno">  228</span> </div>
+<div class="line"><a id="l00229" name="l00229"></a><span class="lineno">  229</span>            graph.synchronizationMode().getSyncLinker().synchronize();</div>
+<div class="line"><a id="l00230" name="l00230"></a><span class="lineno">  230</span>        }</div>
+<div class="line"><a id="l00231" name="l00231"></a><span class="lineno">  231</span> </div>
+<div class="line"><a id="l00232" name="l00232"></a><span class="lineno">  232</span>    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00233" name="l00233"></a><span class="lineno"><a class="line" href="classfpmas_1_1graph_1_1RingGraphBuilder.html#a8db71725d4b02dea7ec78f88ab08739a">  233</a></span>        std::vector&lt;api::graph::DistributedNode&lt;T&gt;*&gt; <a class="code hl_function" href="classfpmas_1_1graph_1_1RingGraphBuilder.html#a8db71725d4b02dea7ec78f88ab08739a">RingGraphBuilder&lt;T&gt;::build</a>(</div>
+<div class="line"><a id="l00234" name="l00234"></a><span class="lineno">  234</span>                <a class="code hl_class" href="classfpmas_1_1api_1_1graph_1_1DistributedNodeBuilder.html">api::graph::DistributedNodeBuilder&lt;T&gt;</a>&amp; node_builder,</div>
+<div class="line"><a id="l00235" name="l00235"></a><span class="lineno">  235</span>                <a class="code hl_typedef" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">api::graph::LayerId</a> layer,</div>
+<div class="line"><a id="l00236" name="l00236"></a><span class="lineno">  236</span>                <a class="code hl_class" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">api::graph::DistributedGraph&lt;T&gt;</a>&amp; graph) {</div>
+<div class="line"><a id="l00237" name="l00237"></a><span class="lineno">  237</span>            <span class="comment">// Builds local nodes</span></div>
+<div class="line"><a id="l00238" name="l00238"></a><span class="lineno">  238</span>            std::list&lt;api::graph::DistributedNode&lt;T&gt;*&gt; local_nodes;</div>
+<div class="line"><a id="l00239" name="l00239"></a><span class="lineno">  239</span>            <span class="keywordflow">while</span>(node_builder.<a class="code hl_function" href="classfpmas_1_1api_1_1graph_1_1DistributedNodeBuilder.html#a5a7d5c780fd08380fe4c022763181f2f">localNodeCount</a>() &gt; 0)</div>
+<div class="line"><a id="l00240" name="l00240"></a><span class="lineno">  240</span>                local_nodes.push_back(node_builder.<a class="code hl_function" href="classfpmas_1_1api_1_1graph_1_1NodeBuilder.html#ae9d61b5184e5780c4ea5b7ad533f93f7">buildNode</a>(graph));</div>
 <div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span> </div>
-<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>            <a class="code hl_struct" href="structfpmas_1_1communication_1_1TypedMpi.html">fpmas::communication::TypedMpi&lt;std::size_t&gt;</a> int_mpi(</div>
-<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>                    graph.<a class="code hl_function" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a2b3f0478c07635b3594d7592167050b0">getMpiCommunicator</a>());</div>
-<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span> </div>
-<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>            <span class="comment">// Gathers the total node counts on each processes</span></div>
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>            std::vector&lt;std::size_t&gt; node_counts = int_mpi.<a class="code hl_function" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#a04c869ee8b6e5c28527b3f5284a9b11d">allGather</a>(local_nodes.size());</div>
-<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span> </div>
-<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>            {</div>
-<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>                <span class="comment">/*</span></div>
-<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span><span class="comment">                 * Forward loop</span></div>
-<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span><span class="comment">                 */</span></div>
-<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span> </div>
-<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>                std::list&lt;api::graph::DistributedNode&lt;T&gt;*&gt; link_nodes = local_nodes;</div>
-<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span> </div>
-<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>                <span class="keyword">auto</span> distant_nodes = build_distant_nodes(</div>
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>                        graph, node_builder,</div>
-<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>                        node_counts,</div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>                        <span class="comment">// The BEGINNING of the local nodes will be sent to the</span></div>
-<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>                        <span class="comment">// PREVIOUS processes</span></div>
-<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>                        local_nodes.begin(),</div>
-<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>                        [rank, size] (<span class="keywordtype">int</span> level) -&gt; <span class="keywordtype">int</span> {</div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>                            <span class="comment">// Nodes are requested to processes AFTER the</span></div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>                            <span class="comment">// current process</span></div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>                            return (rank+level)%size;</div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>                        }</div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>                        );</div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span> </div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>                <span class="comment">// The BEGIN nodes are imported from the NEXT processes: they</span></div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>                <span class="comment">// correspond to the nodes that will be link to the END nodes</span></div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>                <span class="comment">// of the current process, so they are added at the end of the</span></div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>                <span class="comment">// link_nodes list.</span></div>
-<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>                <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : distant_nodes)</div>
-<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>                    link_nodes.push_back(node);</div>
-<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span> </div>
-<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>                <span class="comment">// Links forward loop: the local node list is crossed from</span></div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>                <span class="comment">// begin to end</span></div>
-<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>                link_loop(</div>
-<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span>                        graph,</div>
-<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>                        local_nodes.begin(), local_nodes.size(),</div>
-<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>                        link_nodes.begin(), layer</div>
-<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>                        );</div>
-<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>            } <span class="keywordflow">if</span>(ring_type == <a class="code hl_enumvalue" href="namespacefpmas_1_1graph.html#a40fbd0af030c98f1dd5b0023a40f0a3daa37f334755ee4cbdc0bd2c24401aa3d4">CYCLE</a>) {</div>
-<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>                <span class="comment">/*</span></div>
-<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span><span class="comment">                 * Backward loop</span></div>
-<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span><span class="comment">                 */</span></div>
-<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>                std::list&lt;api::graph::DistributedNode&lt;T&gt;*&gt; link_nodes = local_nodes;</div>
-<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span> </div>
-<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span>                <span class="keyword">auto</span> distant_nodes = build_distant_nodes(</div>
-<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span>                        graph, node_builder,</div>
-<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>                        node_counts,</div>
-<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span>                        <span class="comment">// The ENDING of the local nodes will be sent to the</span></div>
-<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>                        <span class="comment">// NEXT processes</span></div>
-<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>                        local_nodes.rbegin(),</div>
-<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>                        [rank, size] (<span class="keywordtype">int</span> current_level) -&gt; <span class="keywordtype">int</span> {</div>
-<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>                            <span class="comment">// Nodes are requested to processes BEFORE the</span></div>
-<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>                            <span class="comment">// current process</span></div>
-<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>                            return (rank+size-current_level)%size;</div>
-<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>                        }</div>
-<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>                        );</div>
-<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>                </div>
-<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>                <span class="comment">// The END nodes are imported from the PREVIOUS processes: they</span></div>
-<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>                <span class="comment">// correspond to the nodes that will be linked to the BEGIN</span></div>
-<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>                <span class="comment">// nodes of the current process, so they are added at beginning</span></div>
-<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>                <span class="comment">// of the link_nodes list.</span></div>
-<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>                <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : distant_nodes)</div>
-<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>                    link_nodes.push_front(node);</div>
-<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span> </div>
-<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>                <span class="comment">// Links backward loop: the local node list is crossed from end</span></div>
-<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>                <span class="comment">// to begin</span></div>
-<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>                link_loop(</div>
-<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span>                        graph,</div>
-<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>                        local_nodes.rbegin(), local_nodes.size(),</div>
-<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>                        link_nodes.rbegin(), layer</div>
-<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>                        );</div>
-<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>            }</div>
-<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span> </div>
-<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>            <span class="keywordflow">return</span> {local_nodes.begin(), local_nodes.end()};</div>
-<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>        }</div>
-<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>}}</div>
-<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span>            <span class="comment">// MPI related set up</span></div>
+<div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span>            <span class="keywordtype">int</span> rank = graph.<a class="code hl_function" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a2b3f0478c07635b3594d7592167050b0">getMpiCommunicator</a>().<a class="code hl_function" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a5d0a8ba6389d11dda81add366f6fc9b9">getRank</a>();</div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>            <span class="keywordtype">int</span> size = graph.<a class="code hl_function" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a2b3f0478c07635b3594d7592167050b0">getMpiCommunicator</a>().<a class="code hl_function" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#adaa99abca527281fe2b7993a524c31c4">getSize</a>();</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span> </div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>            <a class="code hl_struct" href="structfpmas_1_1communication_1_1TypedMpi.html">fpmas::communication::TypedMpi&lt;std::size_t&gt;</a> int_mpi(</div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>                    graph.<a class="code hl_function" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a2b3f0478c07635b3594d7592167050b0">getMpiCommunicator</a>());</div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span> </div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>            <span class="comment">// Gathers the total node counts on each processes</span></div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>            std::vector&lt;std::size_t&gt; node_counts = int_mpi.<a class="code hl_function" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#a04c869ee8b6e5c28527b3f5284a9b11d">allGather</a>(local_nodes.size());</div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span> </div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>            {</div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>                <span class="comment">/*</span></div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span><span class="comment">                 * Forward loop</span></div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span><span class="comment">                 */</span></div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span> </div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>                std::list&lt;api::graph::DistributedNode&lt;T&gt;*&gt; link_nodes = local_nodes;</div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span> </div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>                <span class="keyword">auto</span> distant_nodes = build_distant_nodes(</div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>                        graph, node_builder,</div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>                        node_counts,</div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>                        <span class="comment">// The BEGINNING of the local nodes will be sent to the</span></div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>                        <span class="comment">// PREVIOUS processes</span></div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>                        local_nodes.begin(),</div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>                        [rank, size] (<span class="keywordtype">int</span> level) -&gt; <span class="keywordtype">int</span> {</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>                            <span class="comment">// Nodes are requested to processes AFTER the</span></div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>                            <span class="comment">// current process</span></div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>                            return (rank+level)%size;</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>                        }</div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>                        );</div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span> </div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>                <span class="comment">// The BEGIN nodes are imported from the NEXT processes: they</span></div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>                <span class="comment">// correspond to the nodes that will be link to the END nodes</span></div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>                <span class="comment">// of the current process, so they are added at the end of the</span></div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>                <span class="comment">// link_nodes list.</span></div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>                <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : distant_nodes)</div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>                    link_nodes.push_back(node);</div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span> </div>
+<div class="line"><a id="l00279" name="l00279"></a><span class="lineno">  279</span>                <span class="comment">// Links forward loop: the local node list is crossed from</span></div>
+<div class="line"><a id="l00280" name="l00280"></a><span class="lineno">  280</span>                <span class="comment">// begin to end</span></div>
+<div class="line"><a id="l00281" name="l00281"></a><span class="lineno">  281</span>                link_loop(</div>
+<div class="line"><a id="l00282" name="l00282"></a><span class="lineno">  282</span>                        graph,</div>
+<div class="line"><a id="l00283" name="l00283"></a><span class="lineno">  283</span>                        local_nodes.begin(), local_nodes.size(),</div>
+<div class="line"><a id="l00284" name="l00284"></a><span class="lineno">  284</span>                        link_nodes.begin(), layer</div>
+<div class="line"><a id="l00285" name="l00285"></a><span class="lineno">  285</span>                        );</div>
+<div class="line"><a id="l00286" name="l00286"></a><span class="lineno">  286</span>            } <span class="keywordflow">if</span>(ring_type == <a class="code hl_enumvalue" href="namespacefpmas_1_1graph.html#a40fbd0af030c98f1dd5b0023a40f0a3daa37f334755ee4cbdc0bd2c24401aa3d4">CYCLE</a>) {</div>
+<div class="line"><a id="l00287" name="l00287"></a><span class="lineno">  287</span>                <span class="comment">/*</span></div>
+<div class="line"><a id="l00288" name="l00288"></a><span class="lineno">  288</span><span class="comment">                 * Backward loop</span></div>
+<div class="line"><a id="l00289" name="l00289"></a><span class="lineno">  289</span><span class="comment">                 */</span></div>
+<div class="line"><a id="l00290" name="l00290"></a><span class="lineno">  290</span>                std::list&lt;api::graph::DistributedNode&lt;T&gt;*&gt; link_nodes = local_nodes;</div>
+<div class="line"><a id="l00291" name="l00291"></a><span class="lineno">  291</span> </div>
+<div class="line"><a id="l00292" name="l00292"></a><span class="lineno">  292</span>                <span class="keyword">auto</span> distant_nodes = build_distant_nodes(</div>
+<div class="line"><a id="l00293" name="l00293"></a><span class="lineno">  293</span>                        graph, node_builder,</div>
+<div class="line"><a id="l00294" name="l00294"></a><span class="lineno">  294</span>                        node_counts,</div>
+<div class="line"><a id="l00295" name="l00295"></a><span class="lineno">  295</span>                        <span class="comment">// The ENDING of the local nodes will be sent to the</span></div>
+<div class="line"><a id="l00296" name="l00296"></a><span class="lineno">  296</span>                        <span class="comment">// NEXT processes</span></div>
+<div class="line"><a id="l00297" name="l00297"></a><span class="lineno">  297</span>                        local_nodes.rbegin(),</div>
+<div class="line"><a id="l00298" name="l00298"></a><span class="lineno">  298</span>                        [rank, size] (<span class="keywordtype">int</span> current_level) -&gt; <span class="keywordtype">int</span> {</div>
+<div class="line"><a id="l00299" name="l00299"></a><span class="lineno">  299</span>                            <span class="comment">// Nodes are requested to processes BEFORE the</span></div>
+<div class="line"><a id="l00300" name="l00300"></a><span class="lineno">  300</span>                            <span class="comment">// current process</span></div>
+<div class="line"><a id="l00301" name="l00301"></a><span class="lineno">  301</span>                            return (rank+size-current_level)%size;</div>
+<div class="line"><a id="l00302" name="l00302"></a><span class="lineno">  302</span>                        }</div>
+<div class="line"><a id="l00303" name="l00303"></a><span class="lineno">  303</span>                        );</div>
+<div class="line"><a id="l00304" name="l00304"></a><span class="lineno">  304</span>                </div>
+<div class="line"><a id="l00305" name="l00305"></a><span class="lineno">  305</span>                <span class="comment">// The END nodes are imported from the PREVIOUS processes: they</span></div>
+<div class="line"><a id="l00306" name="l00306"></a><span class="lineno">  306</span>                <span class="comment">// correspond to the nodes that will be linked to the BEGIN</span></div>
+<div class="line"><a id="l00307" name="l00307"></a><span class="lineno">  307</span>                <span class="comment">// nodes of the current process, so they are added at beginning</span></div>
+<div class="line"><a id="l00308" name="l00308"></a><span class="lineno">  308</span>                <span class="comment">// of the link_nodes list.</span></div>
+<div class="line"><a id="l00309" name="l00309"></a><span class="lineno">  309</span>                <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : distant_nodes)</div>
+<div class="line"><a id="l00310" name="l00310"></a><span class="lineno">  310</span>                    link_nodes.push_front(node);</div>
+<div class="line"><a id="l00311" name="l00311"></a><span class="lineno">  311</span> </div>
+<div class="line"><a id="l00312" name="l00312"></a><span class="lineno">  312</span>                <span class="comment">// Links backward loop: the local node list is crossed from end</span></div>
+<div class="line"><a id="l00313" name="l00313"></a><span class="lineno">  313</span>                <span class="comment">// to begin</span></div>
+<div class="line"><a id="l00314" name="l00314"></a><span class="lineno">  314</span>                link_loop(</div>
+<div class="line"><a id="l00315" name="l00315"></a><span class="lineno">  315</span>                        graph,</div>
+<div class="line"><a id="l00316" name="l00316"></a><span class="lineno">  316</span>                        local_nodes.rbegin(), local_nodes.size(),</div>
+<div class="line"><a id="l00317" name="l00317"></a><span class="lineno">  317</span>                        link_nodes.rbegin(), layer</div>
+<div class="line"><a id="l00318" name="l00318"></a><span class="lineno">  318</span>                        );</div>
+<div class="line"><a id="l00319" name="l00319"></a><span class="lineno">  319</span>            }</div>
+<div class="line"><a id="l00320" name="l00320"></a><span class="lineno">  320</span> </div>
+<div class="line"><a id="l00321" name="l00321"></a><span class="lineno">  321</span>            <span class="keywordflow">return</span> {local_nodes.begin(), local_nodes.end()};</div>
+<div class="line"><a id="l00322" name="l00322"></a><span class="lineno">  322</span>        }</div>
+<div class="line"><a id="l00323" name="l00323"></a><span class="lineno">  323</span>}}</div>
+<div class="line"><a id="l00324" name="l00324"></a><span class="lineno">  324</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aapi_2graph_2graph__builder_8h_html"><div class="ttname"><a href="api_2graph_2graph__builder_8h.html">graph_builder.h</a></div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1communication_1_1MpiCommunicator_html_a5d0a8ba6389d11dda81add366f6fc9b9"><div class="ttname"><a href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#a5d0a8ba6389d11dda81add366f6fc9b9">fpmas::api::communication::MpiCommunicator::getRank</a></div><div class="ttdeci">virtual int getRank() const =0</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1communication_1_1MpiCommunicator_html_adaa99abca527281fe2b7993a524c31c4"><div class="ttname"><a href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html#adaa99abca527281fe2b7993a524c31c4">fpmas::api::communication::MpiCommunicator::getSize</a></div><div class="ttdeci">virtual int getSize() const =0</div></div>
@@ -357,7 +361,7 @@ $(function() {
 <div class="ttc" id="aclassfpmas_1_1communication_1_1detail_1_1TypedMpi_html_a04c869ee8b6e5c28527b3f5284a9b11d"><div class="ttname"><a href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html#a04c869ee8b6e5c28527b3f5284a9b11d">fpmas::communication::detail::TypedMpi::allGather</a></div><div class="ttdeci">std::vector&lt; T &gt; allGather(const T &amp;) override</div><div class="ttdef"><b>Definition:</b> communication.h:492</div></div>
 <div class="ttc" id="aclassfpmas_1_1graph_1_1RingGraphBuilder_html"><div class="ttname"><a href="classfpmas_1_1graph_1_1RingGraphBuilder.html">fpmas::graph::RingGraphBuilder</a></div><div class="ttdef"><b>Definition:</b> ring_graph_builder.h:55</div></div>
 <div class="ttc" id="aclassfpmas_1_1graph_1_1RingGraphBuilder_html_a89354852aa1b7cc56c6f12ee20f74ef8"><div class="ttname"><a href="classfpmas_1_1graph_1_1RingGraphBuilder.html#a89354852aa1b7cc56c6f12ee20f74ef8">fpmas::graph::RingGraphBuilder::RingGraphBuilder</a></div><div class="ttdeci">RingGraphBuilder(std::size_t k, RingType ring_type=CYCLE)</div><div class="ttdef"><b>Definition:</b> ring_graph_builder.h:95</div></div>
-<div class="ttc" id="aclassfpmas_1_1graph_1_1RingGraphBuilder_html_a8db71725d4b02dea7ec78f88ab08739a"><div class="ttname"><a href="classfpmas_1_1graph_1_1RingGraphBuilder.html#a8db71725d4b02dea7ec78f88ab08739a">fpmas::graph::RingGraphBuilder::build</a></div><div class="ttdeci">std::vector&lt; api::graph::DistributedNode&lt; T &gt; * &gt; build(api::graph::DistributedNodeBuilder&lt; T &gt; &amp;node_builder, api::graph::LayerId layer, api::graph::DistributedGraph&lt; T &gt; &amp;graph) override</div><div class="ttdef"><b>Definition:</b> ring_graph_builder.h:229</div></div>
+<div class="ttc" id="aclassfpmas_1_1graph_1_1RingGraphBuilder_html_a8db71725d4b02dea7ec78f88ab08739a"><div class="ttname"><a href="classfpmas_1_1graph_1_1RingGraphBuilder.html#a8db71725d4b02dea7ec78f88ab08739a">fpmas::graph::RingGraphBuilder::build</a></div><div class="ttdeci">std::vector&lt; api::graph::DistributedNode&lt; T &gt; * &gt; build(api::graph::DistributedNodeBuilder&lt; T &gt; &amp;node_builder, api::graph::LayerId layer, api::graph::DistributedGraph&lt; T &gt; &amp;graph) override</div><div class="ttdef"><b>Definition:</b> ring_graph_builder.h:233</div></div>
 <div class="ttc" id="acommunication_2communication_8h_html"><div class="ttname"><a href="communication_2communication_8h.html">communication.h</a></div></div>
 <div class="ttc" id="afunctional_8h_html"><div class="ttname"><a href="functional_8h.html">functional.h</a></div></div>
 <div class="ttc" id="agraph_2distributed__node_8h_html"><div class="ttname"><a href="graph_2distributed__node_8h.html">distributed_node.h</a></div></div>
