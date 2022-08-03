@@ -341,6 +341,7 @@ TEST(ObjectPack, string) {
 TEST(ObjectPack, DistributedId) {
 	TEST_DATAPACK_IO(DistributedId, {8, 421}, {2, 14});
 }
+
 TEST(ObjectPack, size_vector) {
 	TEST_DATAPACK_IO(
 			std::vector<std::size_t>,
@@ -363,13 +364,44 @@ TEST(ObjectPack, list) {
 			{1, 2, 3},
 			{-64, 15, -30000, 2}
 			);
-};
+}
 
 TEST(ObjectPack, deque) {
 	TEST_DATAPACK_IO(
 			std::deque<std::int64_t>,
 			{1, 2, 3},
 			{-64, 15, -30000, 2}
+			);
+}
+
+TEST(ObjectPack, vector_distributed_id) {
+	TEST_DATAPACK_IO(
+			std::vector<fpmas::api::graph::DistributedId>,
+			{{0, 1}, {14, 2}, {3, 10}},
+			{{2, 15}, {300, 2}}
+			);
+}
+
+TEST(ObjectPack, set_distributed_id) {
+	TEST_DATAPACK_IO(
+			std::set<fpmas::api::graph::DistributedId>,
+			{{0, 1}, {14, 2}, {3, 10}},
+			{{2, 15}, {300, 2}}
+			);
+}
+
+TEST(ObjectPack, list_distributed_id) {
+	TEST_DATAPACK_IO(
+			std::list<fpmas::api::graph::DistributedId>,
+			{{0, 1}, {14, 2}, {3, 10}},
+			{{2, 15}, {300, 2}}
+			);
+};
+TEST(ObjectPack, deque_distributed_id) {
+	TEST_DATAPACK_IO(
+			std::deque<fpmas::api::graph::DistributedId>,
+			{{0, 1}, {14, 2}, {3, 10}},
+			{{2, 15}, {300, 2}}
 			);
 };
 

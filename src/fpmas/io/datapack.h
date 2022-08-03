@@ -1076,7 +1076,7 @@ namespace fpmas { namespace io { namespace datapack {
 					std::size_t size = pack.template get<std::size_t>();
 					std::deque<T> deque;
 					for(std::size_t i = 0; i < size; i++) {
-						deque.emplace_back(pack.template get<std::size_t>());
+						deque.emplace_back(pack.template get<T>());
 					}
 					return deque;
 				}
