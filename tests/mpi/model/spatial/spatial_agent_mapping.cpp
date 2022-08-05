@@ -50,7 +50,7 @@ TEST(UniformAgentMappingTest, build) {
 
 	// Builds Agents using a `new Agent` statement
 	fpmas::model::DefaultSpatialAgentFactory<FakeSpatialAgent> agent_factory;
-	// Assigns a single Agent on a random GraphCell
+	// Assigns each Agent to a random GraphCell
 	fpmas::model::UniformAgentMapping mapping(
 			model.getMpiCommunicator(), model.cellGroup(), 10
 			);
@@ -68,7 +68,8 @@ TEST(UniformAgentMappingTest, build) {
 
 	fpmas::communication::TypedMpi<std::size_t> mpi(model.getMpiCommunicator());
 
-	std::size_t agent_count = fpmas::communication::all_reduce(mpi, group.localAgents().size());
+	std::size_t agent_count
+		= fpmas::communication::all_reduce(mpi, group.localAgents().size());
 
 	ASSERT_EQ(agent_count, 10);
 }
