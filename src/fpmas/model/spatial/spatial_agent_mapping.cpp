@@ -1,5 +1,6 @@
 #include "spatial_agent_mapping.h"
 #include "fpmas/utils/functional.h"
+#include <fpmas/random/random.h>
 
 namespace fpmas { namespace model {
 	random::mt19937_64 RandomMapping::rd;
@@ -19,14 +20,11 @@ namespace fpmas { namespace model {
 		for(auto agent : cell_group.localAgents())
 			cell_ids.push_back(agent->node()->getId());
 
-		fpmas::communication::TypedMpi<decltype(cell_ids)> mpi(comm);
-		cell_ids = fpmas::communication::all_reduce(
-				mpi, cell_ids, utils::Concat()
-				);
+		std::vector<DistributedId> local_cell_choices
+			= fpmas::random::split_choices(comm, cell_ids, agent_count);
 
-		fpmas::random::UniformIntDistribution<std::size_t> dist(0, cell_ids.size()-1);
-		for(std::size_t i = 0; i < agent_count; i++)
-			mapping[cell_ids[dist(RandomMapping::rd)]]++;
+		for(auto& item : local_cell_choices)
+			mapping[item]++;
 	}
 
 	std::size_t UniformAgentMapping::countAt(api::model::Cell* cell) {
