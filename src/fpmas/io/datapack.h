@@ -917,7 +917,7 @@ namespace fpmas { namespace io { namespace datapack {
 			template<typename PackType>
 			static std::size_t size(const PackType& p, const std::set<T>& set) {
 				std::size_t n = p.template size<std::size_t>();
-				for(auto item : set)
+				for(const T& item : set)
 					n += p.template size(item);
 				return n;
 			}
@@ -935,7 +935,7 @@ namespace fpmas { namespace io { namespace datapack {
 				static void to_datapack(PackType& pack, const std::set<T>& set) {
 					pack.template put(set.size());
 					// Items are written in order
-					for(auto item : set)
+					for(const T& item : set)
 						pack.template put(item);
 				}
 
@@ -983,7 +983,7 @@ namespace fpmas { namespace io { namespace datapack {
 			template<typename PackType>
 				static std::size_t size(const PackType& p, const std::list<T>& list) {
 					std::size_t n = p.template size<std::size_t>();
-					for(auto item : list)
+					for(const T& item : list)
 						n += p.template size(item);
 					return n;
 				}
@@ -1001,7 +1001,7 @@ namespace fpmas { namespace io { namespace datapack {
 				static void to_datapack(PackType& pack, const std::list<T>& list) {
 					pack.template put(list.size());
 					// Items are written in order
-					for(auto item : list)
+					for(const T& item : list)
 						pack. template put(item);
 				}
 
@@ -1058,7 +1058,7 @@ namespace fpmas { namespace io { namespace datapack {
 				static void to_datapack(PackType& pack, const std::deque<T>& deque) {
 					pack.template put(deque.size());
 					// Items are written in order
-					for(auto item : deque)
+					for(const T& item : deque)
 						pack.template put(item);
 				}
 
@@ -1161,7 +1161,7 @@ namespace fpmas { namespace io { namespace datapack {
 						const PackType& p,
 						const std::map<K, T, Comp, Alloc>& map) {
 					std::size_t n = p.template size<std::size_t>();
-					for(auto& item : map)
+					for(const auto& item : map)
 						n += p.template size(item);
 					return n;
 				}
@@ -1181,7 +1181,7 @@ namespace fpmas { namespace io { namespace datapack {
 						const std::map<K, T, Comp, Alloc>& map) {
 					pack.template put(map.size());
 					// Items are written in order
-					for(auto& item : map)
+					for(const auto& item : map)
 						pack.template put(item);
 				}
 
@@ -1228,7 +1228,7 @@ namespace fpmas { namespace io { namespace datapack {
 						const PackType& p,
 						const std::unordered_map<K, T, Hash, KeyEq, Alloc>& map) {
 					std::size_t n = p.template size<std::size_t>();
-					for(auto& item : map)
+					for(const auto& item : map)
 						n += p.template size(item);
 					return n;
 				}
@@ -1248,7 +1248,7 @@ namespace fpmas { namespace io { namespace datapack {
 						const std::unordered_map<K, T, Hash, KeyEq, Alloc>& map) {
 					pack.template put(map.size());
 					// Items are written in order
-					for(auto& item : map)
+					for(const auto& item : map)
 						pack.template put(item);
 				}
 
@@ -1291,7 +1291,7 @@ namespace fpmas { namespace io { namespace datapack {
 			template<typename PackType>
 				static std::size_t size(const PackType& p, const std::array<T, N>& array) {
 					std::size_t n = 0;
-					for(auto item : array)
+					for(const T& item : array)
 						n += p.template size(item);
 					return n;
 				}
@@ -1307,7 +1307,7 @@ namespace fpmas { namespace io { namespace datapack {
 			 */
 			template<typename PackType>
 				static void to_datapack(PackType& pack, const std::array<T, N>& array) {
-					for(auto item : array)
+					for(const T& item : array)
 						pack.template put(item);
 				}
 
