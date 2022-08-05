@@ -74,6 +74,10 @@ namespace fpmas { namespace graph {
 				 * required to globally reduce lengths of paths in the graph,
 				 * while preserving a high clustering coefficient.
 				 *
+				 * The build process uses the
+				 * RandomGraphBuilder::distributed_rd, so the process can be
+				 * seeded with RandomGraphBuilder::seed() or fpmas::seed().
+				 *
 				 * @param p probability of rewriring each edge
 				 * @param k initial output degree of each node (assumed to be
 				 * even)

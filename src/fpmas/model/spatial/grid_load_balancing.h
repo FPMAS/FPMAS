@@ -117,11 +117,10 @@ namespace fpmas { namespace model {
 	 * processes in a power of 2, the algorithm produces a "classical" grid
 	 * decomposition as performed by RepastHPC.
 	 *
-	 * The algorithm can also handle any process count, including those that
-	 * are not a power of 2.
+	 * The algorithm can handle any process count, including those that are not
+	 * a power of 2.
 	 *
-	 * The grid can also be of any size, without any restriction on width or
-	 * height.
+	 * The grid can be of any size, without any restriction on width or height.
 	 */
 	class TreeProcessMapping : public GridProcessMapping {
 		private:
