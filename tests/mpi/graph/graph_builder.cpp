@@ -5,6 +5,7 @@
 #include "random/mock_random.h"
 
 #include "gmock/gmock.h"
+#include <fpmas/graph/analysis.h>
 
 using namespace testing;
 
@@ -30,6 +31,7 @@ class DistributedNodeBuilder : public fpmas::graph::DistributedNodeBuilder<int> 
 TEST(DistributedUniformGraphBuilder, build) {
 	static std::size_t NODE_COUNT = 200;
 	static std::size_t NUM_EDGE_BY_NODE = 6;
+	static int LAYER_ID = 2;
 	fpmas::graph::DistributedGraph<int, fpmas::synchro::GhostMode> graph(fpmas::communication::WORLD);
 
 	fpmas::random::DistributedGenerator<> generator;
@@ -41,7 +43,7 @@ TEST(DistributedUniformGraphBuilder, build) {
 	DistributedNodeBuilder node_builder(NODE_COUNT, graph.getMpiCommunicator());
 	fpmas::graph::DistributedUniformGraphBuilder<int> builder(generator, edge_dist);
 
-	builder.build(node_builder, 2, graph);
+	builder.build(node_builder, LAYER_ID, graph);
 
 	fpmas::communication::TypedMpi<std::size_t> mpi(graph.getMpiCommunicator());
 
@@ -52,10 +54,12 @@ TEST(DistributedUniformGraphBuilder, build) {
 
 	ASSERT_GE(graph.getLocationManager().getLocalNodes().size(), 1);
 	ASSERT_EQ(node_count, NODE_COUNT);
+	for(auto node : graph.getLocationManager().getLocalNodes())
+		ASSERT_THAT(node.second->getOutgoingEdges(LAYER_ID), SizeIs(NUM_EDGE_BY_NODE));
 
 	std::set<int> nodes_on_other_procs;
 	for(auto node : graph.getLocationManager().getLocalNodes()) {
-		auto edges = node.second->getOutgoingEdges(2);
+		auto edges = node.second->getOutgoingEdges(LAYER_ID);
 		ASSERT_THAT(edges.size(), NUM_EDGE_BY_NODE);
 		for(auto edge : node.second->getOutgoingEdges()) {
 			nodes_on_other_procs.insert(edge->getTargetNode()->location());
@@ -75,6 +79,7 @@ TEST(DistributedUniformGraphBuilder, build) {
 TEST(DistributedClusteredGraphBuilder, build) {
 	static std::size_t NODE_COUNT = 1000;
 	static std::size_t NUM_EDGE_BY_NODE = 6;
+	static int LAYER_ID = 2;
 	fpmas::graph::DistributedGraph<int, fpmas::synchro::GhostMode> graph(
 			fpmas::communication::WORLD
 			);
@@ -93,21 +98,18 @@ TEST(DistributedClusteredGraphBuilder, build) {
 			generator, edge_dist, xy_dist, xy_dist
 			);
 
-	builder.build(node_builder, 2, graph);
+	builder.build(node_builder, LAYER_ID, graph);
 
 	fpmas::communication::TypedMpi<std::size_t> mpi(graph.getMpiCommunicator());
 
-	std::size_t node_count = fpmas::communication::all_reduce(
-			mpi,
-			graph.getLocationManager().getLocalNodes().size()
-			);
-
 	ASSERT_GE(graph.getLocationManager().getLocalNodes().size(), 1);
-	ASSERT_EQ(node_count, NODE_COUNT);
+	ASSERT_EQ(fpmas::graph::node_count(graph), NODE_COUNT);
+	for(auto node : graph.getLocationManager().getLocalNodes())
+		ASSERT_THAT(node.second->getOutgoingEdges(LAYER_ID), SizeIs(NUM_EDGE_BY_NODE));
 
 	std::set<int> nodes_on_other_procs;
 	for(auto node : graph.getLocationManager().getLocalNodes()) {
-		auto edges = node.second->getOutgoingEdges(2);
+		auto edges = node.second->getOutgoingEdges(LAYER_ID);
 		ASSERT_THAT(edges.size(), NUM_EDGE_BY_NODE);
 		for(auto edge : node.second->getOutgoingEdges()) {
 			nodes_on_other_procs.insert(edge->getTargetNode()->location());
