@@ -196,6 +196,12 @@ namespace fpmas { namespace api { namespace graph {
 				return false;
 			}
 
+			bool operator<=(const DistributedId& other) const {
+				if(*this == other)
+					return true;
+				return *this < other;
+			}
+
 			/**
 			 * Two DistributedId instances are equal iff their ranks and their
 			 * ids are equal.
