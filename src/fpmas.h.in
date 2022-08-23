@@ -16,6 +16,8 @@
 #include "fpmas/io/json_output.h"
 #include "fpmas/io/breakpoint.h"
 #include "fpmas/utils/cast.h"
+#include "fpmas/graph/analysis.h"
+#include "fpmas/model/spatial/analysis.h"
 
 /**
  * FPMAS version literal.
@@ -89,6 +91,7 @@ namespace fpmas {
 	 * - fpmas::model::RandomNeighbors::seed()
 	 * - fpmas::model::RandomMapping::seed()
 	 * - \ref fpmas::random::rd_choices "fpmas::random::rd_choices.seed()"
+	 * - fpmas::graph::RandomGraphBuilder::seed()
 	 * - fpmas::model::RandomGridAgentBuilder::seed()
 	 *
 	 * Those are currently the only static random generators used internally in

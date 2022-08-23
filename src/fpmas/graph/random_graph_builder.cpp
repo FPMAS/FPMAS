@@ -1,4 +1,4 @@
-#include "graph_builder.h"
+#include "random_graph_builder.h"
 
 namespace fpmas { namespace graph {
 	random::DistributedGenerator<> RandomGraphBuilder::distributed_rd;
