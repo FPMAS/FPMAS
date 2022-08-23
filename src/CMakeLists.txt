@@ -17,7 +17,7 @@ set(SOURCES
 	fpmas/communication/communication.cpp
 	# Graph 
 	fpmas/graph/zoltan_load_balancing.cpp
-	fpmas/graph/graph_builder.cpp
+	fpmas/graph/random_graph_builder.cpp
 	# Scheduler
 	fpmas/scheduler/scheduler.cpp
 	# Runtime
