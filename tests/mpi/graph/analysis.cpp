@@ -270,7 +270,6 @@ TEST(CharacteristicPathLenghts, complete_graph) {
 		fpmas::communication::WORLD
 	};
 	std::size_t N_NODES = 10*graph.getMpiCommunicator().getSize();
-	std::size_t N_SOURCES = 3*graph.getMpiCommunicator().getSize();
 	fpmas::api::graph::PartitionMap partition;
 	FPMAS_ON_PROC(graph.getMpiCommunicator(), 0) {
 		fpmas::random::mt19937_64 rd_generator;
