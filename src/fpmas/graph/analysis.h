@@ -7,15 +7,15 @@
 
 #include "fpmas/api/graph/distributed_graph.h"
 #include "fpmas/communication/communication.h"
-
+#include "fpmas/utils/functional.h"
 #include <set>
+#include <queue>
 
 namespace fpmas { namespace graph {
 	/**
 	 * Counts the total number of nodes contained in the distributed graph.
 	 */
-	template<typename T>
-		std::size_t node_count(api::graph::DistributedGraph<T>& graph) {
+	template<typename T> std::size_t node_count(api::graph::DistributedGraph<T>& graph) {
 			communication::TypedMpi<std::size_t> int_mpi(graph.getMpiCommunicator());
 			return communication::all_reduce(
 					int_mpi, graph.getLocationManager().getLocalNodes().size());
@@ -185,6 +185,145 @@ namespace fpmas { namespace graph {
 				return 0;
 		}
 
+	template<typename T>
+	void explore(
+			api::graph::DistributedId source,
+			std::queue<std::pair<api::graph::DistributedNode<T>*, float>>& node_queue,
+			api::graph::LayerId layer,
+			std::unordered_map<DistributedId, std::unordered_map<DistributedId, float>>& distances,
+			std::unordered_map<
+			int,
+			std::unordered_map<DistributedId, std::unordered_map<DistributedId, float>>
+			>& next_processes) {
+		while(!node_queue.empty()) {
+			auto current_node = node_queue.front();
+			node_queue.pop();
+			if(current_node.first->state() == api::graph::LOCAL) {
+				if(current_node.second < distances[current_node.first->getId()][source]) {
+					distances[current_node.first->getId()][source] = current_node.second;
+					for(auto edge : current_node.first->getOutgoingEdges(layer))
+						node_queue.push({edge->getTargetNode(), current_node.second+1});
+				}
+			} else {
+				// Map with all requests for node from any source
+				auto& current_node_requests = next_processes
+					[current_node.first->location()][current_node.first->getId()];
+				// Request for the current node from the current source
+				auto current_source_request = current_node_requests.find(source);
+				if(current_source_request == current_node_requests.end())
+					// No request from the current source, create new one
+					current_node_requests[source] = current_node.second;
+				else if(current_node.second < current_node_requests[source])
+					// Else a request already exist, but replace it only if it
+					// can produce a shortest path
+					current_node_requests[source] = current_node.second;
+			}
+		}
+	}
+
+	template<typename T>
+	std::vector<DistributedId> local_node_ids(
+			fpmas::api::graph::DistributedGraph<T>& graph) {
+		std::vector<DistributedId> ids(
+				graph.getLocationManager().getLocalNodes().size());
+		auto it = ids.begin();
+		for(auto& item : graph.getLocationManager().getLocalNodes()) {
+			*it = item.first;
+			++it;
+		}
+		return ids;
+	}
+
+	template<typename T>
+	std::unordered_map<DistributedId, std::unordered_map<DistributedId, float>>
+		shortest_path_lengths(
+				fpmas::api::graph::DistributedGraph<T>& graph,
+				fpmas::api::graph::LayerId layer,
+				const std::vector<DistributedId>& source_nodes
+				) {
+			fpmas::communication::TypedMpi<std::vector<DistributedId>> vector_id_mpi(
+					graph.getMpiCommunicator());
+			// Map local node: (source node: distance)
+			std::unordered_map<DistributedId, std::unordered_map<DistributedId, float>>
+				distances;
+			std::vector<DistributedId> all_source_nodes = communication::all_reduce(
+					vector_id_mpi, source_nodes, fpmas::utils::Concat());
+			api::graph::NodeMap<T> local_nodes
+				= graph.getLocationManager().getLocalNodes();
+			for(auto node : local_nodes)
+				for(auto id : all_source_nodes)
+					distances[node.first][id] = std::numeric_limits<float>::infinity();
+
+			std::unordered_map<int,
+				std::unordered_map<DistributedId, std::unordered_map<DistributedId, float>>
+				> next_processes;
+			fpmas::communication::TypedMpi<
+				std::unordered_map<DistributedId, std::unordered_map<DistributedId, float>>>
+				next_mpi(graph.getMpiCommunicator());
+			for(auto source : all_source_nodes) {
+				auto source_node = local_nodes.find(source);
+				if(source_node != local_nodes.end()) {
+					std::queue<std::pair<api::graph::DistributedNode<T>*, float>>
+						node_queue;
+					node_queue.push({source_node->second, 0});
+					explore(source, node_queue, layer, distances, next_processes);
+				}
+			}
+
+			communication::TypedMpi<bool> bool_mpi(graph.getMpiCommunicator());
+			auto and_fct = 
+					[](const bool& b1, const bool& b2) {return b1 && b2;};
+			bool end = communication::all_reduce(
+					bool_mpi, next_processes.size() == 0, and_fct
+					);
+			while(!end) {
+				auto requests = next_mpi.allToAll(next_processes);
+				next_processes.clear();
+				for(auto proc : requests) {
+					for(auto node : proc.second)
+						for(auto source : node.second) {
+							// Re-launch exploration from local node
+							std::queue<std::pair<api::graph::DistributedNode<T>*, float>> node_queue;
+							node_queue.push({graph.getNode(node.first), source.second});
+							explore(
+									source.first, node_queue, layer,
+									distances, next_processes
+								   );
+						}
+				}
+				end = communication::all_reduce(
+					bool_mpi, next_processes.size() == 0, and_fct
+					);
+			}
+
+			return distances;
+		}
+
+	template<typename T>
+		float characteristic_path_length(
+				fpmas::api::graph::DistributedGraph<T>& graph,
+				fpmas::api::graph::LayerId layer,
+				const std::vector<DistributedId>& source_nodes
+				) {
+			auto distances = shortest_path_lengths(graph, layer, source_nodes);
+
+			communication::TypedMpi<float> distance_mpi(graph.getMpiCommunicator());
+			communication::TypedMpi<std::size_t> int_mpi(graph.getMpiCommunicator());
+			float local_sum = 0;
+			// Number of node pairs between which a path actually exists
+			std::size_t num_pairs = 0;
+			for(auto& source : distances)
+				for(auto& distance : source.second) {
+					if(source.first != distance.first &&
+							distance.second < std::numeric_limits<float>::infinity()) {
+						local_sum+=distance.second;
+						num_pairs++;
+					}
+				}
+			float total_sum = communication::all_reduce(distance_mpi, local_sum);
+			num_pairs = communication::all_reduce(int_mpi, num_pairs);
+			return total_sum / num_pairs;
+		}
 }}
 
 #endif
