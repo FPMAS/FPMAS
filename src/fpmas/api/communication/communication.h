@@ -167,9 +167,9 @@ namespace fpmas { namespace api { namespace communication {
 		/**
 		 * Data buffer.
 		 */
-		DataPack* __data = nullptr;
+		DataPack* __data;
 
-		Request() {}
+		Request() : __mpi_request(), __data(nullptr) {}
 		Request(const Request&) = delete;
 		/**
 		 * Request move constructor.
