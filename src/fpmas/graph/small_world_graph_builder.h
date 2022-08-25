@@ -18,28 +18,28 @@ namespace fpmas { namespace graph {
 	 *
 	 * We consider a node count `N`, a mean output degree `K` (supposed to be
 	 * even), and a probability `p`.
-	 * 1. Build `N` nodes, and connect them in a CYCLE as specicfied in the
+	 * 1. Build `N` nodes, and connect them in a CYCLE as specified in the
 	 * RingGraphBuilder. `K/2` is used as a parameter for the RingGraphBuilder,
 	 * so that each node as `K` outgoing neighbors in total (`K/2` on each side).
-	 * 2. Consider the outgoing edges of each node, and rewire it with a
-	 * probability `p/2` to a node chosen among all the possible nodes. If the
-	 * current node is selected or a link from the current node to the chosen
-	 * node already exists, nothing is done. The outgoing edge rewiring
-	 * procedure consists in changing the target node of the edge.
-	 * 3. Do exactly the same but with incoming edges, changing source nodes of
-	 * incoming edges with a probability `p/2`. Edges considered are only
-	 * incoming edges from the original CYCLE: incoming edges resulting of
-	 * rewiring from the previous step are not considered, so that edges cannot
-	 * be rewired twice.
-	 *
+	 * 2. Consider each edge, and select it for rewiring with a probability `p`.
+	 * If selected, chose if target or source will be rewired with a probability
+	 * `0.5`.
+	 * 3. Rewires all edges that need a new target. The new target is chosen
+	 * randomly among all the nodes. Nothing is done if the randomly selected
+	 * new target corresponds to the current source, of if an edge already
+	 * exists from the current source to the selected target.
+	 * 4. Synchronization barrier
+	 * 5. Analog procedure for all edges that need a new source.
+	 * 
 	 * # Explanations
-	 * Each edge is considered twice (one time as incoming edge, and one time as
-	 * outgoing) with a probability `p/2`, so each edge has finally a probability
-	 * `p` to be rewired. It si required to do so to prevent the following
-	 * issue: if edges where considered only once in the outgoing rewiring
-	 * process (with a probability `p`), all nodes would necessarily have
-	 * exactly `K` outgoing neighbors at the end of the process, what introduces
-	 * a bias.
+	 * - It is necessary to randomly chose which side of each edge to rewire, to
+	 *   prevent all nodes to have exactly `K` outgoing neighbors at the end of
+	 *   the process.
+	 * - The synchronization barrier prevents concurrency issues. For example,
+	 *   during step 3, it is not possible for any process other that the
+	 *   current one to build a new outgoing edge from the current source, since
+	 *   only new targets are selected, so that it is safe to check for existing
+	 *   outgoing edges.
 	 *
 	 * # Example
 	 * | | n=16, k=4, p=0.1 ||
@@ -106,33 +106,40 @@ namespace fpmas { namespace graph {
 			for(std::size_t i = 0; i < local_ids.size(); i++)
 				local_ids[i] = local_nodes[i]->getId();
 
-			std::set<DistributedId> rewired_edges;
+			// First pass: rewire out edges
+			std::vector<api::graph::DistributedEdge<T>*> in_edges_to_rewire;
+			std::vector<api::graph::DistributedEdge<T>*> out_edges_to_rewire;
+			random::UniformRealDistribution<float> rd_float(0, 1);
+			random::BernoulliDistribution rd_bool(0.5);
+			for(auto node : local_nodes)
+				for(auto edge : node->getOutgoingEdges(layer))
+					if(rd_float(RandomGraphBuilder::distributed_rd) < p) {
+						if(rd_bool(RandomGraphBuilder::distributed_rd))
+							out_edges_to_rewire.push_back(edge);
+						else
+							in_edges_to_rewire.push_back(edge);
+					}
+
+
 			{
 				// First pass: rewire out edges
-				std::vector<api::graph::DistributedEdge<T>*> edges_to_rewire;
-				random::UniformRealDistribution<float> rd_float(0, 1);
-				for(auto node : local_nodes)
-					for(auto edge : node->getOutgoingEdges(layer))
-						if(rd_float(RandomGraphBuilder::distributed_rd) < p/2)
-							edges_to_rewire.push_back(edge);
-
-				std::vector<std::pair<DistributedId, int>> random_nodes(edges_to_rewire.size());
+				std::vector<std::pair<DistributedId, int>> random_nodes(out_edges_to_rewire.size());
 				{
 					auto it = random_nodes.begin();
 					std::vector<std::vector<DistributedId>> random_choices =
 						random::distributed_choices(
 								graph.getMpiCommunicator(),
 								local_ids,
-								edges_to_rewire.size());
+								out_edges_to_rewire.size());
 					for(std::size_t i = 0; i < random_choices.size(); i++)
 						for(auto& item : random_choices[i])
 							*it++ = {item, i};
 				}
 
-				for(std::size_t i = 0; i < edges_to_rewire.size(); i++) {
-					if(random_nodes[i].first != edges_to_rewire[i]->getSourceNode()->getId()) {
+				for(std::size_t i = 0; i < out_edges_to_rewire.size(); i++) {
+					if(random_nodes[i].first != out_edges_to_rewire[i]->getSourceNode()->getId()) {
 						auto current_source_out_edges = 
-							edges_to_rewire[i]->getSourceNode()->getOutgoingEdges(layer);
+							out_edges_to_rewire[i]->getSourceNode()->getOutgoingEdges(layer);
 						// Ensures the edge from source to random node is not built
 						// yet
 						if(std::find_if(
@@ -151,9 +158,8 @@ namespace fpmas { namespace graph {
 										);
 							}
 
-							auto new_edge = graph.link(edges_to_rewire[i]->getSourceNode(), new_target, layer);
-							rewired_edges.insert(new_edge->getId());
-							graph.unlink(edges_to_rewire[i]);
+							graph.link(out_edges_to_rewire[i]->getSourceNode(), new_target, layer);
+							graph.unlink(out_edges_to_rewire[i]);
 						}
 					}
 				}
@@ -161,33 +167,23 @@ namespace fpmas { namespace graph {
 			graph.synchronize();
 			{
 				// Second pass: rewire in edges
-				std::vector<api::graph::DistributedEdge<T>*> edges_to_rewire;
-				random::UniformRealDistribution<float> rd_float(0, 1);
-				for(auto node : local_nodes)
-					for(auto edge : node->getIncomingEdges(layer))
-						// Do not consider incoming edges resulting from the
-						// previous out rewiring procedure
-						if(rewired_edges.find(edge->getId()) == rewired_edges.end())
-							if(rd_float(RandomGraphBuilder::distributed_rd) < p/2)
-								edges_to_rewire.push_back(edge);
-
-				std::vector<std::pair<DistributedId, int>> random_nodes(edges_to_rewire.size());
+				std::vector<std::pair<DistributedId, int>> random_nodes(in_edges_to_rewire.size());
 				{
 					auto it = random_nodes.begin();
 					std::vector<std::vector<DistributedId>> random_choices =
 						random::distributed_choices(
 								graph.getMpiCommunicator(),
 								local_ids,
-								edges_to_rewire.size());
+								in_edges_to_rewire.size());
 					for(std::size_t i = 0; i < random_choices.size(); i++)
 						for(auto& item : random_choices[i])
 							*it++ = {item, i};
 				}
 
-				for(std::size_t i = 0; i < edges_to_rewire.size(); i++) {
-					if(random_nodes[i].first != edges_to_rewire[i]->getTargetNode()->getId()) {
+				for(std::size_t i = 0; i < in_edges_to_rewire.size(); i++) {
+					if(random_nodes[i].first != in_edges_to_rewire[i]->getTargetNode()->getId()) {
 						auto current_target_in_edges = 
-							edges_to_rewire[i]->getTargetNode()->getIncomingEdges(layer);
+							in_edges_to_rewire[i]->getTargetNode()->getIncomingEdges(layer);
 						// Ensures the edge from random node to target is not built
 						// yet
 						if(std::find_if(
@@ -206,8 +202,8 @@ namespace fpmas { namespace graph {
 										);
 							}
 
-							graph.link(new_source, edges_to_rewire[i]->getTargetNode(), layer);
-							graph.unlink(edges_to_rewire[i]);
+							graph.link(new_source, in_edges_to_rewire[i]->getTargetNode(), layer);
+							graph.unlink(in_edges_to_rewire[i]);
 						}
 					}
 				}
