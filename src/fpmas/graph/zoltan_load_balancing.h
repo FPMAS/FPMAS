@@ -644,7 +644,7 @@ namespace fpmas { namespace graph {
 	template<typename T> void ZoltanLoadBalancing<T>::setUpZoltan(int lb_period) {
 		zoltan::zoltan_config(&this->zoltan);
 
-		this->zoltan.Set_Param("PHG_REPART_MULTIPLIER", std::to_string(lb_period));
+		this->zoltan.Set_Param("PHG_REPART_MULTIPLIER", std::to_string(10*lb_period));
 
 		// Initializes Zoltan Node Load Balancing functions
 		this->zoltan.Set_Obj_Size_Multi_Fn(zoltan::obj_size<T>, &this->zoltan_data);
