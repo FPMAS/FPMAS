@@ -453,21 +453,21 @@ namespace fpmas { namespace graph {
 				/**
 				 * ZoltanLoadBalancing constructor.
 				 *
-				 * A default lb_period of 100, what corresponds to the default
-				 * Zoltan
+				 * A default
 				 * [PHG_REPART_MULTIPLIER](https://htmlpreview.github.io/?https://raw.githubusercontent.com/sandialabs/zoltan/master/doc/Zoltan_html/ug_html/ug_alg_phg.html)
+				 * value of 100 is used, what corresponds to the default Zoltan
 				 * value.
 				 *
 				 * @param comm MpiCommunicator implementation
 				 */
 				ZoltanLoadBalancing(communication::MpiCommunicatorBase& comm)
-					: ZoltanLoadBalancing(comm, 100) {
+					: ZoltanLoadBalancing(comm, 10) {
 					}
 
 				/**
 				 * ZoltanLoadBalancing constructor.
 				 *
-				 * `lb_period` is used as the Zoltan
+				 * `10*lb_period` is used as the Zoltan
 				 * [PHG_REPART_MULTIPLIER](https://htmlpreview.github.io/?https://raw.githubusercontent.com/sandialabs/zoltan/master/doc/Zoltan_html/ug_html/ug_alg_phg.html)
 				 * value.
 				 *
