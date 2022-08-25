@@ -22,7 +22,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="fpmas_logo_small.png"/></td>
   <td id="projectalign">
-   <div id="projectname">fpmas<span id="projectnumber">&#160;1.5.2</span>
+   <div id="projectname">fpmas<span id="projectnumber">&#160;1.5.3</span>
    </div>
   </td>
  </tr>
@@ -340,7 +340,7 @@ $(function() {
 <div class="line"><a id="l00451" name="l00451"></a><span class="lineno">  451</span>            <span class="keyword">public</span>:</div>
 <div class="line"><a id="l00452" name="l00452"></a><span class="lineno">  452</span> </div>
 <div class="line"><a id="l00463" name="l00463"></a><span class="lineno"><a class="line" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a8baaa58631744d67268d6846e191232c">  463</a></span>                <a class="code hl_function" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a8baaa58631744d67268d6846e191232c">ZoltanLoadBalancing</a>(<a class="code hl_class" href="classfpmas_1_1communication_1_1MpiCommunicatorBase.html">communication::MpiCommunicatorBase</a>&amp; comm)</div>
-<div class="line"><a id="l00464" name="l00464"></a><span class="lineno">  464</span>                    : <a class="code hl_class" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html">ZoltanLoadBalancing</a>(comm, 100) {</div>
+<div class="line"><a id="l00464" name="l00464"></a><span class="lineno">  464</span>                    : <a class="code hl_class" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html">ZoltanLoadBalancing</a>(comm, 10) {</div>
 <div class="line"><a id="l00465" name="l00465"></a><span class="lineno">  465</span>                    }</div>
 <div class="line"><a id="l00466" name="l00466"></a><span class="lineno">  466</span> </div>
 <div class="line"><a id="l00479" name="l00479"></a><span class="lineno"><a class="line" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#adcf615339123c6ac13811948bd591095">  479</a></span>                <a class="code hl_function" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#adcf615339123c6ac13811948bd591095">ZoltanLoadBalancing</a>(<a class="code hl_class" href="classfpmas_1_1communication_1_1MpiCommunicatorBase.html">communication::MpiCommunicatorBase</a>&amp; comm, <span class="keywordtype">int</span> lb_period)</div>
@@ -483,7 +483,7 @@ $(function() {
 <div class="line"><a id="l00644" name="l00644"></a><span class="lineno">  644</span>    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; <span class="keywordtype">void</span> <a class="code hl_class" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html">ZoltanLoadBalancing&lt;T&gt;::setUpZoltan</a>(<span class="keywordtype">int</span> lb_period) {</div>
 <div class="line"><a id="l00645" name="l00645"></a><span class="lineno">  645</span>        <a class="code hl_function" href="namespacefpmas_1_1graph_1_1zoltan.html#a5dba3e09b1c68378547b22a77e78431f">zoltan::zoltan_config</a>(&amp;this-&gt;zoltan);</div>
 <div class="line"><a id="l00646" name="l00646"></a><span class="lineno">  646</span> </div>
-<div class="line"><a id="l00647" name="l00647"></a><span class="lineno">  647</span>        this-&gt;zoltan.Set_Param(<span class="stringliteral">&quot;PHG_REPART_MULTIPLIER&quot;</span>, std::to_string(lb_period));</div>
+<div class="line"><a id="l00647" name="l00647"></a><span class="lineno">  647</span>        this-&gt;zoltan.Set_Param(<span class="stringliteral">&quot;PHG_REPART_MULTIPLIER&quot;</span>, std::to_string(10*lb_period));</div>
 <div class="line"><a id="l00648" name="l00648"></a><span class="lineno">  648</span> </div>
 <div class="line"><a id="l00649" name="l00649"></a><span class="lineno">  649</span>        <span class="comment">// Initializes Zoltan Node Load Balancing functions</span></div>
 <div class="line"><a id="l00650" name="l00650"></a><span class="lineno">  650</span>        this-&gt;zoltan.Set_Obj_Size_Multi_Fn(zoltan::obj_size&lt;T&gt;, &amp;this-&gt;zoltan_data);</div>

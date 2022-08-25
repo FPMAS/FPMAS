@@ -22,7 +22,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="fpmas_logo_small.png"/></td>
   <td id="projectalign">
-   <div id="projectname">fpmas<span id="projectnumber">&#160;1.5.2</span>
+   <div id="projectname">fpmas<span id="projectnumber">&#160;1.5.3</span>
    </div>
   </td>
  </tr>
@@ -152,7 +152,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p ><a class="el" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html">ZoltanLoadBalancing</a> constructor.</p>
-<p >A default lb_period of 100, what corresponds to the default Zoltan <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/sandialabs/zoltan/master/doc/Zoltan_html/ug_html/ug_alg_phg.html">PHG_REPART_MULTIPLIER</a> value.</p>
+<p >A default <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/sandialabs/zoltan/master/doc/Zoltan_html/ug_html/ug_alg_phg.html">PHG_REPART_MULTIPLIER</a> value of 100 is used, what corresponds to the default Zoltan value.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">comm</td><td>MpiCommunicator implementation </td></tr>
@@ -198,7 +198,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p ><a class="el" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html">ZoltanLoadBalancing</a> constructor.</p>
-<p ><code>lb_period</code> is used as the Zoltan <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/sandialabs/zoltan/master/doc/Zoltan_html/ug_html/ug_alg_phg.html">PHG_REPART_MULTIPLIER</a> value.</p>
+<p ><code>10*lb_period</code> is used as the Zoltan <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/sandialabs/zoltan/master/doc/Zoltan_html/ug_html/ug_alg_phg.html">PHG_REPART_MULTIPLIER</a> value.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">comm</td><td>MpiCommunicator implementation </td></tr>
