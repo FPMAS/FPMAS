@@ -6,6 +6,8 @@
 #include "fpmas/random/random.h"
 #include "ring_graph_builder.h"
 #include "random_graph_builder.h"
+#include <fpmas/api/graph/location_state.h>
+#include <fpmas/communication/communication.h>
 
 namespace fpmas { namespace graph {
 
@@ -107,7 +109,7 @@ namespace fpmas { namespace graph {
 				local_ids[i] = local_nodes[i]->getId();
 
 			// First pass: rewire out edges
-			std::vector<api::graph::DistributedEdge<T>*> in_edges_to_rewire;
+			std::vector<api::graph::DistributedEdge<T>*> pre_in_edges_to_rewire;
 			std::vector<api::graph::DistributedEdge<T>*> out_edges_to_rewire;
 			random::UniformRealDistribution<float> rd_float(0, 1);
 			random::BernoulliDistribution rd_bool(0.5);
@@ -117,10 +119,9 @@ namespace fpmas { namespace graph {
 						if(rd_bool(RandomGraphBuilder::distributed_rd))
 							out_edges_to_rewire.push_back(edge);
 						else
-							in_edges_to_rewire.push_back(edge);
+							pre_in_edges_to_rewire.push_back(edge);
 					}
-
-
+			std::unordered_map<int, std::vector<DistributedId>> in_edges_rewiring_requests;
 			{
 				// First pass: rewire out edges
 				std::vector<std::pair<DistributedId, int>> random_nodes(out_edges_to_rewire.size());
@@ -138,6 +139,8 @@ namespace fpmas { namespace graph {
 
 				for(std::size_t i = 0; i < out_edges_to_rewire.size(); i++) {
 					if(random_nodes[i].first != out_edges_to_rewire[i]->getSourceNode()->getId()) {
+						assert(out_edges_to_rewire[i]->getSourceNode()->state()
+								==  api::graph::LOCAL);
 						auto current_source_out_edges = 
 							out_edges_to_rewire[i]->getSourceNode()->getOutgoingEdges(layer);
 						// Ensures the edge from source to random node is not built
@@ -163,8 +166,28 @@ namespace fpmas { namespace graph {
 						}
 					}
 				}
+				out_edges_to_rewire.clear();
 			}
 			graph.synchronize();
+
+			std::vector<api::graph::DistributedEdge<T>*> in_edges_to_rewire;
+			for(auto edge : pre_in_edges_to_rewire)
+				if(edge->getTargetNode()->state() != api::graph::LOCAL)
+					in_edges_rewiring_requests[edge->getTargetNode()->location()]
+						.push_back(edge->getId());
+				else
+					in_edges_to_rewire.push_back(edge);
+			// Frees memory
+			pre_in_edges_to_rewire.clear();
+
+			fpmas::communication::TypedMpi<std::vector<DistributedId>> id_mpi(
+					graph.getMpiCommunicator());
+			in_edges_rewiring_requests = id_mpi.allToAll(in_edges_rewiring_requests);
+			for(auto item : in_edges_rewiring_requests)
+				for(auto edge_id : item.second)
+					in_edges_to_rewire.push_back(graph.getEdge(edge_id));
+			// Frees memory
+			in_edges_rewiring_requests.clear();
 			{
 				// Second pass: rewire in edges
 				std::vector<std::pair<DistributedId, int>> random_nodes(in_edges_to_rewire.size());
@@ -182,6 +205,8 @@ namespace fpmas { namespace graph {
 
 				for(std::size_t i = 0; i < in_edges_to_rewire.size(); i++) {
 					if(random_nodes[i].first != in_edges_to_rewire[i]->getTargetNode()->getId()) {
+						assert(in_edges_to_rewire[i]->getTargetNode()->state()
+								==  api::graph::LOCAL);
 						auto current_target_in_edges = 
 							in_edges_to_rewire[i]->getTargetNode()->getIncomingEdges(layer);
 						// Ensures the edge from random node to target is not built
