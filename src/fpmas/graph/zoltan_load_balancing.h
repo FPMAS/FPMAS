@@ -144,7 +144,7 @@ namespace fpmas { namespace graph {
 		 *
 		 * Currently, the migration cost is computed as `1+n_edges`, where
 		 * `n_edges` is the count of incoming and outgoing edges from the node.
-		 * This cost thus represent the amount of items to migrate if the node
+		 * This cost thus represents the amount of items to migrate if the node
 		 * is assigned to an other process.
 		 *
 		 * For more information about this function, see the [Zoltan
