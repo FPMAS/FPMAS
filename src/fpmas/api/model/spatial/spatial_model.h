@@ -509,6 +509,11 @@ namespace fpmas { namespace api { namespace model {
 			virtual AgentGroup& cellGroup() = 0;
 
 			/**
+			 * \copydoc cellGroup()
+			 */
+			virtual const AgentGroup& cellGroup() const = 0;
+
+			/**
 			 * Builds an agent group that automatically includes the
 			 * DistributedMoveAlgorithm execution.
 			 *

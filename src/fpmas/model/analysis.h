@@ -6,7 +6,7 @@
 namespace fpmas { namespace model {
 
 	std::vector<api::graph::DistributedId> local_agent_ids(
-			api::model::AgentGroup& group);
+			const api::model::AgentGroup& group);
 
 }}
 #endif
