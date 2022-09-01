@@ -18,7 +18,9 @@ class BaseGraphCellTest : public Test {
 		void SetUp() override {
 			ON_CALL(mock_model, graph())
 				.WillByDefault(ReturnRef(mock_graph));
-			ON_CALL(mock_model, cellGroup)
+			ON_CALL(mock_model, cellGroup())
+				.WillByDefault(ReturnRef(mock_cell_group));
+			ON_CALL(Const(mock_model), cellGroup())
 				.WillByDefault(ReturnRef(mock_cell_group));
 
 			for(int i = 0; i < 4; i++) {

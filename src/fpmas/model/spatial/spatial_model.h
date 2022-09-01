@@ -685,6 +685,7 @@ namespace fpmas { namespace model {
 						void add(CellType* cell) override;
 						std::vector<CellType*> cells() override;
 						fpmas::api::model::AgentGroup& cellGroup() override;
+						const fpmas::api::model::AgentGroup& cellGroup() const override;
 						MoveAgentGroup<CellType>& buildMoveGroup(
 								api::model::GroupId id,
 								const api::model::Behavior& behavior) override;
@@ -705,6 +706,11 @@ namespace fpmas { namespace model {
 
 	template<template<typename> class SyncMode, typename CellType, typename EndCondition>
 		fpmas::api::model::AgentGroup& SpatialModel<SyncMode, CellType, EndCondition>::cellGroup() {
+			return cell_group;
+		}
+
+	template<template<typename> class SyncMode, typename CellType, typename EndCondition>
+		const fpmas::api::model::AgentGroup& SpatialModel<SyncMode, CellType, EndCondition>::cellGroup() const {
 			return cell_group;
 		}
 

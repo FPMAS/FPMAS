@@ -448,6 +448,23 @@ namespace fpmas { namespace model {
 				Neighbor<AgentType> random() {
 					return random(RandomNeighbors::rd);
 				}
+
+				/**
+				 * \copydoc random(Gen&)
+				 */
+				template<typename Gen>
+					const Neighbor<AgentType> random(Gen& gen) const {
+						random::UniformIntDistribution<std::size_t> index(
+								0, this->count()-1);
+						return neighbors.at(index(gen));
+					}
+
+				/**
+				 * \copydoc random()
+				 */
+				const Neighbor<AgentType> random() const {
+					return random(RandomNeighbors::rd);
+				}
 		};
 
 	/**
