@@ -417,6 +417,7 @@ namespace fpmas { namespace graph {
 				// A representation of the node might already be contained in the
 				// graph, if it were already built as a "distant" node.
 
+				NodeType* local_node;
 				if(this->getNodes().count(node->getId())==0) {
 					FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Inserting new LOCAL node %s.", FPMAS_C_STR(node->getId()));
 					// The node is not contained in the graph, we need to build a new
@@ -426,22 +427,32 @@ namespace fpmas { namespace graph {
 					this->insert(node);
 					setLocal(node, api::graph::SetLocalNodeEvent<T>::IMPORT_NEW_LOCAL);
 					node->setMutex(sync_mode.buildMutex(node));
-					return node;
+					local_node = node;
+				} else {
+					FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Replacing existing DISTANT node %s.", FPMAS_C_STR(node->getId()));
+					// A representation of the node was already contained in the graph.
+					// We just need to update its state.
+
+					// Set local representation as local
+					local_node = this->getNode(node->getId());
+					synchro::DataUpdate<T>::update(
+							local_node->data(), std::move(node->data())
+							);
+					local_node->setWeight(node->getWeight());
+					setLocal(local_node, api::graph::SetLocalNodeEvent<T>::IMPORT_EXISTING_LOCAL);
+
+					// Deletes unused temporary input node
+					delete node;
 				}
-				FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Replacing existing DISTANT node %s.", FPMAS_C_STR(node->getId()));
-				// A representation of the node was already contained in the graph.
-				// We just need to update its state.
+				for(auto& edge : local_node->getIncomingEdges())
+					if(edge->state() == api::graph::DISTANT
+							&& edge->getSourceNode()->state() == api::graph::LOCAL)
+						edge->setState(api::graph::LOCAL);
+				for(auto& edge : local_node->getOutgoingEdges())
+					if(edge->state() == api::graph::DISTANT
+							&& edge->getTargetNode()->state() == api::graph::LOCAL)
+						edge->setState(api::graph::LOCAL);
 
-				// Set local representation as local
-				auto local_node = this->getNode(node->getId());
-				synchro::DataUpdate<T>::update(
-						local_node->data(), std::move(node->data())
-						);
-				local_node->setWeight(node->getWeight());
-				setLocal(local_node, api::graph::SetLocalNodeEvent<T>::IMPORT_EXISTING_LOCAL);
-
-				// Deletes unused temporary input node
-				delete node;
 
 				return local_node;
 			}

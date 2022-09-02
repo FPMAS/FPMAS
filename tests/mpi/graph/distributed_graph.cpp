@@ -8,6 +8,7 @@
 #include "fpmas/api/graph/location_state.h"
 #include "fpmas/synchro/ghost/ghost_mode.h"
 #include "utils/test.h"
+#include <gmock/gmock-cardinalities.h>
 
 using fpmas::api::graph::LocationState;
 using fpmas::graph::DistributedGraph;
@@ -96,15 +97,7 @@ class DistributedGraphBalance : public ::testing::Test {
 					prevNode = nextNode;
 				}
 				graph.link(prevNode, firstNode, 0);
-			}
-			else if(graph.getMpiCommunicator().getSize() == 2) {
-				// 1 local node + 1 distant nodes will be created
-				EXPECT_CALL(graph.getSyncMode(), buildMutex).Times(2);
-			} else {
-				// 1 local node + 2 distant nodes will be created
-				EXPECT_CALL(graph.getSyncMode(), buildMutex).Times(3);
-			}
-		}
+			}		}
 };
 
 TEST_F(DistributedGraphBalance, distribute_test) {
@@ -112,6 +105,15 @@ TEST_F(DistributedGraphBalance, distribute_test) {
 		::testing::InSequence s;
 		EXPECT_CALL(mock_sync_linker, synchronize());
 		EXPECT_CALL(mock_data_sync, synchronize());
+	}
+	if(comm.getRank() > 0) {
+		if(comm.getSize() == 2) {
+			// 1 local node + 1 distant nodes will be created
+			EXPECT_CALL(graph.getSyncMode(), buildMutex).Times(2);
+		} else {
+			// 1 local node + 2 distant nodes will be created
+			EXPECT_CALL(graph.getSyncMode(), buildMutex).Times(3);
+		}
 	}
 	graph.distribute(partition);
 
@@ -124,6 +126,7 @@ TEST_F(DistributedGraphBalance, distribute_test) {
 	else {
 		ASSERT_EQ(graph.getNodes().size(), 3);
 	}
+
 	ASSERT_THAT(graph.getLocationManager().getLocalNodes(), SizeIs(1));
 	auto localNode = graph.getLocationManager().getLocalNodes().begin()->second;
 	if(graph.getMpiCommunicator().getSize() > 1) {
@@ -135,4 +138,33 @@ TEST_F(DistributedGraphBalance, distribute_test) {
 		ASSERT_EQ(localNode->getIncomingEdges()[0]->getSourceNode()->state(), LocationState::DISTANT);
 		ASSERT_EQ(graph.getEdges().size(), 2);
 	}
+}
+
+TEST_F(DistributedGraphBalance, distribute_test_with_local_edges) {
+	EXPECT_CALL(mock_sync_linker, synchronize()).Times(AnyNumber());
+	EXPECT_CALL(mock_data_sync, synchronize()).Times(AnyNumber());
+	EXPECT_CALL(graph.getSyncMode(), buildMutex).Times(AnyNumber());
+	// One node per process
+	graph.distribute(partition);
+	fpmas::api::graph::PartitionMap new_partition;
+	if(comm.getRank()%2 == 0)
+		for(auto node : graph.getLocationManager().getLocalNodes())
+			new_partition[node.first] = (comm.getRank()+1)%comm.getSize();
+
+	// Triggers import of edges where both ends are already present or imported
+	// on the target process
+	graph.distribute(new_partition);
+
+	if(comm.getRank()%2 == 0)
+		ASSERT_THAT(graph.getLocationManager().getLocalNodes(), SizeIs(0));
+	else
+		ASSERT_THAT(graph.getLocationManager().getLocalNodes(), SizeIs(2));
+
+	// Checks edge state
+	for(auto& edge : graph.getEdges())
+		if(edge.second->getSourceNode()->state() == fpmas::api::graph::LOCAL
+				&& edge.second->getTargetNode()->state() == fpmas::api::graph::LOCAL)
+			ASSERT_EQ(edge.second->state(), fpmas::api::graph::LOCAL);
+		else
+			ASSERT_EQ(edge.second->state(), fpmas::api::graph::DISTANT);
 }
