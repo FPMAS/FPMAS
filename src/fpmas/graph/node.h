@@ -29,6 +29,8 @@ namespace fpmas { namespace graph {
 				float weight;
 				mutable std::unordered_map<api::graph::LayerId, std::vector<EdgeType*>> incoming_edges;
 				mutable std::unordered_map<api::graph::LayerId, std::vector<EdgeType*>> outgoing_edges;
+				std::size_t num_in_edges = 0;
+				std::size_t num_out_edges = 0;
 
 			public:
 				/**
@@ -74,9 +76,10 @@ namespace fpmas { namespace graph {
 		const std::vector<typename Node<IdType, EdgeType>::EdgeType*>
 			Node<IdType, EdgeType>::getIncomingEdges() const {
 				std::vector<EdgeType*> in;
+				in.reserve(num_in_edges);
 				for(auto layer : this->incoming_edges) {
 					for(auto* edge : layer.second) {
-						in.push_back(edge);
+						in.emplace_back(edge);
 					}
 				}
 				return in;
@@ -92,9 +95,10 @@ namespace fpmas { namespace graph {
 		const std::vector<typename Node<IdType, EdgeType>::EdgeType*>
 			Node<IdType, EdgeType>::getOutgoingEdges() const {
 				std::vector<EdgeType*> out;
+				out.reserve(num_out_edges);
 				for(auto layer : this->outgoing_edges) {
 					for(auto* edge : layer.second) {
-						out.push_back(edge);
+						out.emplace_back(edge);
 					}
 				}
 				return out;
@@ -110,8 +114,9 @@ namespace fpmas { namespace graph {
 		const std::vector<typename Node<IdType, EdgeType>::EdgeType::NodeType*>
 		Node<IdType, EdgeType>::inNeighbors() const {
 			std::vector<typename EdgeType::NodeType*> neighbors;
+			neighbors.reserve(num_in_edges);
 			for(auto edge : this->getIncomingEdges()) {
-				neighbors.push_back(edge->getSourceNode());
+				neighbors.emplace_back(edge->getSourceNode());
 			}
 			return neighbors;
 		}
@@ -120,8 +125,10 @@ namespace fpmas { namespace graph {
 		const std::vector<typename Node<IdType, EdgeType>::EdgeType::NodeType*>
 		Node<IdType, EdgeType>::inNeighbors(api::graph::LayerId layer) const {
 			std::vector<typename EdgeType::NodeType*> neighbors;
-			for(auto edge : this->getIncomingEdges(layer)) {
-				neighbors.push_back(edge->getSourceNode());
+			auto edges = this->getIncomingEdges(layer);
+			neighbors.reserve(edges.size());
+			for(auto edge : edges) {
+				neighbors.emplace_back(edge->getSourceNode());
 			}
 			return neighbors;
 		}
@@ -130,8 +137,9 @@ namespace fpmas { namespace graph {
 		const std::vector<typename Node<IdType, EdgeType>::EdgeType::NodeType*>
 		Node<IdType, EdgeType>::outNeighbors() const {
 			std::vector<typename EdgeType::NodeType*> neighbors;
-			for(auto edge : this->getOutgoingEdges()) {
-				neighbors.push_back(edge->getTargetNode());
+			neighbors.reserve(num_out_edges);
+			for(auto& edge : this->getOutgoingEdges()) {
+				neighbors.emplace_back(edge->getTargetNode());
 			}
 			return neighbors;
 		}
@@ -140,8 +148,10 @@ namespace fpmas { namespace graph {
 		const std::vector<typename Node<IdType, EdgeType>::EdgeType::NodeType*>
 		Node<IdType, EdgeType>::outNeighbors(api::graph::LayerId layer) const {
 			std::vector<typename EdgeType::NodeType*> neighbors;
-			for(auto edge : this->getOutgoingEdges(layer)) {
-				neighbors.push_back(edge->getTargetNode());
+			auto edges = this->getOutgoingEdges(layer);
+			neighbors.reserve(edges.size());
+			for(auto edge : edges) {
+				neighbors.emplace_back(edge->getTargetNode());
 			}
 			return neighbors;
 		}
@@ -153,7 +163,8 @@ namespace fpmas { namespace graph {
 				FPMAS_C_STR(id),
 				FPMAS_C_STR(edge->getId()), edge
 				);
-			incoming_edges[edge->getLayer()].push_back(edge);
+			incoming_edges[edge->getLayer()].emplace_back(edge);
+			++num_in_edges;
 		}
 
 	template<typename IdType, typename EdgeType>
@@ -163,7 +174,8 @@ namespace fpmas { namespace graph {
 				FPMAS_C_STR(id),
 				FPMAS_C_STR(edge->getId()), edge
 				);
-			outgoing_edges[edge->getLayer()].push_back(edge);
+			outgoing_edges[edge->getLayer()].emplace_back(edge);
+			++num_out_edges;
 		}
 
 	template<typename IdType, typename EdgeType>
@@ -173,8 +185,13 @@ namespace fpmas { namespace graph {
 				FPMAS_C_STR(id), FPMAS_C_STR(edge->getId()), edge,
 				FPMAS_C_STR(edge->getSourceNode()->getId())
 				);
-			auto& edges = incoming_edges.at(edge->getLayer());
-			edges.erase(std::remove(edges.begin(), edges.end(), edge));
+			auto& edges = incoming_edges.find(edge->getLayer())->second;
+			// Removes only first edge matching, assumes no duplicate
+			auto it = std::find(edges.begin(), edges.end(), edge);
+			if(it != edges.end()) {
+				edges.erase(it);
+				--num_in_edges;
+			}
 		}
 
 	template<typename IdType, typename EdgeType>
@@ -184,8 +201,13 @@ namespace fpmas { namespace graph {
 				FPMAS_C_STR(id), FPMAS_C_STR(edge->getId()), edge,
 				FPMAS_C_STR(edge->getTargetNode()->getId())
 				);
-			auto& edges = outgoing_edges.at(edge->getLayer());
-			edges.erase(std::remove(edges.begin(), edges.end(), edge));
+			auto& edges = outgoing_edges.find(edge->getLayer())->second;
+			// Removes only first edge matching, assumes no duplicate
+			auto it = std::find(edges.begin(), edges.end(), edge);
+			if(it != edges.end()) {
+				edges.erase(it);
+				--num_out_edges;
+			}
 		}
 }}
 #endif
