@@ -1036,10 +1036,12 @@ namespace fpmas { namespace model {
 			 */
 			template<typename NeighborAgentType> Neighbors<NeighborAgentType> outNeighbors() const {
 				std::vector<Neighbor<NeighborAgentType>> out;
-				for(api::model::AgentEdge* _edge : node()->getOutgoingEdges()) {
+				auto edges = node()->getOutgoingEdges();
+				out.reserve(edges.size());
+				for(api::model::AgentEdge* _edge : edges) {
 					api::model::AgentNode* _node = _edge->getTargetNode();
 					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(_node->data().get())) {
-						out.push_back({&_node->data(), _edge});
+						out.emplace_back(&_node->data(), _edge);
 					}
 				}
 				return out;
@@ -1060,10 +1062,12 @@ namespace fpmas { namespace model {
 			 */
 			template<typename NeighborAgentType> Neighbors<NeighborAgentType> outNeighbors(api::graph::LayerId layer) const {
 				std::vector<Neighbor<NeighborAgentType>> out;
-				for(api::model::AgentEdge* _edge : node()->getOutgoingEdges(layer)) {
+				auto edges = node()->getOutgoingEdges(layer);
+				out.reserve(edges.size());
+				for(api::model::AgentEdge* _edge : edges) {
 					api::model::AgentNode* _node = _edge->getTargetNode();
 					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(_node->data().get())) {
-						out.push_back({&_node->data(), _edge});
+						out.emplace_back(&_node->data(), _edge);
 					}
 				}
 				return out;
@@ -1085,10 +1089,12 @@ namespace fpmas { namespace model {
 			 */
 			template<typename NeighborAgentType> Neighbors<NeighborAgentType> inNeighbors() const {
 				std::vector<Neighbor<NeighborAgentType>> in;
-				for(api::model::AgentEdge* _edge : node()->getIncomingEdges()) {
+				auto edges = node()->getIncomingEdges();
+				in.reserve(edges.size());
+				for(api::model::AgentEdge* _edge : edges) {
 					api::model::AgentNode* _node = _edge->getSourceNode();
 					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(_node->data().get())) {
-						in.push_back({&_node->data(), _edge});
+						in.emplace_back(&_node->data(), _edge);
 					}
 				}
 				return in;
@@ -1109,10 +1115,12 @@ namespace fpmas { namespace model {
 			 */
 			template<typename NeighborAgentType> Neighbors<NeighborAgentType> inNeighbors(api::graph::LayerId layer) const {
 				std::vector<Neighbor<NeighborAgentType>> in;
-				for(api::model::AgentEdge* _edge : node()->getIncomingEdges(layer)) {
+				auto edges = node()->getIncomingEdges(layer);
+				in.reserve(edges.size());
+				for(api::model::AgentEdge* _edge : edges) {
 					api::model::AgentNode* _node = _edge->getSourceNode();
 					if(NeighborAgentType* neighbor = dynamic_cast<NeighborAgentType*>(_node->data().get())) {
-						in.push_back({&_node->data(), _edge});
+						in.emplace_back(&_node->data(), _edge);
 					}
 				}
 				return in;
