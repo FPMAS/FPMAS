@@ -892,6 +892,7 @@ namespace fpmas { namespace io { namespace datapack {
 				static std::vector<T> from_datapack(const PackType& pack) {
 					std::size_t size = pack.template get<std::size_t>();
 					std::vector<T> data;
+					data.reserve(size);
 					for(std::size_t i = 0; i < size; i++)
 						data.emplace_back(pack.template get<T>());
 					return data;
@@ -1266,6 +1267,7 @@ namespace fpmas { namespace io { namespace datapack {
 						const PackType& pack) {
 					std::size_t size = pack.template get<std::size_t>();
 					std::unordered_map<K, T> map;
+					map.reserve(size);
 					for(std::size_t i = 0; i < size; i++)
 						map.emplace(pack.template get<std::pair<K, T>>());
 					return map;
