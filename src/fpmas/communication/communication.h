@@ -560,32 +560,27 @@ namespace fpmas { namespace communication {
 	}
 
 	/**
-	 * The default fpmas::communication::detail::TypedMpi specialization, based on nlohmann::json.
+	 * The default fpmas::communication::detail::TypedMpi specialization, based
+	 * on io::datapack::ObjectPack.
 	 *
-	 * Since json serialization rules are predefined for fundamental types and
-	 * std containers in the `nlohmann::json` implementation, sending such
-	 * structure through MPI is made trivial, without any additionnal user
-	 * defined code:
+	 * Since ObjectPack serialization rules are predefined for fundamental types
+	 * and std containers, sending such structure through MPI is made trivial,
+	 * without any additionnal user defined code:
 	 * ```cpp
 	 * // Used to transmit integers: predefined
 	 * TypedMpi<int> int_mpi;
 	 * // Used to transmit vectors of integers: predefined
 	 * TypedMpi<std::vector<int>> int_vector_mpi;
 	 * ```
-	 * If a `CustomType` is serializable in a `JsonType`, containers of
-	 * this type can trivially be transmitted, without any additionnal
-	 * code:
+	 * If a `CustomType` is serializable in an `ObjectPack`, containers of this
+	 * type can trivially be transmitted, without any additionnal code:
 	 * ```cpp
 	 * TypedMpi<std::vector<CustomType>> custom_type_vector_mpi;
 	 * ```
 	 *
-	 * @tparam T type to transmit, serializable into an `nlohmann::json`
+	 * @tparam T type to transmit, serializable into an
+	 * fpmas::io::datapack::ObjectPack
 	 */
-	//template<typename T>
-		//struct TypedMpi : public detail::TypedMpi<T, nlohmann::json> {
-			//using detail::TypedMpi<T, nlohmann::json>::TypedMpi;
-		//};
-
 	template<typename T>
 		struct TypedMpi : public detail::TypedMpi<T, io::datapack::ObjectPack> {
 			using detail::TypedMpi<T, io::datapack::ObjectPack>::TypedMpi;

@@ -99,23 +99,25 @@ namespace fpmas { namespace synchro {
 						graph.getMpiCommunicator().getRank(), "GHOST_MODE",
 						"Synchronizing graph data...", ""
 						);
-				requests = id_mpi.migrate(requests);
+				requests = id_mpi.migrate(std::move(requests));
 
 				std::unordered_map<int, std::vector<NodeUpdatePack<T>>> updated_data;
 				for(auto list : requests) {
+					updated_data[list.first].reserve(list.second.size());
 					for(auto id : list.second) {
 						FPMAS_LOGV(
 								graph.getMpiCommunicator().getRank(), "GHOST_MODE",
 								"Export %s to %i", FPMAS_C_STR(id), list.first
 								);
 						auto node = graph.getNode(id);
-						updated_data[list.first].push_back({
+						updated_data[list.first].emplace_back(
 								id, node->data(), node->getWeight()
-								});
+								);
 					}
 				}
+
 				// TODO : Should use data update packs.
-				updated_data = data_mpi.migrate(updated_data);
+				updated_data = data_mpi.migrate(std::move(updated_data));
 				for(auto list : updated_data) {
 					for(auto& data : list.second) {
 						auto local_node = graph.getNode(data.id);
@@ -144,7 +146,7 @@ namespace fpmas { namespace synchro {
 								 "Request %s from %i",
 								 FPMAS_C_STR(node->getId()), node->location());
 
-						 requests[node->location()].push_back(node->getId());
+						 requests[node->location()].emplace_back(node->getId());
 					 }
 				 }
 				 return requests;
@@ -158,9 +160,7 @@ namespace fpmas { namespace synchro {
 						"Synchronizing graph data...", ""
 						);
 
-				std::unordered_map<int, std::vector<DistributedId>> requests
-					= buildRequests(nodes);
-				_synchronize(requests);
+				_synchronize(buildRequests(nodes));
 				for(auto node : nodes)
 					node->mutex()->synchronize();
 			}
@@ -175,7 +175,7 @@ namespace fpmas { namespace synchro {
 							 "Request %s from %i",
 							 FPMAS_C_STR(node.first), node.second->location()
 							 );
-					 requests[node.second->location()].push_back(node.first);
+					 requests[node.second->location()].emplace_back(node.first);
 				 }
 				 return requests;
 			 }
@@ -186,9 +186,7 @@ namespace fpmas { namespace synchro {
 						graph.getMpiCommunicator().getRank(), "GHOST_MODE",
 						"Synchronizing graph data...", "");
 
-				std::unordered_map<int, std::vector<DistributedId>> requests
-					= buildRequests();
-				_synchronize(requests);
+				_synchronize(buildRequests());
 				for(auto node : graph.getNodes())
 					node.second->mutex()->synchronize();
 			}
@@ -309,7 +307,7 @@ namespace fpmas { namespace synchro {
 						edges_to_clear.push_back(edge);
 					}
 				}
-				link_migration = edge_mpi.migrate(link_migration);
+				link_migration = edge_mpi.migrate(std::move(link_migration));
 
 				for(auto import_list : link_migration) {
 					for (auto edge : import_list.second) {
@@ -321,7 +319,7 @@ namespace fpmas { namespace synchro {
 				/*
 				 * Migrate node removal
 				 */
-				remove_node_buffer = id_mpi.migrate(remove_node_buffer);
+				remove_node_buffer = id_mpi.migrate(std::move(remove_node_buffer));
 				for(auto import_list : remove_node_buffer) {
 					for(DistributedId node_id : import_list.second) {
 						auto* node = graph.getNode(node_id);
@@ -335,7 +333,7 @@ namespace fpmas { namespace synchro {
 				/*
 				 * Migrate unlinks
 				 */
-				unlink_migration = id_mpi.migrate(unlink_migration);
+				unlink_migration = id_mpi.migrate(std::move(unlink_migration));
 				for(auto import_list : unlink_migration) {
 					for(DistributedId id : import_list.second) {
 						if(graph.getEdges().count(id) > 0) {
