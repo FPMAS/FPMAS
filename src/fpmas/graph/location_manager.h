@@ -207,7 +207,7 @@ namespace fpmas { namespace graph {
 			// responses
 			for(auto list : imported_locations) {
 				for(auto location : list.second) {
-					distant_nodes.at(location.first)->setLocation(location.second);
+					distant_nodes.find(location.first)->second->setLocation(location.second);
 				}
 			}
 			new_local_nodes.clear();

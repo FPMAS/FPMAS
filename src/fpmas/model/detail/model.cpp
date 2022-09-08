@@ -95,7 +95,7 @@ namespace fpmas {
 			}
 
 			fpmas::api::model::AgentGroup& Model::getGroup(api::model::GroupId id) const {
-				return *_groups.at(id);
+				return *(_groups.find(id)->second);
 			}
 
 			api::model::AgentGroup& Model::buildGroup(api::model::GroupId id) {
