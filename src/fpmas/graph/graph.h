@@ -226,13 +226,13 @@ namespace fpmas { namespace graph {
 	template<typename NodeType, typename EdgeType>
 		NodeType*
 			Graph<NodeType, EdgeType>::getNode(NodeIdType id) {
-				return this->nodes.at(id);
+				return this->nodes.find(id)->second;
 		}
 
 	template<typename NodeType, typename EdgeType>
 		const NodeType*
 			Graph<NodeType, EdgeType>::getNode(NodeIdType id) const {
-				return this->nodes.at(id);
+				return this->nodes.find(id)->second;
 		}
 
 	template<typename NodeType, typename EdgeType>
@@ -244,13 +244,13 @@ namespace fpmas { namespace graph {
 	template<typename NodeType, typename EdgeType>
 		EdgeType*
 			Graph<NodeType, EdgeType>::getEdge(EdgeIdType id) {
-				return this->edges.at(id);
+				return this->edges.find(id)->second;
 		}
 
 	template<typename NodeType, typename EdgeType>
 		const EdgeType*
 			Graph<NodeType, EdgeType>::getEdge(EdgeIdType id) const {
-				return this->edges.at(id);
+				return this->edges.find(id)->second;
 		}
 
 	template<typename NodeType, typename EdgeType>

@@ -428,13 +428,15 @@ namespace fpmas { namespace model {
 				 * Selects a random element of this neighbors list, using the
 				 * specified random number generator.
 				 *
+				 * Fails if `count() == 0`.
+				 *
 				 * @return random neighbor
 				 */
 				template<typename Gen>
 					Neighbor<AgentType> random(Gen& gen) {
 						random::UniformIntDistribution<std::size_t> index(
 								0, this->count()-1);
-						return neighbors.at(index(gen));
+						return neighbors[index(gen)];
 					}
 
 				/**
@@ -456,7 +458,7 @@ namespace fpmas { namespace model {
 					const Neighbor<AgentType> random(Gen& gen) const {
 						random::UniformIntDistribution<std::size_t> index(
 								0, this->count()-1);
-						return neighbors.at(index(gen));
+						return neighbors[index(gen)];
 					}
 
 				/**
@@ -971,13 +973,13 @@ namespace fpmas { namespace model {
 			 * \copydoc fpmas::api::model::Agent::task()
 			 */
 			api::model::AgentTask* task() override {
-				return _tasks.at(this->groupId());
+				return _tasks.find(this->groupId())->second;
 			}
 			/**
 			 * \copydoc fpmas::api::model::Agent::task()
 			 */
 			const api::model::AgentTask* task() const override {
-				return _tasks.at(this->groupId());
+				return _tasks.find(this->groupId())->second;
 			}
 			/**
 			 * \copydoc fpmas::api::model::Agent::setTask(api::model::AgentTask*)
@@ -991,13 +993,13 @@ namespace fpmas { namespace model {
 			 */
 			api::model::AgentTask* task(api::model::GroupId id) override {
 				assert(_tasks.count(id) > 0);
-				return _tasks.at(id);
+				return _tasks.find(id)->second;
 			}
 			/**
 			 * \copydoc fpmas::api::model::Agent::task(GroupId)
 			 */
 			const api::model::AgentTask* task(api::model::GroupId id) const override {
-				return _tasks.at(id);}
+				return _tasks.find(id)->second;}
 
 			/**
 			 * \copydoc fpmas::api::model::Agent::setTask(GroupId, api::model::AgentTask*)

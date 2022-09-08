@@ -520,6 +520,7 @@ namespace fpmas { namespace graph {
 					mpi, built_nodes_buffer, fpmas::utils::Concat()
 					);
 
+			const auto& graph_nodes = graph.getNodes();
 			for(auto& node : built_nodes) {
 				std::size_t edge_count = std::min(
 						this->num_edge(), built_nodes_buffer.size()-1
@@ -553,9 +554,10 @@ namespace fpmas { namespace graph {
 
 				for(auto nearest_node : nearest_nodes) {
 					api::graph::DistributedNode<T>* target_node;
-					try {
-						target_node = graph.getNode(nearest_node.node_id);
-					} catch(const std::out_of_range&) {
+					auto it = graph_nodes.find(nearest_node.node_id);
+					if(it != graph_nodes.end()) {
+						target_node = it->second;
+					} else {
 						target_node = node_builder.buildDistantNode(
 								nearest_node.node_id, nearest_node.location, graph
 								);

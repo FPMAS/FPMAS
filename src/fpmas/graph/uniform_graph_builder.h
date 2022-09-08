@@ -241,6 +241,7 @@ namespace fpmas { namespace graph {
 						);
 
 
+				const auto& graph_nodes = graph.getNodes();
 				for(auto node : built_nodes) {
 					std::size_t edge_count = std::min(
 							this->num_edge(), node_ids.size()-1
@@ -256,9 +257,10 @@ namespace fpmas { namespace graph {
 						auto& id = node_ids[this->index(node_ids.size()-2-i)];
 
 						fpmas::api::graph::DistributedNode<T>* target_node;
-						try{
-							target_node = graph.getNode(id.first);
-						} catch(std::out_of_range&) {
+						auto it = graph_nodes.find(id.first); 
+						if(it != graph_nodes.end()) {
+							target_node = it->second;
+						} else {
 							target_node = node_builder.buildDistantNode(id.first, id.second, graph);
 						}
 						graph.link(node, target_node, layer);
