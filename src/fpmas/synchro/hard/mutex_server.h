@@ -197,7 +197,7 @@ namespace fpmas { namespace synchro { namespace hard {
 	 */
 	template<typename T>
 		void MutexServer<T>::handleRead(DistributedId id, int source) {
-			auto* mutex = mutex_map.at(id);
+			auto* mutex = mutex_map.find(id)->second;
 			if(mutex->locked()) {
 				FPMAS_LOGV(comm.getRank(), "MUTEX_SERVER", "Enqueueing READ request of node %s for %i",
 						FPMAS_C_STR(id), source);
@@ -213,10 +213,10 @@ namespace fpmas { namespace synchro { namespace hard {
 	 */
 	template<typename T>
 		void MutexServer<T>::respondToRead(DistributedId id, int source) {
-			auto* mutex = mutex_map.at(id);
+			auto* mutex = mutex_map.find(id)->second;
 			this->MutexServerBase::lockShared(mutex);
 			// Perform the response
-			const T& data = this->mutex_map.at(id)->data();
+			const T& data = mutex->data();
 			server_pack.pendingRequests().emplace_back(
 					fpmas::api::communication::Request());
 			data_mpi.Isend(
@@ -232,7 +232,7 @@ namespace fpmas { namespace synchro { namespace hard {
 	 */
 	template<typename T>
 		void MutexServer<T>::handleAcquire(DistributedId id, int source) {
-			auto* mutex = mutex_map.at(id);
+			auto* mutex = mutex_map.find(id)->second;
 			if(mutex->locked() || mutex->sharedLockCount() > 0) {
 				FPMAS_LOGV(comm.getRank(), "MUTEX_SERVER", "Enqueueing ACQUIRE request of node %s for %i",
 						FPMAS_C_STR(id), source);
@@ -249,7 +249,7 @@ namespace fpmas { namespace synchro { namespace hard {
 	 */
 	template<typename T>
 		void MutexServer<T>::respondToAcquire(DistributedId id, int source) {
-			auto* mutex = mutex_map.at(id);
+			auto* mutex = mutex_map.find(id)->second;
 			this->MutexServerBase::lock(mutex);
 			const T& data = mutex->data();
 			server_pack.pendingRequests().emplace_back(
@@ -293,7 +293,7 @@ namespace fpmas { namespace synchro { namespace hard {
 
 	template<typename T>
 		void MutexServer<T>::handleReleaseAcquire(DataUpdatePack<T>& update) {
-			auto* mutex = mutex_map.at(update.id);
+			auto* mutex = mutex_map.find(update.id)->second;
 			this->MutexServerBase::unlock(mutex);
 			mutex->data() = std::move(update.updated_data);
 
@@ -308,7 +308,7 @@ namespace fpmas { namespace synchro { namespace hard {
 	 */
 	template<typename T>
 		void MutexServer<T>::handleLock(DistributedId id, int source) {
-			auto* mutex = mutex_map.at(id);
+			auto* mutex = mutex_map.find(id)->second;
 			if(mutex->locked() || mutex->sharedLockCount() > 0) {
 				FPMAS_LOGV(comm.getRank(), "MUTEX_SERVER", "Enqueueing LOCK request of node %s for %i",
 						FPMAS_C_STR(id), source);
@@ -325,7 +325,7 @@ namespace fpmas { namespace synchro { namespace hard {
 	 */
 	template<typename T>
 		void MutexServer<T>::respondToLock(DistributedId id, int source) {
-			auto* mutex = mutex_map.at(id);
+			auto* mutex = mutex_map.find(id)->second;
 			this->MutexServerBase::lock(mutex);
 
 			server_pack.pendingRequests().emplace_back(
@@ -336,7 +336,7 @@ namespace fpmas { namespace synchro { namespace hard {
 
 	template<typename T>
 		void MutexServer<T>::handleUnlock(DistributedId id) {
-			auto* mutex = mutex_map.at(id);
+			auto* mutex = mutex_map.find(id)->second;
 			this->MutexServerBase::unlock(mutex);
 
 			respondToRequests(mutex);
@@ -344,7 +344,7 @@ namespace fpmas { namespace synchro { namespace hard {
 
 	template<typename T>
 		void MutexServer<T>::handleLockShared(DistributedId id, int source) {
-			auto* mutex = mutex_map.at(id);
+			auto* mutex = mutex_map.find(id)->second;
 			if(mutex->locked()) {
 				FPMAS_LOGV(comm.getRank(), "MUTEX_SERVER", "Enqueueing LOCK_SHARED request of node %s for %i",
 						FPMAS_C_STR(id), source);
@@ -356,7 +356,7 @@ namespace fpmas { namespace synchro { namespace hard {
 
 	template<typename T>
 		void MutexServer<T>::respondToLockShared(DistributedId id, int source) {
-			auto* mutex = mutex_map.at(id);
+			auto* mutex = mutex_map.find(id)->second;
 			this->MutexServerBase::lockShared(mutex);
 
 			server_pack.pendingRequests().emplace_back(
@@ -367,7 +367,7 @@ namespace fpmas { namespace synchro { namespace hard {
 
 	template<typename T>
 		void MutexServer<T>::handleUnlockShared(DistributedId id) {
-			auto* mutex = mutex_map.at(id);
+			auto* mutex = mutex_map.find(id)->second;
 			this->MutexServerBase::unlockShared(mutex);
 
 			// No requests will be processed if they is still at least one
@@ -418,7 +418,7 @@ namespace fpmas { namespace synchro { namespace hard {
 
 	template<typename T>
 		bool MutexServer<T>::handleReleaseAcquire(DataUpdatePack<T>& update, const Request& request_to_wait) {
-			auto* mutex = mutex_map.at(update.id);
+			auto* mutex = mutex_map.find(update.id)->second;
 			this->MutexServerBase::unlock(mutex);
 			mutex->data() = std::move(update.updated_data);
 
@@ -427,7 +427,7 @@ namespace fpmas { namespace synchro { namespace hard {
 
 	template<typename T>
 		bool MutexServer<T>::handleUnlock(DistributedId id, const Request& request_to_wait) {
-			auto* mutex = mutex_map.at(id);
+			auto* mutex = mutex_map.find(id)->second;
 			this->MutexServerBase::unlock(mutex);
 
 			return respondToRequests(mutex, request_to_wait);
@@ -435,7 +435,7 @@ namespace fpmas { namespace synchro { namespace hard {
 
 	template<typename T>
 		bool MutexServer<T>::handleUnlockShared(DistributedId id, const Request& request_to_wait) {
-			auto* mutex = mutex_map.at(id);
+			auto* mutex = mutex_map.find(id)->second;
 			this->MutexServerBase::unlockShared(mutex);
 
 			return respondToRequests(mutex, request_to_wait);
@@ -499,7 +499,7 @@ namespace fpmas { namespace synchro { namespace hard {
 		void MutexServer<T>::notify(DistributedId id) {
 			FPMAS_LOGD(comm.getRank(), "MUTEX_SERVER",
 					"Notifying released node %s", FPMAS_C_STR(id));
-			auto* mutex = mutex_map.at(id);
+			auto* mutex = mutex_map.find(id)->second;
 			return respondToRequests(mutex);
 		}
 }}}
