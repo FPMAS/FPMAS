@@ -441,7 +441,7 @@ namespace fpmas { namespace graph {
 				// Edge export procs buffer.
 				int* export_edges_procs;
 
-				void setUpZoltan(int lb_period);
+				void setUpZoltan(int lb_period, float imbalance_tol);
 
 				zoltan::ZoltanData<T> zoltan_data;
 				PartitionMap fixed_vertices;
@@ -453,10 +453,10 @@ namespace fpmas { namespace graph {
 				/**
 				 * ZoltanLoadBalancing constructor.
 				 *
-				 * A default
-				 * [PHG_REPART_MULTIPLIER](https://htmlpreview.github.io/?https://raw.githubusercontent.com/sandialabs/zoltan/master/doc/Zoltan_html/ug_html/ug_alg_phg.html)
-				 * value of 100 is used, what corresponds to the default Zoltan
-				 * value.
+				 * @par Default values
+				 * 
+				 * - [PHG_REPART_MULTIPLIER](https://htmlpreview.github.io/?https://raw.githubusercontent.com/sandialabs/zoltan/master/doc/Zoltan_html/ug_html/ug_alg_phg.html): 100
+				 * - [IMBALANCE_TOL](https://sandialabs.github.io/Zoltan/ug_html/ug_alg.html#LB%20Parameters): 1.1
 				 *
 				 * @param comm MpiCommunicator implementation
 				 */
@@ -471,6 +471,10 @@ namespace fpmas { namespace graph {
 				 * [PHG_REPART_MULTIPLIER](https://htmlpreview.github.io/?https://raw.githubusercontent.com/sandialabs/zoltan/master/doc/Zoltan_html/ug_html/ug_alg_phg.html)
 				 * value.
 				 *
+				 * @par Default values
+				 *
+				 * - [IMBALANCE_TOL](https://sandialabs.github.io/Zoltan/ug_html/ug_alg.html#LB%20Parameters): 1.1
+				 *
 				 * @param comm MpiCommunicator implementation
 				 * @param lb_period Number of iterations between each load
 				 * balancing (used as a Zoltan algorithm parameter, does not
@@ -478,7 +482,25 @@ namespace fpmas { namespace graph {
 				 */
 				ZoltanLoadBalancing(communication::MpiCommunicatorBase& comm, int lb_period)
 					: zoltan(comm.getMpiComm()), comm(comm), id_mpi(comm) {
-						setUpZoltan(lb_period);
+						setUpZoltan(lb_period, 1.1f);
+					}
+				/**
+				 * ZoltanLoadBalancing constructor.
+				 *
+				 * `10*lb_period` is used as the Zoltan
+				 * [PHG_REPART_MULTIPLIER](https://htmlpreview.github.io/?https://raw.githubusercontent.com/sandialabs/zoltan/master/doc/Zoltan_html/ug_html/ug_alg_phg.html)
+				 * value.
+				 *
+				 * @param comm MpiCommunicator implementation
+				 * @param lb_period Number of iterations between each load
+				 * balancing (used as a Zoltan algorithm parameter, does not
+				 * need to correspond to the actual load balancing period)
+				 * @param imbalance_tol Acceptable imbalance tolerance, computed
+				 * as the maximum load divided by the average load.
+				 */
+				ZoltanLoadBalancing(communication::MpiCommunicatorBase& comm, int lb_period, float imbalance_tol)
+					: zoltan(comm.getMpiComm()), comm(comm), id_mpi(comm) {
+						setUpZoltan(lb_period, imbalance_tol);
 					}
 
 				/**
@@ -641,10 +663,12 @@ namespace fpmas { namespace graph {
 	/*
 	 * Initializes zoltan parameters and zoltan lb query functions.
 	 */
-	template<typename T> void ZoltanLoadBalancing<T>::setUpZoltan(int lb_period) {
+	template<typename T> void ZoltanLoadBalancing<T>::setUpZoltan(
+			int lb_period, float imbalance_tol) {
 		zoltan::zoltan_config(&this->zoltan);
 
 		this->zoltan.Set_Param("PHG_REPART_MULTIPLIER", std::to_string(10*lb_period));
+		this->zoltan.Set_Param("IMBALANCE_TOL", std::to_string(imbalance_tol));
 
 		// Initializes Zoltan Node Load Balancing functions
 		this->zoltan.Set_Obj_Size_Multi_Fn(zoltan::obj_size<T>, &this->zoltan_data);
