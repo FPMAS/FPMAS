@@ -336,10 +336,10 @@ namespace fpmas { namespace synchro {
 				unlink_migration = id_mpi.migrate(std::move(unlink_migration));
 				for(auto import_list : unlink_migration) {
 					for(DistributedId id : import_list.second) {
-						if(graph.getEdges().count(id) > 0) {
-							auto edge = graph.getEdge(id);
-							graph.erase(edge);
-						}
+						const auto& edges = graph.getEdges();
+						auto it = edges.find(id);
+						if(it != edges.end())
+							graph.erase(it->second);
 					}
 				}
 				unlink_migration.clear();

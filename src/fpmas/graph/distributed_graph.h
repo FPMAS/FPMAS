@@ -418,7 +418,9 @@ namespace fpmas { namespace graph {
 				// graph, if it were already built as a "distant" node.
 
 				NodeType* local_node;
-				if(this->getNodes().count(node->getId())==0) {
+				const auto& nodes = this->getNodes();
+				auto it = nodes.find(node->getId());
+				if(it == nodes.end()) {
 					FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Inserting new LOCAL node %s.", FPMAS_C_STR(node->getId()));
 					// The node is not contained in the graph, we need to build a new
 					// one.
@@ -434,7 +436,7 @@ namespace fpmas { namespace graph {
 					// We just need to update its state.
 
 					// Set local representation as local
-					local_node = this->getNode(node->getId());
+					local_node = it->second;
 					synchro::DataUpdate<T>::update(
 							local_node->data(), std::move(node->data())
 							);
@@ -476,7 +478,10 @@ namespace fpmas { namespace graph {
 				// graph, for example if it has already been imported as a "distant"
 				// edge with other nodes at other epochs.
 
-				if(this->getEdges().count(edge->getId())==0) {
+				const auto& nodes = this->getNodes();
+				const auto& edges = this->getEdges();
+				auto edge_it = edges.find(edge->getId());
+				if(edge_it == edges.end()) {
 					// The edge does not belong to the graph : a new one must be built.
 
 					DistributedId src_id = temp_src->getId();
@@ -486,10 +491,11 @@ namespace fpmas { namespace graph {
 
 					LocationState edgeLocationState = LocationState::LOCAL;
 
-					if(this->getNodes().count(src_id) > 0) {
+					auto src_it = nodes.find(src_id);
+					if(src_it != nodes.end()) {
 						FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Linking existing source %s", FPMAS_C_STR(src_id));
 						// The source node is already contained in the graph
-						src = this->getNode(src_id);
+						src = src_it->second;
 						if(src->state() == LocationState::DISTANT) {
 							// At least src is DISTANT, so the imported edge is
 							// necessarily DISTANT.
@@ -519,10 +525,11 @@ namespace fpmas { namespace graph {
 						src->setMutex(sync_mode.buildMutex(src));
 						unsynchronized_nodes.insert(src);
 					}
-					if(this->getNodes().count(tgt_id) > 0) {
+					auto tgt_it = nodes.find(tgt_id);
+					if(tgt_it != nodes.end()) {
 						FPMAS_LOGV(getMpiCommunicator().getRank(), "DIST_GRAPH", "Linking existing target %s", FPMAS_C_STR(tgt_id));
 						// The target node is already contained in the graph
-						tgt = this->getNode(tgt_id);
+						tgt = tgt_it->second;
 						if(tgt->state() == LocationState::DISTANT) {
 							// At least src is DISTANT, so the imported edge is
 							// necessarily DISTANT.
@@ -561,7 +568,7 @@ namespace fpmas { namespace graph {
 				// A representation of the edge is already present in the graph : it is
 				// useless to insert it again. We just need to update its state.
 
-				auto local_edge = this->getEdge(edge->getId());
+				auto local_edge = edge_it->second;
 				if(local_edge->getSourceNode()->state() == LocationState::LOCAL
 						&& local_edge->getTargetNode()->state() == LocationState::LOCAL) {
 					local_edge->setState(LocationState::LOCAL);
@@ -605,7 +612,9 @@ namespace fpmas { namespace graph {
 				FPMAS_LOGD(getMpiCommunicator().getRank(),
 						"GRAPH", "Inserting temporary distant node: %s",
 						FPMAS_C_STR(node->getId()));
-				if(this->getNodes().count(node->getId()) == 0) {
+				const auto& nodes = this->getNodes();
+				auto node_it = nodes.find(node->getId());
+				if(node_it == nodes.end()) {
 					this->insert(node);
 					setDistant(node, api::graph::SetDistantNodeEvent<T>::IMPORT_NEW_DISTANT);
 					node->setMutex(sync_mode.buildMutex(node));
@@ -614,7 +623,7 @@ namespace fpmas { namespace graph {
 				} else {
 					auto id = node->getId();
 					delete node;
-					return this->getNode(id);
+					return node_it->second;
 				}
 			}
 

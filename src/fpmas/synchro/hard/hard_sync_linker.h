@@ -111,20 +111,22 @@ namespace fpmas { namespace synchro { namespace hard {
 					FPMAS_LOGD(this->comm.getRank(), "LINK_SERVER",
 							"receive unlink request %s from %i",
 							FPMAS_C_STR(unlink_id), status.source);
-					if(
-							// The edge is not being unlinking by the local process
-							!isLockedUnlink(unlink_id)
+					if(!isLockedUnlink(unlink_id)) {
+						// The edge is not being unlinked by the local process
+						const auto& edges = graph.getEdges();
+						auto it = edges.find(unlink_id);
+						if(it != edges.end()) {
 							// The edge has not been unlinked by an other UNLINK
 							// operation
-							&& graph.getEdges().count(unlink_id) > 0) {
-						auto* edge = graph.getEdge(unlink_id);
-						// Source or target node is not being removed by the local
-						// process. In this case, the local process is responsible
-						// for all the required unlink operations, so the incoming
-						// request is ignored.
-						if(!(isLockedRemoveNode(edge->getSourceNode()->getId())
-							|| isLockedRemoveNode(edge->getTargetNode()->getId()))) {
-							graph.erase(edge);
+							auto* edge = it->second;
+							// Source or target node is not being removed by the local
+							// process. In this case, the local process is responsible
+							// for all the required unlink operations, so the incoming
+							// request is ignored.
+							if(!(isLockedRemoveNode(edge->getSourceNode()->getId())
+										|| isLockedRemoveNode(edge->getTargetNode()->getId()))) {
+								graph.erase(edge);
+							}
 						}
 					}
 				}
