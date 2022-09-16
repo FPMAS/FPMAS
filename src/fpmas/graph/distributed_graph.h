@@ -621,7 +621,6 @@ namespace fpmas { namespace graph {
 					unsynchronized_nodes.insert(node);
 					return node;
 				} else {
-					auto id = node->getId();
 					delete node;
 					return node_it->second;
 				}
