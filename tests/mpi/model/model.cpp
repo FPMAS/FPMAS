@@ -384,6 +384,7 @@ class ModelDynamicLinkTest : public ModelIntegrationTest<SynchonizationMode> {
 			for(auto node : this->agent_graph.getLocationManager().getLocalNodes()) {
 				auto agent = dynamic_cast<const LinkerAgent*>(node.second->mutex()->read().get());
 				links.insert(agent->links.begin(), agent->links.end());
+				node.second->mutex()->releaseRead();
 			}
 
 			// Build local unlinks set
@@ -391,6 +392,7 @@ class ModelDynamicLinkTest : public ModelIntegrationTest<SynchonizationMode> {
 			for(auto node : this->agent_graph.getLocationManager().getLocalNodes()) {
 				auto agent = dynamic_cast<const LinkerAgent*>(node.second->mutex()->read().get());
 				unlinks.insert(agent->unlinks.begin(), agent->unlinks.end());
+				node.second->mutex()->releaseRead();
 			}
 
 			// Gather all edges id in the complete distributed graph
