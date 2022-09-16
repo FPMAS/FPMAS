@@ -102,6 +102,7 @@ namespace fpmas { namespace synchro {
 				requests = id_mpi.migrate(std::move(requests));
 
 				std::unordered_map<int, std::vector<NodeUpdatePack<T>>> updated_data;
+				updated_data.reserve(graph.getMpiCommunicator().getSize());
 				for(auto list : requests) {
 					updated_data[list.first].reserve(list.second.size());
 					for(auto id : list.second) {
@@ -139,6 +140,7 @@ namespace fpmas { namespace synchro {
 			 std::unordered_map<int, std::vector<DistributedId>> GhostDataSync<T>
 			 ::buildRequests(std::unordered_set<api::graph::DistributedNode<T>*> nodes) {
 				 std::unordered_map<int, std::vector<DistributedId>> requests;
+				 requests.reserve(graph.getMpiCommunicator().getSize());
 				 for(auto node : nodes) {
 					 if(node->state() == fpmas::api::graph::DISTANT) {
 						 FPMAS_LOGV(
@@ -169,6 +171,7 @@ namespace fpmas { namespace synchro {
 			 std::unordered_map<int, std::vector<DistributedId>> GhostDataSync<T>
 			 ::buildRequests() {
 				 std::unordered_map<int, std::vector<DistributedId>> requests;
+				 requests.reserve(graph.getMpiCommunicator().getSize());
 				 for(auto node : graph.getLocationManager().getDistantNodes()) {
 					 FPMAS_LOGV(
 							 graph.getMpiCommunicator().getRank(), "GHOST_MODE",
