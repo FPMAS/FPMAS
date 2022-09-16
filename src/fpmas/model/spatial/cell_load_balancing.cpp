@@ -44,12 +44,13 @@ namespace fpmas { namespace model {
 		for(auto cell : cells) {
 			for(auto agent_edge : cell.second->getIncomingEdges(api::model::LOCATION)) {
 				auto agent = agent_edge->getSourceNode();
-				int agent_location = partition.count(cell.first) > 0 ?
+				// By default, the agent location is the current cell location
+				int agent_location = cell.second->location();
+				auto location_it = partition.find(cell.first);
+				if(location_it != partition.end())
 					// If a new location has been assigned to the cell, agent
 					// location is this new location
-					partition[cell.first] :
-					// Else, the agent location is the current cell location
-					cell.second->location();
+					agent_location = location_it->second;
 				// Nothing to do if the agent location has not changed
 				if(agent_location != agent->location()) {
 					if(agent->state() == api::graph::LOCAL) {
