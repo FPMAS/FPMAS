@@ -395,6 +395,8 @@ class ModelDynamicLinkTest : public ModelIntegrationTest<SynchonizationMode> {
 				node.second->mutex()->releaseRead();
 			}
 
+			this->agent_graph.synchronize();
+
 			// Gather all edges id in the complete distributed graph
 			fpmas::communication::TypedMpi<std::set<DistributedId>> edge_ids_mpi {
 				this->comm
