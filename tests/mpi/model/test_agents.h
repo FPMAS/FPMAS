@@ -153,24 +153,22 @@ class LinkerAgent : public fpmas::model::AgentBase<LinkerAgent> {
 	std::set<DistributedId> unlinks;
 
 	void link() {
-		FPMAS_LOGD(node()->location(), "GHOST_TEST", "Executing agent %s", FPMAS_C_STR(node()->getId()));
+		FPMAS_LOGD(node()->location(), "LINKER_AGENT", "Executing agent %s", FPMAS_C_STR(node()->getId()));
 		if(node()->getOutgoingEdges().size() >= 2) {
 			auto out_neighbors = node()->outNeighbors();
 			std::uniform_int_distribution<unsigned long> random_neighbor {0, out_neighbors.size()-1};
 			auto src = out_neighbors[random_neighbor(engine)];
 			auto tgt = out_neighbors[random_neighbor(engine)];
 			if(src->getId() != tgt->getId()) {
-				DistributedId current_edge_id = model()->graph().currentEdgeId();
-				links.insert(current_edge_id++);
-				model()->graph().link(src, tgt, random_layer(engine));
+				auto edge = model()->graph().link(src, tgt, random_layer(engine));
+				links.insert(edge->getId());
 			}
 		}
 		if(node()->getOutgoingEdges().size() >= 1) {
 			std::uniform_int_distribution<unsigned long> random_edge {0, node()->getOutgoingEdges().size()-1};
 			auto index = random_edge(engine);
 			auto edge = node()->getOutgoingEdges()[index];
-			DistributedId id = edge->getId();
-			unlinks.insert(id);
+			unlinks.insert(edge->getId());
 			model()->graph().unlink(edge);
 		}
 	}
