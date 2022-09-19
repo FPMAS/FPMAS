@@ -13,6 +13,7 @@
 #include "fpmas/utils/format.h"
 #include "fpmas/graph/graph_builder.h"
 #include "fpmas/graph/random_load_balancing.h"
+#include "fpmas/graph/static_load_balancing.h"
 #include "fpmas/synchro/synchro.h"
 #include <fstream>
 
@@ -1381,6 +1382,9 @@ namespace fpmas { namespace model {
 	 */
 	using RandomLoadBalancing
 		= graph::RandomLoadBalancing<AgentPtr>;
+
+	using StaticLoadBalancing
+		= graph::StaticLoadBalancing<AgentPtr>;
 
 	/**
 	 * \Model fpmas::io::Breakpoint specialization.
