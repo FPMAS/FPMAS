@@ -69,5 +69,54 @@ namespace fpmas { namespace model {
 					api::graph::PartitionMode partition_mode
 					) override;
 	};
+
+	class StaticCellLoadBalancing : public api::graph::LoadBalancing<api::model::AgentPtr> {
+		private:
+			api::communication::MpiCommunicator& comm;
+			api::graph::LoadBalancing<api::model::AgentPtr>& cell_lb;
+
+		public:
+			/**
+			 * CellLoadBalancing constructor.
+			 *
+			 * @param comm MPI communicator
+			 * @param cell_lb LoadBalancing algorithm used to partition the
+			 * cell network
+			 */
+			StaticCellLoadBalancing(
+					api::communication::MpiCommunicator& comm,
+					api::graph::LoadBalancing<api::model::AgentPtr>& cell_lb)
+				: comm(comm), cell_lb(cell_lb) {
+				}
+
+
+			/**
+			 * \copydoc api::graph::LoadBalancing::balance(NodeMap<T>)
+			 */
+			api::graph::PartitionMap balance(
+					api::graph::NodeMap<api::model::AgentPtr> nodes
+					) override;
+
+			/**
+			 * Builds a partition from the input nodes.
+			 *
+			 * In PARTITION mode, a \LoadBalancing algorithm in PARTITION mode
+			 * only to `nodes` containing an fpmas::api::model::Cell instance.
+			 * 
+			 * Then, in any mode, each \SpatialAgent is assigned to the same
+			 * process as its LOCATION \Cell.
+			 *
+			 * Other nodes are ignored.
+			 *
+			 * @param nodes nodes on which the algorithm is applied
+			 * @param partition_mode partitioning strategy
+			 * @return grid based partition
+			 */
+			api::graph::PartitionMap balance(
+					api::graph::NodeMap<api::model::AgentPtr> nodes,
+					api::graph::PartitionMode partition_mode
+					) override;
+	};
+
 }}
 #endif
