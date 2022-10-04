@@ -1,11 +1,9 @@
 #include "grid_load_balancing.h"
+#include <cmath>
+#include <limits>
+#include "fpmas/communication/communication.h"
 
 namespace fpmas { namespace model {
-	TreeProcessMapping::TreeProcessMapping() {
-		root = new Node;
-		root->node_type = LEAF;
-		root->process = 0;
-	}
 
 	TreeProcessMapping::TreeProcessMapping(
 			DiscreteCoordinate width, DiscreteCoordinate height,
@@ -159,6 +157,67 @@ namespace fpmas { namespace model {
 		return process_grid_dimensions[process];
 	}
 
+	FastProcessMapping::FastProcessMapping(
+			DiscreteCoordinate width, DiscreteCoordinate height,
+			api::communication::MpiCommunicator& comm
+			) :
+		process_grid_dimensions(comm.getSize()),
+		_n(-1), _p(-1), width(width), height(height) {
+		int n = std::sqrt(comm.getSize());
+		float current_min_v = std::numeric_limits<float>::infinity();
+		while(n != 0 && n != comm.getSize()+1) {
+			if(comm.getSize()%n == 0) {
+				int p = comm.getSize()/n;
+				float diff = std::abs(n/p - width/height);
+				if (diff < current_min_v) {
+					_n = n;
+					_p = p;
+					current_min_v = diff;
+				}
+			}
+			if (width > height)
+				++n;
+			else
+				--n;
+		}
+		int process=0;
+		process_map.resize(_n);
+		for(auto& item : process_map)
+			item.resize(_p);
+
+		this->N_x = width/_n;
+		this->N_y = height/_p;
+		for(int x = 0; x < _n; x++) {
+			for(int y = 0; y < _p; y++) {
+				process_map[x][y] = process;
+				DiscretePoint origin = {x*N_x, y*N_y};
+				DiscretePoint extent = {(x+1)*N_x, (y+1)*N_y};
+				if(x == _n-1)
+					extent.x = width;
+				if(y == _p-1)
+					extent.y = height;
+				process_grid_dimensions[process] = {origin, extent};
+				++process;
+			}
+		}
+	}
+
+	int FastProcessMapping::process(DiscretePoint point) const {
+		return process_map[std::min((int) point.x/N_x, _n-1)][std::min((int) point.y/N_y, _p-1)];
+	}
+
+	int FastProcessMapping::n() const {
+		return _n;
+	}
+
+	int FastProcessMapping::p() const {
+		return _p;
+	}
+
+	GridDimensions FastProcessMapping::gridDimensions(int process) const {
+		return process_grid_dimensions[process];
+	}
+
 	GridLoadBalancing::GridLoadBalancing(
 			DiscreteCoordinate width, DiscreteCoordinate height,
 			api::communication::MpiCommunicator& comm
@@ -169,7 +228,7 @@ namespace fpmas { namespace model {
 
 	GridLoadBalancing::GridLoadBalancing(
 			const GridProcessMapping& grid_process_mapping)
-		: grid_process_mapping(grid_process_mapping) {
+		: default_process_mapping(0, 0, fpmas::communication::WORLD), grid_process_mapping(grid_process_mapping) {
 		}
 
 	

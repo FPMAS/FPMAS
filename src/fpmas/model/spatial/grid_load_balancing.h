@@ -191,14 +191,6 @@ namespace fpmas { namespace model {
 
 		public:
 			/**
-			 * Default TreeProcessMapping constructor, **for internal use
-			 * only**.
-			 *
-			 * To prevent unexpected crashes, process() always returns 0.
-			 */
-			TreeProcessMapping();
-
-			/**
 			 * TreeProcessMapping constructor.
 			 *
 			 * @param width width of the grid
@@ -281,6 +273,65 @@ namespace fpmas { namespace model {
 
 			GridDimensions gridDimensions(int process) const override;
 	};
+
+	/**
+	 * A very efficient GridProcessMapping, both in terms of speed and partition
+	 * quality.
+	 *
+	 * The partitioning grid shape is built with a size of n()/p(), where n()
+	 * and p() are a couple of divisors of the number of processes, such that
+	 * n()/p() is the closest as possible to width/height.
+	 *
+	 * The process() of each point is queried in constant time.
+	 */
+	class FastProcessMapping : public GridProcessMapping {
+		private:
+			std::vector<GridDimensions> process_grid_dimensions;
+			std::vector<std::vector<int>> process_map;
+			int _n;
+			int _p;
+			int N_x;
+			int N_y;
+			DiscreteCoordinate width;
+			DiscreteCoordinate height;
+		public:
+			/**
+			 * FastProcessMapping constructor.
+			 *
+			 * @param width global grid width
+			 * @param height global grid height
+			 * @param comm MPI communicator
+			 */
+			FastProcessMapping(
+					DiscreteCoordinate width, DiscreteCoordinate height,
+					api::communication::MpiCommunicator& comm
+					);
+
+			/**
+			 * Returns the rank of the process to which the `point` is
+			 * associated.
+			 *
+			 * The result is undefined if the specified point is not contained
+			 * in the grid of size `width x height`, so `point.x` must be in
+			 * `[0, width-1]` and `point.y` must be in `[0, height-1]`.
+			 *
+			 * @param point discrete point of the grid
+			 * @return process associated to `point`
+			 */
+			int process(DiscretePoint point) const override;
+
+			GridDimensions gridDimensions(int process) const override;
+
+			/**
+			 * Width of the partitioning grid.
+			 */
+			int n() const;
+			/**
+			 * Height of the partitioning grid.
+			 */
+			int p() const;
+	};
+
 	/**
 	 * A grid based load balancing algorithm.
 	 *
@@ -312,14 +363,14 @@ namespace fpmas { namespace model {
 	 */
 	class GridLoadBalancing : public api::graph::LoadBalancing<api::model::AgentPtr> {
 		private:
-			TreeProcessMapping default_process_mapping;
+			FastProcessMapping default_process_mapping;
 			const GridProcessMapping& grid_process_mapping;
 
 		public:
 			/**
 			 * GridLoadBalancing constructor.
 			 *
-			 * By default, a TreeProcessMapping instance is used to map
+			 * By default, a FastProcessMapping instance is used to map
 			 * GridCells to processes.
 			 *
 			 * @param width global grid width
