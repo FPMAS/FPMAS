@@ -6,6 +6,8 @@
  */
 
 #include "fpmas/api/graph/graph_builder.h"
+#include "fpmas/graph/static_load_balancing.h"
+#include "fpmas/model/spatial/grid_load_balancing.h"
 #include "random_graph_builder.h"
 #include "fpmas/utils/functional.h"
 
@@ -357,6 +359,11 @@ namespace fpmas { namespace graph {
 					 */
 					std::function<double()> y;
 
+					double x0;
+					double y0;
+					double X;
+					double Y;
+
 					static random::UniformRealDistribution<double> default_xy_dist;
 
 				public:
@@ -392,7 +399,9 @@ namespace fpmas { namespace graph {
 								) :
 							RandomGraphBuilder(generator, edge_distribution),
 							x([&generator, &x_distribution] () {return x_distribution(generator);}),
-							y([&generator, &y_distribution] () {return y_distribution(generator);}) {
+							y([&generator, &y_distribution] () {return y_distribution(generator);}),
+							x0(x_distribution.min()), y0(y_distribution.min()),
+							X(x_distribution.max()-x0), Y(y_distribution.max()-y0) {
 							}
 
 					/**
@@ -496,19 +505,28 @@ namespace fpmas { namespace graph {
 				api::graph::DistributedNodeBuilder<T>& node_builder,
 				api::graph::LayerId layer,
 				api::graph::DistributedGraph<T>& graph) {
-			std::vector<api::graph::DistributedNode<T>*> raw_built_nodes;
-			std::vector<detail::LocalizedNode<T>> built_nodes;
+			fpmas::model::FastProcessMapping process_mapping(X, Y, graph.getMpiCommunicator());
+
+			fpmas::graph::PartitionMap partition;
+			std::vector<detail::LocalizedNode<T>> local_built_nodes;
 			while(node_builder.localNodeCount() != 0) {
 				auto* node = node_builder.buildNode(graph);
-				built_nodes.push_back({
-						{this->x(), this->y()},
+				double x = this->x();
+				double y = this->y();
+				local_built_nodes.push_back({
+						{x, y},
 						node
 						});
-				raw_built_nodes.push_back(node);
+				// Builds and gathers coordinates on each process according to the
+				// FastProcessMapping to reduce the count of DISTANT nodes
+				partition[node->getId()] = process_mapping.process({
+						(int) x - (int) x0, (int) y - (int) y0
+						});
 			}
-			std::vector<detail::LocalizedNodeView<T>> built_nodes_buffer;
-			for(auto node : built_nodes)
-				built_nodes_buffer.push_back({
+
+			std::vector<detail::LocalizedNodeView<T>> all_built_nodes;
+			for(auto node : local_built_nodes)
+				all_built_nodes.push_back({
 						node.p, node.node->getId(), node.node->location()
 						});
 
@@ -516,20 +534,34 @@ namespace fpmas { namespace graph {
 					graph.getMpiCommunicator()
 					);
 
-			built_nodes_buffer = fpmas::communication::all_reduce(
-					mpi, built_nodes_buffer, fpmas::utils::Concat()
+			all_built_nodes = fpmas::communication::all_reduce(
+					mpi, all_built_nodes, fpmas::utils::Concat()
 					);
 
+			graph.distribute(partition);
+			local_built_nodes.clear();
+			std::vector<api::graph::DistributedNode<T>*> raw_built_nodes;
+			{
+				const auto& local_nodes = graph.getLocationManager().getLocalNodes();
+				for(auto& item : all_built_nodes) {
+					auto it = local_nodes.find(item.node_id);
+					if(it != local_nodes.end()) {
+						local_built_nodes.push_back({item.p, it->second});
+						raw_built_nodes.push_back(it->second);
+					}
+				}
+			}
+
 			const auto& graph_nodes = graph.getNodes();
-			for(auto& node : built_nodes) {
+			for(auto& node : local_built_nodes) {
 				std::size_t edge_count = std::min(
-						this->num_edge(), built_nodes_buffer.size()-1
+						this->num_edge(), all_built_nodes.size()-1
 						);
 				detail::DistanceComparator comp(node.p);
 				std::list<detail::LocalizedNodeView<T>> nearest_nodes;
 				std::size_t i = 0;
 				while(nearest_nodes.size() < edge_count) {
-					auto local_node = built_nodes_buffer[i];
+					auto local_node = all_built_nodes[i];
 					if(local_node.node_id != node.node->getId()) {
 						auto it = nearest_nodes.begin();
 						while(it != nearest_nodes.end() && comp((*it).p, local_node.p))
@@ -539,8 +571,8 @@ namespace fpmas { namespace graph {
 					i++;
 				}
 
-				for(std::size_t j = i; j < built_nodes_buffer.size(); j++) {
-					auto local_node = built_nodes_buffer[j];
+				for(std::size_t j = i; j < all_built_nodes.size(); j++) {
+					auto local_node = all_built_nodes[j];
 					if(local_node.node_id != node.node->getId()) {
 						auto it = nearest_nodes.begin();
 						while(it != nearest_nodes.end() && comp((*it).p, local_node.p))
