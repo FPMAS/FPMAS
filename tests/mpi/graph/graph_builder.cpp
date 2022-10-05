@@ -99,6 +99,7 @@ TEST(DistributedClusteredGraphBuilder, build) {
 			);
 
 	builder.build(node_builder, LAYER_ID, graph);
+	graph.synchronize();
 
 	fpmas::communication::TypedMpi<std::size_t> mpi(graph.getMpiCommunicator());
 
@@ -125,3 +126,4 @@ TEST(DistributedClusteredGraphBuilder, build) {
 			Not(UnorderedElementsAre(graph.getMpiCommunicator().getRank()))
 			);
 }
+
