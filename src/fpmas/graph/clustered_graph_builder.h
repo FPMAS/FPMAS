@@ -527,7 +527,7 @@ namespace fpmas { namespace graph {
 			std::vector<detail::LocalizedNodeView<T>> all_built_nodes;
 			for(auto node : local_built_nodes)
 				all_built_nodes.push_back({
-						node.p, node.node->getId(), node.node->location()
+						node.p, node.node->getId(), partition[node.node->getId()]
 						});
 
 			fpmas::communication::TypedMpi<std::vector<detail::LocalizedNodeView<T>>> mpi(
