@@ -37,7 +37,7 @@ namespace fpmas { namespace graph {
 				 * @param comm MPI communicator
 				 */
 				RandomLoadBalancing(api::communication::MpiCommunicator& comm)
-					: random_rank(0, comm.getSize()-1) {
+					: generator(comm), random_rank(0, comm.getSize()-1) {
 					}
 
 				/**

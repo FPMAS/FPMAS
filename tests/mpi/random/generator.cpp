@@ -11,7 +11,7 @@ class DistributedRandomGeneratorTest : public Test {
 };
 fpmas::random::DistributedGenerator<> DistributedRandomGeneratorTest::distributed_generator;
 
-TEST_F(DistributedRandomGeneratorTest, test) {
+TEST_F(DistributedRandomGeneratorTest, different_sequences_by_process) {
 	std::array<typename fpmas::random::DistributedGenerator<>::result_type, 100> values;
 	for(int i = 0; i < 100; i++)
 		values[i] = distributed_generator();
@@ -26,4 +26,19 @@ TEST_F(DistributedRandomGeneratorTest, test) {
 			if(i != j) {
 				ASSERT_THAT(generated_values[i], Not(ElementsAreArray(generated_values[j])));
 			}
+}
+
+TEST_F(DistributedRandomGeneratorTest, seed) {
+	distributed_generator.seed(std::mt19937::default_seed);
+
+	std::array<typename fpmas::random::DistributedGenerator<>::result_type, 100> values1;
+	for(int i = 0; i < 100; i++)
+		values1[i] = distributed_generator();
+
+	distributed_generator.seed(std::mt19937::default_seed);
+	std::array<typename fpmas::random::DistributedGenerator<>::result_type, 100> values2;
+	for(int i = 0; i < 100; i++)
+		values2[i] = distributed_generator();
+
+	ASSERT_THAT(values2, ElementsAreArray(values1));
 }
