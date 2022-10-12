@@ -15,7 +15,7 @@ var searchData=
   ['cellbase_3c_20api_3a_3amodel_3a_3agridcell_2c_20gridcelltype_2c_20gridcellbase_3c_20gridcelltype_2c_20gridcelltype_20_3e_20_3e_12',['CellBase&lt; api::model::GridCell, GridCellType, GridCellBase&lt; GridCellType, GridCellType &gt; &gt;',['../classfpmas_1_1model_1_1CellBase.html',1,'fpmas::model']]],
   ['cellbehavior_13',['CellBehavior',['../classfpmas_1_1api_1_1model_1_1CellBehavior.html',1,'fpmas::api::model']]],
   ['cellloadbalancing_14',['CellLoadBalancing',['../classfpmas_1_1model_1_1CellLoadBalancing.html',1,'fpmas::model']]],
-  ['cellnetworkbuilder_15',['CellNetworkBuilder',['../classfpmas_1_1api_1_1model_1_1CellNetworkBuilder.html',1,'fpmas::api::model']]],
+  ['cellnetworkbuilder_15',['CellNetworkBuilder',['../classfpmas_1_1api_1_1model_1_1CellNetworkBuilder.html',1,'fpmas::api::model::CellNetworkBuilder&lt; CellType &gt;'],['../classfpmas_1_1model_1_1CellNetworkBuilder.html',1,'fpmas::model::CellNetworkBuilder&lt; CellType &gt;']]],
   ['cellnetworkbuilder_3c_20model_3a_3agridcell_20_3e_16',['CellNetworkBuilder&lt; model::GridCell &gt;',['../classfpmas_1_1api_1_1model_1_1CellNetworkBuilder.html',1,'fpmas::api::model']]],
   ['chebyshevdistance_17',['ChebyshevDistance',['../classfpmas_1_1model_1_1ChebyshevDistance.html',1,'fpmas::model']]],
   ['clusteredgraphbuilder_18',['ClusteredGraphBuilder',['../classfpmas_1_1graph_1_1ClusteredGraphBuilder.html',1,'fpmas::graph']]],

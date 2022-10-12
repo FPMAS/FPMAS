@@ -137,6 +137,7 @@ if(DOXYGEN_FOUND)
 	#set(DOXYGEN_TEMPLATE_RELATIONS "YES")
 	set(DOXYGEN_VERBATIM_VARS DOXYGEN_ALIASES)
 	set(DOXYGEN_EXCLUDE_SYMBOLS
+		[[__*]]
 		[[Node< DistributedId, api::graph::DistributedEdge< T > >]]
 		[[Edge< DistributedId, api::graph::DistributedNode< T > >]]
 		[[Graph< api::graph::DistributedNode< T >, api::graph::DistributedEdge< T > >]]

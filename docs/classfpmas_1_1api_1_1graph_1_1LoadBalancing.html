@@ -80,10 +80,11 @@ Inheritance diagram for fpmas::api::graph::LoadBalancing&lt; T &gt;:</div>
 <div class="dyncontent">
 <div class="center"><img src="classfpmas_1_1api_1_1graph_1_1LoadBalancing__inherit__graph.png" border="0" usemap="#afpmas_1_1api_1_1graph_1_1LoadBalancing_3_01T_01_4_inherit__map" alt="Inheritance graph"/></div>
 <map name="afpmas_1_1api_1_1graph_1_1LoadBalancing_3_01T_01_4_inherit__map" id="afpmas_1_1api_1_1graph_1_1LoadBalancing_3_01T_01_4_inherit__map">
-<area shape="rect" title=" " alt="" coords="5,71,144,112"/>
+<area shape="rect" title=" " alt="" coords="5,104,144,145"/>
 <area shape="rect" href="classfpmas_1_1graph_1_1RandomLoadBalancing.html" title=" " alt="" coords="198,5,381,47"/>
 <area shape="rect" href="classfpmas_1_1graph_1_1ScheduledLoadBalancing.html" title=" " alt="" coords="192,71,387,112"/>
-<area shape="rect" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html" title=" " alt="" coords="204,136,375,177"/>
+<area shape="rect" href="classfpmas_1_1graph_1_1StaticLoadBalancing.html" title=" " alt="" coords="205,136,373,177"/>
+<area shape="rect" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html" title=" " alt="" coords="204,201,375,243"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -164,7 +165,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p >Computes a node partition from the input nodes.</p>
 <p >This functions is synchronous and blocks until all processes call it.</p>
-<p >Each process calls the functions with its own node map, so that the global set of nodes to balance correspond to the union of all the local node maps specified as arguments.</p>
+<p >Each process calls the functions with its own node map, so that the global set of nodes to balance corresponds to the union of all the local node maps specified as arguments.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">nodes</td><td>local nodes to balance </td></tr>

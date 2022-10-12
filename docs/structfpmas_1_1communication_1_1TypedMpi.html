@@ -150,15 +150,15 @@ Additional Inherited Members</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
-struct fpmas::communication::TypedMpi&lt; T &gt;</div><p >The default <a class="el" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html">fpmas::communication::detail::TypedMpi</a> specialization, based on nlohmann::json.</p>
-<p >Since json serialization rules are predefined for fundamental types and std containers in the <code>nlohmann::json</code> implementation, sending such structure through MPI is made trivial, without any additionnal user defined code: </p><div class="fragment"><div class="line"><span class="comment">// Used to transmit integers: predefined</span></div>
+struct fpmas::communication::TypedMpi&lt; T &gt;</div><p >The default <a class="el" href="classfpmas_1_1communication_1_1detail_1_1TypedMpi.html">fpmas::communication::detail::TypedMpi</a> specialization, based on <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">io::datapack::ObjectPack</a>.</p>
+<p >Since ObjectPack serialization rules are predefined for fundamental types and std containers, sending such structure through MPI is made trivial, without any additionnal user defined code: </p><div class="fragment"><div class="line"><span class="comment">// Used to transmit integers: predefined</span></div>
 <div class="line">TypedMpi&lt;int&gt; int_mpi;</div>
 <div class="line"><span class="comment">// Used to transmit vectors of integers: predefined</span></div>
 <div class="line">TypedMpi&lt;std::vector&lt;int&gt;&gt; int_vector_mpi;</div>
-</div><!-- fragment --><p> If a <code>CustomType</code> is serializable in a <code>JsonType</code>, containers of this type can trivially be transmitted, without any additionnal code: </p><div class="fragment"><div class="line">TypedMpi&lt;std::vector&lt;CustomType&gt;&gt; custom_type_vector_mpi;</div>
+</div><!-- fragment --><p> If a <code>CustomType</code> is serializable in an <code>ObjectPack</code>, containers of this type can trivially be transmitted, without any additionnal code: </p><div class="fragment"><div class="line">TypedMpi&lt;std::vector&lt;CustomType&gt;&gt; custom_type_vector_mpi;</div>
 </div><!-- fragment --><dl class="tparams"><dt>Template Parameters</dt><dd>
   <table class="tparams">
-    <tr><td class="paramname">T</td><td>type to transmit, serializable into an <code>nlohmann::json</code> </td></tr>
+    <tr><td class="paramname">T</td><td>type to transmit, serializable into an <a class="el" href="namespacefpmas_1_1io_1_1datapack.html#affeae790ebdf831b07e41a7e9ef37ccb">fpmas::io::datapack::ObjectPack</a> </td></tr>
   </table>
   </dd>
 </dl>

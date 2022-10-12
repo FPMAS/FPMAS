@@ -106,7 +106,7 @@ namespace fpmas { namespace api { namespace graph {
 				 * call it.
 				 *
 				 * Each process calls the functions with its own node map, so
-				 * that the global set of nodes to balance correspond to the
+				 * that the global set of nodes to balance corresponds to the
 				 * union of all the local node maps specified as arguments.
 				 *
 				 * @param nodes local nodes to balance

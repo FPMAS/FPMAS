@@ -14,14 +14,28 @@
 namespace fpmas { namespace graph {
 	/**
 	 * Counts the total number of nodes contained in the distributed graph.
+	 *
+	 * This method is synchronous: it can't return before it as been initiated
+	 * by all processes in graph.getMpiCommunicator(), since it requires
+	 * collective communications.
+	 *
+	 * @param graph Distributed graph instance
+	 * @return total node count within the graph
 	 */
 	template<typename T> std::size_t node_count(api::graph::DistributedGraph<T>& graph) {
-			communication::TypedMpi<std::size_t> int_mpi(graph.getMpiCommunicator());
-			return communication::all_reduce(
-					int_mpi, graph.getLocationManager().getLocalNodes().size());
-		}
+		communication::TypedMpi<std::size_t> int_mpi(graph.getMpiCommunicator());
+		return communication::all_reduce(
+				int_mpi, graph.getLocationManager().getLocalNodes().size());
+	}
 	/**
 	 * Counts the total number of edges contained in the distributed graph.
+	 *
+	 * This method is synchronous: it can't return before it as been initiated
+	 * by all processes in graph.getMpiCommunicator(), since it requires
+	 * collective communications.
+	 *
+	 * @param graph Distributed graph instance
+	 * @return total edge count within the graph
 	 */
 	template<typename T>
 		std::size_t edge_count(api::graph::DistributedGraph<T>& graph) {
@@ -43,6 +57,10 @@ namespace fpmas { namespace graph {
 	 * \DISTANT nodes are preserved).
 	 *
 	 * Only edges on the specified layer are considered.
+	 *
+	 * This method is synchronous: it can't return before it as been initiated
+	 * by all processes in graph.getMpiCommunicator(), since it requires
+	 * collective communications.
 	 *
 	 * @param graph distributed graph input
 	 * @param layer graph layer
@@ -186,56 +204,80 @@ namespace fpmas { namespace graph {
 		}
 
 	template<typename T>
-	void explore(
-			api::graph::DistributedId source,
-			std::queue<std::pair<api::graph::DistributedNode<T>*, float>>& node_queue,
-			api::graph::LayerId layer,
-			std::unordered_map<DistributedId, std::unordered_map<DistributedId, float>>& distances,
-			std::unordered_map<
-			int,
-			std::unordered_map<DistributedId, std::unordered_map<DistributedId, float>>
-			>& next_processes) {
-		while(!node_queue.empty()) {
-			auto current_node = node_queue.front();
-			node_queue.pop();
-			if(current_node.first->state() == api::graph::LOCAL) {
-				if(current_node.second < distances[current_node.first->getId()][source]) {
-					distances[current_node.first->getId()][source] = current_node.second;
-					for(auto edge : current_node.first->getOutgoingEdges(layer))
-						node_queue.push({edge->getTargetNode(), current_node.second+1});
+		void __explore_distances(
+				api::graph::DistributedId source,
+				std::queue<std::pair<api::graph::DistributedNode<T>*, float>>& node_queue,
+				api::graph::LayerId layer,
+				std::unordered_map<DistributedId, std::unordered_map<DistributedId, float>>& distances,
+				std::unordered_map<
+				int,
+				std::unordered_map<DistributedId, std::unordered_map<DistributedId, float>>
+				>& next_processes) {
+			while(!node_queue.empty()) {
+				auto current_node = node_queue.front();
+				node_queue.pop();
+				if(current_node.first->state() == api::graph::LOCAL) {
+					if(current_node.second < distances[current_node.first->getId()][source]) {
+						distances[current_node.first->getId()][source] = current_node.second;
+						for(auto edge : current_node.first->getOutgoingEdges(layer))
+							node_queue.push({edge->getTargetNode(), current_node.second+1});
+					}
+				} else {
+					// Map with all requests for node from any source
+					auto& current_node_requests = next_processes
+						[current_node.first->location()][current_node.first->getId()];
+					// Request for the current node from the current source
+					auto current_source_request = current_node_requests.find(source);
+					if(current_source_request == current_node_requests.end())
+						// No request from the current source, create new one
+						current_node_requests[source] = current_node.second;
+					else if(current_node.second < current_node_requests[source])
+						// Else a request already exist, but replace it only if it
+						// can produce a shortest path
+						current_node_requests[source] = current_node.second;
 				}
-			} else {
-				// Map with all requests for node from any source
-				auto& current_node_requests = next_processes
-					[current_node.first->location()][current_node.first->getId()];
-				// Request for the current node from the current source
-				auto current_source_request = current_node_requests.find(source);
-				if(current_source_request == current_node_requests.end())
-					// No request from the current source, create new one
-					current_node_requests[source] = current_node.second;
-				else if(current_node.second < current_node_requests[source])
-					// Else a request already exist, but replace it only if it
-					// can produce a shortest path
-					current_node_requests[source] = current_node.second;
 			}
 		}
-	}
 
+
+	/**
+	 * Returns a vector containing the ids of \LOCAL nodes within the
+	 * distributed graph.
+	 *
+	 * @param graph distributed graph
+	 * @return ids of \LOCAL nodes
+	 */
 	template<typename T>
-	std::vector<DistributedId> local_node_ids(
-			fpmas::api::graph::DistributedGraph<T>& graph) {
-		std::vector<DistributedId> ids(
-				graph.getLocationManager().getLocalNodes().size());
-		auto it = ids.begin();
-		for(auto& item : graph.getLocationManager().getLocalNodes()) {
-			*it = item.first;
-			++it;
+		std::vector<DistributedId> local_node_ids(
+				fpmas::api::graph::DistributedGraph<T>& graph) {
+			std::vector<DistributedId> ids(
+					graph.getLocationManager().getLocalNodes().size());
+			auto it = ids.begin();
+			for(auto& item : graph.getLocationManager().getLocalNodes()) {
+				*it = item.first;
+				++it;
+			}
+			return ids;
 		}
-		return ids;
-	}
 
+	/**
+	 * Computes and return a `distance_map` such that for all local nodes in the
+	 * graph and all specified source nodes the entry `distance_map[node
+	 * id][source id]` contains the length of the shortest path from `source` to
+	 * `node` on the specified layer. If no path is found, the distance is set
+	 * to `std::numeric_limits<float>::infinity()`.
+	 *
+	 * This method is synchronous: it can't return before it as been initiated
+	 * by all processes in graph.getMpiCommunicator(), since it requires
+	 * collective communications.
+	 *
+	 * @param graph distributed graph
+	 * @param layer layer of edges to consider
+	 * @param source_nodes ids of source node from which distances should be
+	 * computed
+	 */
 	template<typename T>
-	std::unordered_map<DistributedId, std::unordered_map<DistributedId, float>>
+		std::unordered_map<DistributedId, std::unordered_map<DistributedId, float>>
 		shortest_path_lengths(
 				fpmas::api::graph::DistributedGraph<T>& graph,
 				fpmas::api::graph::LayerId layer,
@@ -256,7 +298,7 @@ namespace fpmas { namespace graph {
 
 			std::unordered_map<int,
 				std::unordered_map<DistributedId, std::unordered_map<DistributedId, float>>
-				> next_processes;
+					> next_processes;
 			fpmas::communication::TypedMpi<
 				std::unordered_map<DistributedId, std::unordered_map<DistributedId, float>>>
 				next_mpi(graph.getMpiCommunicator());
@@ -266,13 +308,13 @@ namespace fpmas { namespace graph {
 					std::queue<std::pair<api::graph::DistributedNode<T>*, float>>
 						node_queue;
 					node_queue.push({source_node->second, 0});
-					explore(source, node_queue, layer, distances, next_processes);
+					__explore_distances(source, node_queue, layer, distances, next_processes);
 				}
 			}
 
 			communication::TypedMpi<bool> bool_mpi(graph.getMpiCommunicator());
 			auto and_fct = 
-					[](const bool& b1, const bool& b2) {return b1 && b2;};
+				[](const bool& b1, const bool& b2) {return b1 && b2;};
 			bool end = communication::all_reduce(
 					bool_mpi, next_processes.size() == 0, and_fct
 					);
@@ -285,20 +327,47 @@ namespace fpmas { namespace graph {
 							// Re-launch exploration from local node
 							std::queue<std::pair<api::graph::DistributedNode<T>*, float>> node_queue;
 							node_queue.push({graph.getNode(node.first), source.second});
-							explore(
+							__explore_distances(
 									source.first, node_queue, layer,
 									distances, next_processes
-								   );
+									);
 						}
 				}
 				end = communication::all_reduce(
-					bool_mpi, next_processes.size() == 0, and_fct
-					);
+						bool_mpi, next_processes.size() == 0, and_fct
+						);
 			}
 
 			return distances;
 		}
 
+	/**
+	 * Computes the average shortest path length from sources to targets
+	 * reachable on the specified layer.
+	 *
+	 * When a target is not reachable, an infinite characteristic path length
+	 * should mathematically be returned, but in order to get finite and
+	 * meaningful values we prefer to ignore those pairs of nodes so that the
+	 * characteristic path length is actually computed on the largest weakly
+	 * connected component of the graph.
+	 *
+	 * The source_nodes and layer parameters can be used to compute the
+	 * characteristic path length only on a subgraph.
+	 *
+	 * For example, in the case of a \SpatialModel, the following snippet allows
+	 * to compute the characteristic path length of the \Cell network, ignoring
+	 * \SpatialAgents contained in the graph:
+	 * ```cpp
+	 *	float L = fpmas::graph::characteristic_path_length(
+	 *		model.getModel().graph(), fpmas::api::model::CELL_SUCCESSOR,
+	 *		fpmas::model::local_agent_ids(model.cellGroup()));
+	 * ```
+	 *
+	 * @param graph distributed graph
+	 * @param layer layer of edges to consider
+	 * @param source_nodes ids of source node from which distances should be
+	 * computed
+	 */
 	template<typename T>
 		float characteristic_path_length(
 				fpmas::api::graph::DistributedGraph<T>& graph,

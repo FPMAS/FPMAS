@@ -3,6 +3,10 @@
 
 #include <utility>
 
+/** \file src/fpmas/synchro/synchro.h
+ * Generic synchronisation utilities.
+ */
+
 namespace fpmas { namespace synchro {
 	/**
 	 * Generic structure to update local data from a temporary updated data

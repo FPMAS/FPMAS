@@ -116,6 +116,11 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ab07c220174e5dc045a80efb94609dea8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a88579a08d4336bab7acc9767abcac5b9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1model_1_1Neighbor.html">Neighbor</a>&lt; AgentType &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#a88579a08d4336bab7acc9767abcac5b9">random</a> ()</td></tr>
 <tr class="separator:a88579a08d4336bab7acc9767abcac5b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab80f4f9c4766c2577fd5ccdb392101a4"><td class="memTemplParams" colspan="2">template&lt;typename Gen &gt; </td></tr>
+<tr class="memitem:ab80f4f9c4766c2577fd5ccdb392101a4"><td class="memTemplItemLeft" align="right" valign="top">const <a class="el" href="classfpmas_1_1model_1_1Neighbor.html">Neighbor</a>&lt; AgentType &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#ab80f4f9c4766c2577fd5ccdb392101a4">random</a> (Gen &amp;gen) const</td></tr>
+<tr class="separator:ab80f4f9c4766c2577fd5ccdb392101a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa643c48c22b49a82d93ee4c80d3884b5"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classfpmas_1_1model_1_1Neighbor.html">Neighbor</a>&lt; AgentType &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#aa643c48c22b49a82d93ee4c80d3884b5">random</a> () const</td></tr>
+<tr class="separator:aa643c48c22b49a82d93ee4c80d3884b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename AgentType&gt;<br />
@@ -650,7 +655,7 @@ template&lt;typename Filter &gt; </div>
 </div>
 </div>
 <a id="ab07c220174e5dc045a80efb94609dea8" name="ab07c220174e5dc045a80efb94609dea8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab07c220174e5dc045a80efb94609dea8">&#9670;&nbsp;</a></span>random() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab07c220174e5dc045a80efb94609dea8">&#9670;&nbsp;</a></span>random() <span class="overload">[1/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -677,12 +682,13 @@ template&lt;typename Gen &gt; </div>
 </table>
 </div><div class="memdoc">
 <p >Selects a random element of this neighbors list, using the specified random number generator.</p>
+<p >Fails if <code><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#ac50d0dc8883bf182e29e6a19405a2593">count()</a> == 0</code>.</p>
 <dl class="section return"><dt>Returns</dt><dd>random neighbor </dd></dl>
 
 </div>
 </div>
 <a id="a88579a08d4336bab7acc9767abcac5b9" name="a88579a08d4336bab7acc9767abcac5b9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a88579a08d4336bab7acc9767abcac5b9">&#9670;&nbsp;</a></span>random() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a88579a08d4336bab7acc9767abcac5b9">&#9670;&nbsp;</a></span>random() <span class="overload">[2/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -705,6 +711,73 @@ template&lt;typename AgentType &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+<p >Selects a ramdom element of this neighbors list, using the distributed <a class="el" href="structfpmas_1_1model_1_1RandomNeighbors.html#a29721b68c3a7df97f6835bea8b73d8db">RandomNeighbors::rd</a> random number generator.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#ab07c220174e5dc045a80efb94609dea8">random(Gen&amp;)</a></dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>random neighbor </dd></dl>
+
+</div>
+</div>
+<a id="ab80f4f9c4766c2577fd5ccdb392101a4" name="ab80f4f9c4766c2577fd5ccdb392101a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab80f4f9c4766c2577fd5ccdb392101a4">&#9670;&nbsp;</a></span>random() <span class="overload">[3/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename AgentType &gt; </div>
+<div class="memtemplate">
+template&lt;typename Gen &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classfpmas_1_1model_1_1Neighbor.html">Neighbor</a>&lt; AgentType &gt; <a class="el" href="classfpmas_1_1model_1_1Neighbors.html">fpmas::model::Neighbors</a>&lt; AgentType &gt;::random </td>
+          <td>(</td>
+          <td class="paramtype">Gen &amp;&#160;</td>
+          <td class="paramname"><em>gen</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p></p>
+<p >Selects a random element of this neighbors list, using the specified random number generator.</p>
+<p >Fails if <code><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#ac50d0dc8883bf182e29e6a19405a2593">count()</a> == 0</code>.</p>
+<dl class="section return"><dt>Returns</dt><dd>random neighbor </dd></dl>
+
+</div>
+</div>
+<a id="aa643c48c22b49a82d93ee4c80d3884b5" name="aa643c48c22b49a82d93ee4c80d3884b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa643c48c22b49a82d93ee4c80d3884b5">&#9670;&nbsp;</a></span>random() <span class="overload">[4/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename AgentType &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="classfpmas_1_1model_1_1Neighbor.html">Neighbor</a>&lt; AgentType &gt; <a class="el" href="classfpmas_1_1model_1_1Neighbors.html">fpmas::model::Neighbors</a>&lt; AgentType &gt;::random </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p></p>
 <p >Selects a ramdom element of this neighbors list, using the distributed <a class="el" href="structfpmas_1_1model_1_1RandomNeighbors.html#a29721b68c3a7df97f6835bea8b73d8db">RandomNeighbors::rd</a> random number generator.</p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="classfpmas_1_1model_1_1Neighbors.html#ab07c220174e5dc045a80efb94609dea8">random(Gen&amp;)</a></dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>random neighbor </dd></dl>

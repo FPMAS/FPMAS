@@ -69,22 +69,12 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="structfpmas_1_1api_1_1communication_1_1Request-members.html">List of all members</a>  </div>
   <div class="headertitle"><div class="title">fpmas::api::communication::Request Struct Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
 <p><code>#include &lt;<a class="el" href="api_2communication_2communication_8h_source.html">communication.h</a>&gt;</code></p>
-<div class="dynheader">
-Collaboration diagram for fpmas::api::communication::Request:</div>
-<div class="dyncontent">
-<div class="center"><img src="structfpmas_1_1api_1_1communication_1_1Request__coll__graph.png" border="0" usemap="#afpmas_1_1api_1_1communication_1_1Request_coll__map" alt="Collaboration graph"/></div>
-<map name="afpmas_1_1api_1_1communication_1_1Request_coll__map" id="afpmas_1_1api_1_1communication_1_1Request_coll__map">
-<area shape="rect" title=" " alt="" coords="5,109,184,151"/>
-<area shape="rect" href="classfpmas_1_1api_1_1communication_1_1DataPack.html" title=" " alt="" coords="5,5,184,47"/>
-</map>
-<center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -100,13 +90,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:adff5456b97a526df5632153fc7c9ea90"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74c7a550dce7c3b50f91913e377f780f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html#a74c7a550dce7c3b50f91913e377f780f">free</a> ()</td></tr>
 <tr class="separator:a74c7a550dce7c3b50f91913e377f780f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
-<tr class="memitem:a95b15e64c904c2b8f536181252ddbf0d"><td class="memItemLeft" align="right" valign="top">MPI_Request&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html#a95b15e64c904c2b8f536181252ddbf0d">__mpi_request</a></td></tr>
-<tr class="separator:a95b15e64c904c2b8f536181252ddbf0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aee432cace6f04a2e9899862d6d96f88a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html">DataPack</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html#aee432cace6f04a2e9899862d6d96f88a">__data</a> = nullptr</td></tr>
-<tr class="separator:aee432cace6f04a2e9899862d6d96f88a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p ><a class="el" href="structfpmas_1_1api_1_1communication_1_1Request.html">Request</a> type used in non-blocking communications.</p>
@@ -203,37 +186,6 @@ Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p >Frees the data buffer.</p>
 <p >Can be safely called even if the buffer is null or has already been freed. </p>
-
-</div>
-</div>
-<h2 class="groupheader">Member Data Documentation</h2>
-<a id="a95b15e64c904c2b8f536181252ddbf0d" name="a95b15e64c904c2b8f536181252ddbf0d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a95b15e64c904c2b8f536181252ddbf0d">&#9670;&nbsp;</a></span>__mpi_request</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">MPI_Request fpmas::api::communication::Request::__mpi_request</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p >Low-level MPI_Request. </p>
-
-</div>
-</div>
-<a id="aee432cace6f04a2e9899862d6d96f88a" name="aee432cace6f04a2e9899862d6d96f88a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aee432cace6f04a2e9899862d6d96f88a">&#9670;&nbsp;</a></span>__data</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classfpmas_1_1api_1_1communication_1_1DataPack.html">DataPack</a>* fpmas::api::communication::Request::__data = nullptr</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p >Data buffer. </p>
 
 </div>
 </div>

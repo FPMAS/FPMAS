@@ -120,6 +120,8 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1SmallWorldGraphBuilder.html">SmallWorldGraphBuilder</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1StaticLoadBalancing.html">StaticLoadBalancing</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1TemporaryNode.html">TemporaryNode</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1UniformGraphBuilder.html">UniformGraphBuilder</a></td></tr>
@@ -160,6 +162,15 @@ Functions</h2></td></tr>
 <tr class="memitem:a66019b0ede0efc7e7bd1f89e2fd41407"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a66019b0ede0efc7e7bd1f89e2fd41407"><td class="memTemplItemLeft" align="right" valign="top">double&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1graph.html#a66019b0ede0efc7e7bd1f89e2fd41407">clustering_coefficient</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt; &amp;graph, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">fpmas::api::graph::LayerId</a> layer)</td></tr>
 <tr class="separator:a66019b0ede0efc7e7bd1f89e2fd41407"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aefdb212b499fd08a6ea8139dd3045158"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:aefdb212b499fd08a6ea8139dd3045158"><td class="memTemplItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1graph.html#aefdb212b499fd08a6ea8139dd3045158">local_node_ids</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt; &amp;graph)</td></tr>
+<tr class="separator:aefdb212b499fd08a6ea8139dd3045158"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a16502882886b472edbf9d5123732387f"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a16502882886b472edbf9d5123732387f"><td class="memTemplItemLeft" align="right" valign="top">std::unordered_map&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, std::unordered_map&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, float &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1graph.html#a16502882886b472edbf9d5123732387f">shortest_path_lengths</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt; &amp;graph, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">fpmas::api::graph::LayerId</a> layer, const std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &gt; &amp;source_nodes)</td></tr>
+<tr class="separator:a16502882886b472edbf9d5123732387f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63bad826f0d828c04483855c8cb5332c"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a63bad826f0d828c04483855c8cb5332c"><td class="memTemplItemLeft" align="right" valign="top">float&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacefpmas_1_1graph.html#a63bad826f0d828c04483855c8cb5332c">characteristic_path_length</a> (<a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt; &amp;graph, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">fpmas::api::graph::LayerId</a> layer, const std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &gt; &amp;source_nodes)</td></tr>
+<tr class="separator:a63bad826f0d828c04483855c8cb5332c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p ><a class="el" href="namespacefpmas_1_1api_1_1graph.html">fpmas::api::graph</a> implementations. </p>
@@ -256,7 +267,15 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Counts the total number of nodes contained in the distributed graph. </p>
+<p >Counts the total number of nodes contained in the distributed graph.</p>
+<p >This method is synchronous: it can't return before it as been initiated by all processes in graph.getMpiCommunicator(), since it requires collective communications.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">graph</td><td>Distributed graph instance </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>total node count within the graph </dd></dl>
 
 </div>
 </div>
@@ -277,7 +296,15 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<p >Counts the total number of edges contained in the distributed graph. </p>
+<p >Counts the total number of edges contained in the distributed graph.</p>
+<p >This method is synchronous: it can't return before it as been initiated by all processes in graph.getMpiCommunicator(), since it requires collective communications.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">graph</td><td>Distributed graph instance </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>total edge count within the graph </dd></dl>
 
 </div>
 </div>
@@ -311,6 +338,7 @@ template&lt;typename T &gt; </div>
 <p >Utility method used to retrieve the ids of outgoing neighbors of <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> nodes in the graph.</p>
 <p >This can be used to build a representation of neighbors of <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> nodes, since such information is not supposed to be preserved by the DistributedGraph distribution process (only edges between <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> and <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">DISTANT</a> nodes are preserved).</p>
 <p >Only edges on the specified layer are considered.</p>
+<p >This method is synchronous: it can't return before it as been initiated by all processes in graph.getMpiCommunicator(), since it requires collective communications.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">graph</td><td>distributed graph input </td></tr>
@@ -361,6 +389,132 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>local clustering coefficient </dd></dl>
+
+</div>
+</div>
+<a id="aefdb212b499fd08a6ea8139dd3045158" name="aefdb212b499fd08a6ea8139dd3045158"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aefdb212b499fd08a6ea8139dd3045158">&#9670;&nbsp;</a></span>local_node_ids()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &gt; fpmas::graph::local_node_ids </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>graph</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Returns a vector containing the ids of <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> nodes within the distributed graph.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">graph</td><td>distributed graph </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>ids of <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3436e2c1520417414ff6059c45d9e02f">LOCAL</a> nodes </dd></dl>
+
+</div>
+</div>
+<a id="a16502882886b472edbf9d5123732387f" name="a16502882886b472edbf9d5123732387f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a16502882886b472edbf9d5123732387f">&#9670;&nbsp;</a></span>shortest_path_lengths()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unordered_map&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, std::unordered_map&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a>, float &gt; &gt; fpmas::graph::shortest_path_lengths </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>graph</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">fpmas::api::graph::LayerId</a>&#160;</td>
+          <td class="paramname"><em>layer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>source_nodes</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Computes and return a <code>distance_map</code> such that for all local nodes in the graph and all specified source nodes the entry <code>distance_map[node id][source id]</code> contains the length of the shortest path from <code>source</code> to <code>node</code> on the specified layer. If no path is found, the distance is set to <code>std::numeric_limits&lt;float&gt;::infinity()</code>.</p>
+<p >This method is synchronous: it can't return before it as been initiated by all processes in graph.getMpiCommunicator(), since it requires collective communications.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">graph</td><td>distributed graph </td></tr>
+    <tr><td class="paramname">layer</td><td>layer of edges to consider </td></tr>
+    <tr><td class="paramname">source_nodes</td><td>ids of source node from which distances should be computed </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a63bad826f0d828c04483855c8cb5332c" name="a63bad826f0d828c04483855c8cb5332c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63bad826f0d828c04483855c8cb5332c">&#9670;&nbsp;</a></span>characteristic_path_length()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">float fpmas::graph::characteristic_path_length </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a>&lt; T &gt; &amp;&#160;</td>
+          <td class="paramname"><em>graph</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">fpmas::api::graph::LayerId</a>&#160;</td>
+          <td class="paramname"><em>layer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>source_nodes</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p >Computes the average shortest path length from sources to targets reachable on the specified layer.</p>
+<p >When a target is not reachable, an infinite characteristic path length should mathematically be returned, but in order to get finite and meaningful values we prefer to ignore those pairs of nodes so that the characteristic path length is actually computed on the largest weakly connected component of the graph.</p>
+<p >The source_nodes and layer parameters can be used to compute the characteristic path length only on a subgraph.</p>
+<p >For example, in the case of a <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html">SpatialModel</a>, the following snippet allows to compute the characteristic path length of the <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> network, ignoring <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgents</a> contained in the graph: </p><div class="fragment"><div class="line"><span class="keywordtype">float</span> L = <a class="code hl_function" href="namespacefpmas_1_1graph.html#a63bad826f0d828c04483855c8cb5332c">fpmas::graph::characteristic_path_length</a>(</div>
+<div class="line">   model.getModel().graph(), fpmas::api::model::CELL_SUCCESSOR,</div>
+<div class="line">   <a class="code hl_function" href="namespacefpmas_1_1model.html#a82da5b6bde53f428fa067da5c2315d91">fpmas::model::local_agent_ids</a>(model.cellGroup()));</div>
+<div class="ttc" id="anamespacefpmas_1_1graph_html_a63bad826f0d828c04483855c8cb5332c"><div class="ttname"><a href="namespacefpmas_1_1graph.html#a63bad826f0d828c04483855c8cb5332c">fpmas::graph::characteristic_path_length</a></div><div class="ttdeci">float characteristic_path_length(fpmas::api::graph::DistributedGraph&lt; T &gt; &amp;graph, fpmas::api::graph::LayerId layer, const std::vector&lt; DistributedId &gt; &amp;source_nodes)</div><div class="ttdef"><b>Definition:</b> analysis.h:372</div></div>
+<div class="ttc" id="anamespacefpmas_1_1model_html_a82da5b6bde53f428fa067da5c2315d91"><div class="ttname"><a href="namespacefpmas_1_1model.html#a82da5b6bde53f428fa067da5c2315d91">fpmas::model::local_agent_ids</a></div><div class="ttdeci">std::vector&lt; api::graph::DistributedId &gt; local_agent_ids(const api::model::AgentGroup &amp;group)</div><div class="ttdef"><b>Definition:</b> analysis.cpp:4</div></div>
+</div><!-- fragment --><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">graph</td><td>distributed graph </td></tr>
+    <tr><td class="paramname">layer</td><td>layer of edges to consider </td></tr>
+    <tr><td class="paramname">source_nodes</td><td>ids of source node from which distances should be computed </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

@@ -4,6 +4,10 @@
 #include "ghost_mode.h"
 #include "fpmas/api/model/spatial/grid.h"
 
+/** \file src/fpmas/synchro/ghost/global_ghost_mode.h
+ * GlobalGhostMode implementation.
+ */
+
 namespace fpmas { namespace synchro {
 	namespace ghost {
 		/**

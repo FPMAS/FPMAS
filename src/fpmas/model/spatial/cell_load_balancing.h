@@ -20,6 +20,16 @@ namespace fpmas { namespace model {
 	 * This can significantly reduce the \LoadBalancing algorithm execution time
 	 * compared to an application to the global graph, while still providing an
 	 * efficient partitioning.
+	 *
+	 * When the \LoadBalancing algorithm is applied, the weight of each \Cell is
+	 * incremented with the weight of all \SpatialAgents located within it in
+	 * order to take into account the agent distribution.
+	 *
+	 * The usage of this algorithm is recommend when the Cell network is dynamic
+	 * or the agent distribution is not uniform. Otherwise, the
+	 * StaticCellLoadBalancing is much more efficient in most of the case.
+	 *
+	 * @see StaticCellLoadBalancing
 	 */
 	class CellLoadBalancing : public api::graph::LoadBalancing<api::model::AgentPtr> {
 		private:
@@ -70,6 +80,23 @@ namespace fpmas { namespace model {
 					) override;
 	};
 
+	/**
+	 * A load balancing algorithm for \SpatialModels.
+	 *
+	 * Just as the CellLoadBalancing algorithm, an existing LoadBalancing
+	 * algorithm is applied only to the cell network, and agents are
+	 * systematically assigned to the same process as their location cell.
+	 *
+	 * But this time, the existing algorithm is only applied in PARTITION mode,
+	 * so that the algorithm only assign agent to the right process in
+	 * REPARTITION mode.
+	 *
+	 * The usage of this algorithm, much faster than the CellLoadBalancing, is
+	 * recommend when the Cell network is static and the agent distribution is
+	 * uniform.
+	 *
+	 * @see CellLoadBalancing
+	 */
 	class StaticCellLoadBalancing : public api::graph::LoadBalancing<api::model::AgentPtr> {
 		private:
 			api::communication::MpiCommunicator& comm;

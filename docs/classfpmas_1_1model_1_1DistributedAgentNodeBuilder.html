@@ -193,7 +193,7 @@ Additional Inherited Members</h2></td></tr>
 <dl class="section note"><dt>Note</dt><dd>Notice that the build process defined in an <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedGraphBuilder.html">fpmas::api::graph::DistributedGraphBuilder</a> implementation is <b>distributed</b>. In consequence, the inialization of <code>some_agent_data</code> should in practice take distribution into account. For example, since 1000 is the <b>total</b> count of initialized <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a>, it is very likely that much less <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> will be effectively initialized on the local process.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">group</td><td>group to which agents will be added </td></tr>
+    <tr><td class="paramname">groups</td><td>groups to which agents will be added </td></tr>
     <tr><td class="paramname">agent_count</td><td>total count of <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> to build </td></tr>
     <tr><td class="paramname">allocator</td><td><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> allocator </td></tr>
     <tr><td class="paramname">comm</td><td>MPI communicator </td></tr>
@@ -270,7 +270,7 @@ Additional Inherited Members</h2></td></tr>
 <dl class="section note"><dt>Note</dt><dd>Same note as DistributedAgentNodeBuilder(fpmas::api::model::AgentGroup&amp;, std::size_t, std::function&lt;api::model::Agent*()&gt;, fpmas::api::communication::MpiCommunicator&amp;)</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">group</td><td>group to which agents will be added </td></tr>
+    <tr><td class="paramname">groups</td><td>groups to which agents will be added </td></tr>
     <tr><td class="paramname">agent_count</td><td>total count of <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agents</a> to build </td></tr>
     <tr><td class="paramname">allocator</td><td><a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> allocator </td></tr>
     <tr><td class="paramname">distant_allocator</td><td>temporary <a class="el" href="classfpmas_1_1api_1_1model_1_1Agent.html">Agent</a> allocator </td></tr>

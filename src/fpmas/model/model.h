@@ -1258,7 +1258,7 @@ namespace fpmas { namespace model {
 			 * initialized \Agents, it is very likely that much less \Agents
 			 * will be effectively initialized on the local process.
 			 *
-			 * @param group group to which agents will be added
+			 * @param groups groups to which agents will be added
 			 * @param agent_count total count of \Agents to build
 			 * @param allocator \Agent allocator
 			 * @param comm MPI communicator
@@ -1305,7 +1305,7 @@ namespace fpmas { namespace model {
 			 * @note Same note as
 			 * DistributedAgentNodeBuilder(fpmas::api::model::AgentGroup&, std::size_t, std::function<api::model::Agent*()>, fpmas::api::communication::MpiCommunicator&)
 			 *
-			 * @param group group to which agents will be added
+			 * @param groups groups to which agents will be added
 			 * @param agent_count total count of \Agents to build
 			 * @param allocator \Agent allocator
 			 * @param distant_allocator temporary \Agent allocator
@@ -1383,6 +1383,9 @@ namespace fpmas { namespace model {
 	using RandomLoadBalancing
 		= graph::RandomLoadBalancing<AgentPtr>;
 
+	/**
+	 * graph::StaticLoadBalancing AgentPtr specialization.
+	 */
 	using StaticLoadBalancing
 		= graph::StaticLoadBalancing<AgentPtr>;
 

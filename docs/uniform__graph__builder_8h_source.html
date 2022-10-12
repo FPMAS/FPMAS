@@ -214,39 +214,41 @@ $(function() {
 <div class="line"><a id="l00241" name="l00241"></a><span class="lineno">  241</span>                        );</div>
 <div class="line"><a id="l00242" name="l00242"></a><span class="lineno">  242</span> </div>
 <div class="line"><a id="l00243" name="l00243"></a><span class="lineno">  243</span> </div>
-<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>                <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : built_nodes) {</div>
-<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>                    std::size_t <a class="code hl_function" href="namespacefpmas_1_1graph.html#a5ee94b462bf91fce59f56359f84bcf88">edge_count</a> = std::min(</div>
-<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>                            this-&gt;num_edge(), node_ids.size()-1</div>
-<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>                            );</div>
-<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span> </div>
-<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span>                    <span class="keyword">auto</span> position = std::find_if(</div>
-<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>                                node_ids.begin(), node_ids.end(),</div>
-<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>                                [node] (<span class="keyword">const</span> LocId&amp; <span class="keywordtype">id</span>) {return id.first == node-&gt;getId();}</div>
-<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>                            );</div>
-<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>                    std::swap(*position, node_ids.back());</div>
-<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span> </div>
-<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span>                    <span class="keywordflow">for</span>(std::size_t i = 0; i &lt; <a class="code hl_function" href="namespacefpmas_1_1graph.html#a5ee94b462bf91fce59f56359f84bcf88">edge_count</a>; i++) {</div>
-<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>                        <span class="keyword">auto</span>&amp; <span class="keywordtype">id</span> = node_ids[this-&gt;index(node_ids.size()-2-i)];</div>
-<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span> </div>
-<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span>                        <a class="code hl_class" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">fpmas::api::graph::DistributedNode&lt;T&gt;</a>* target_node;</div>
-<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>                        <span class="keywordflow">try</span>{</div>
-<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>                            target_node = graph.<a class="code hl_function" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a6990e77d40a6cc04897139741e7d11e3">getNode</a>(<span class="keywordtype">id</span>.first);</div>
-<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>                        } <span class="keywordflow">catch</span>(std::out_of_range&amp;) {</div>
-<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>                            target_node = node_builder.<a class="code hl_function" href="classfpmas_1_1api_1_1graph_1_1DistributedNodeBuilder.html#aa2b6c24aa14b97a5441b0c5546564f36">buildDistantNode</a>(<span class="keywordtype">id</span>.first, <span class="keywordtype">id</span>.second, graph);</div>
-<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>                        }</div>
-<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>                        graph.<a class="code hl_function" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#ac259411d9fb08c977aa596c0879a4cef">link</a>(node, target_node, layer);</div>
-<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span> </div>
-<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>                        std::swap(<span class="keywordtype">id</span>, node_ids[node_ids.size()-2-i]);</div>
-<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span>                    }</div>
-<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>                }</div>
-<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span> </div>
-<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>                <span class="comment">// Commits new links</span></div>
-<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span>                graph.<a class="code hl_function" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#abe7e08d16745d1233cbdd2c8bfadbfd9">synchronizationMode</a>().getSyncLinker().synchronize();</div>
-<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span> </div>
-<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>                <span class="keywordflow">return</span> built_nodes;</div>
-<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span>        }</div>
-<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>}}</div>
-<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00244" name="l00244"></a><span class="lineno">  244</span>                <span class="keyword">const</span> <span class="keyword">auto</span>&amp; graph_nodes = graph.<a class="code hl_function" href="classfpmas_1_1api_1_1graph_1_1Graph.html#a3ddb49d719b6c08530a8430970626f72">getNodes</a>();</div>
+<div class="line"><a id="l00245" name="l00245"></a><span class="lineno">  245</span>                <span class="keywordflow">for</span>(<span class="keyword">auto</span> node : built_nodes) {</div>
+<div class="line"><a id="l00246" name="l00246"></a><span class="lineno">  246</span>                    std::size_t <a class="code hl_function" href="namespacefpmas_1_1graph.html#a5ee94b462bf91fce59f56359f84bcf88">edge_count</a> = std::min(</div>
+<div class="line"><a id="l00247" name="l00247"></a><span class="lineno">  247</span>                            this-&gt;num_edge(), node_ids.size()-1</div>
+<div class="line"><a id="l00248" name="l00248"></a><span class="lineno">  248</span>                            );</div>
+<div class="line"><a id="l00249" name="l00249"></a><span class="lineno">  249</span> </div>
+<div class="line"><a id="l00250" name="l00250"></a><span class="lineno">  250</span>                    <span class="keyword">auto</span> position = std::find_if(</div>
+<div class="line"><a id="l00251" name="l00251"></a><span class="lineno">  251</span>                                node_ids.begin(), node_ids.end(),</div>
+<div class="line"><a id="l00252" name="l00252"></a><span class="lineno">  252</span>                                [node] (<span class="keyword">const</span> LocId&amp; <span class="keywordtype">id</span>) {return id.first == node-&gt;getId();}</div>
+<div class="line"><a id="l00253" name="l00253"></a><span class="lineno">  253</span>                            );</div>
+<div class="line"><a id="l00254" name="l00254"></a><span class="lineno">  254</span>                    std::swap(*position, node_ids.back());</div>
+<div class="line"><a id="l00255" name="l00255"></a><span class="lineno">  255</span> </div>
+<div class="line"><a id="l00256" name="l00256"></a><span class="lineno">  256</span>                    <span class="keywordflow">for</span>(std::size_t i = 0; i &lt; <a class="code hl_function" href="namespacefpmas_1_1graph.html#a5ee94b462bf91fce59f56359f84bcf88">edge_count</a>; i++) {</div>
+<div class="line"><a id="l00257" name="l00257"></a><span class="lineno">  257</span>                        <span class="keyword">auto</span>&amp; <span class="keywordtype">id</span> = node_ids[this-&gt;index(node_ids.size()-2-i)];</div>
+<div class="line"><a id="l00258" name="l00258"></a><span class="lineno">  258</span> </div>
+<div class="line"><a id="l00259" name="l00259"></a><span class="lineno">  259</span>                        <a class="code hl_class" href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">fpmas::api::graph::DistributedNode&lt;T&gt;</a>* target_node;</div>
+<div class="line"><a id="l00260" name="l00260"></a><span class="lineno">  260</span>                        <span class="keyword">auto</span> it = graph_nodes.find(<span class="keywordtype">id</span>.first); </div>
+<div class="line"><a id="l00261" name="l00261"></a><span class="lineno">  261</span>                        <span class="keywordflow">if</span>(it != graph_nodes.end()) {</div>
+<div class="line"><a id="l00262" name="l00262"></a><span class="lineno">  262</span>                            target_node = it-&gt;second;</div>
+<div class="line"><a id="l00263" name="l00263"></a><span class="lineno">  263</span>                        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a id="l00264" name="l00264"></a><span class="lineno">  264</span>                            target_node = node_builder.<a class="code hl_function" href="classfpmas_1_1api_1_1graph_1_1DistributedNodeBuilder.html#aa2b6c24aa14b97a5441b0c5546564f36">buildDistantNode</a>(<span class="keywordtype">id</span>.first, <span class="keywordtype">id</span>.second, graph);</div>
+<div class="line"><a id="l00265" name="l00265"></a><span class="lineno">  265</span>                        }</div>
+<div class="line"><a id="l00266" name="l00266"></a><span class="lineno">  266</span>                        graph.<a class="code hl_function" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#ac259411d9fb08c977aa596c0879a4cef">link</a>(node, target_node, layer);</div>
+<div class="line"><a id="l00267" name="l00267"></a><span class="lineno">  267</span> </div>
+<div class="line"><a id="l00268" name="l00268"></a><span class="lineno">  268</span>                        std::swap(<span class="keywordtype">id</span>, node_ids[node_ids.size()-2-i]);</div>
+<div class="line"><a id="l00269" name="l00269"></a><span class="lineno">  269</span>                    }</div>
+<div class="line"><a id="l00270" name="l00270"></a><span class="lineno">  270</span>                }</div>
+<div class="line"><a id="l00271" name="l00271"></a><span class="lineno">  271</span> </div>
+<div class="line"><a id="l00272" name="l00272"></a><span class="lineno">  272</span>                <span class="comment">// Commits new links</span></div>
+<div class="line"><a id="l00273" name="l00273"></a><span class="lineno">  273</span>                graph.<a class="code hl_function" href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#abe7e08d16745d1233cbdd2c8bfadbfd9">synchronizationMode</a>().getSyncLinker().synchronize();</div>
+<div class="line"><a id="l00274" name="l00274"></a><span class="lineno">  274</span> </div>
+<div class="line"><a id="l00275" name="l00275"></a><span class="lineno">  275</span>                <span class="keywordflow">return</span> built_nodes;</div>
+<div class="line"><a id="l00276" name="l00276"></a><span class="lineno">  276</span>        }</div>
+<div class="line"><a id="l00277" name="l00277"></a><span class="lineno">  277</span>}}</div>
+<div class="line"><a id="l00278" name="l00278"></a><span class="lineno">  278</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aapi_2graph_2graph__builder_8h_html"><div class="ttname"><a href="api_2graph_2graph__builder_8h.html">graph_builder.h</a></div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedGraphBuilder_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedGraphBuilder.html">fpmas::api::graph::DistributedGraphBuilder</a></div><div class="ttdef"><b>Definition:</b> graph_builder.h:154</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedGraph_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedGraph.html">fpmas::api::graph::DistributedGraph</a></div><div class="ttdef"><b>Definition:</b> distributed_graph.h:169</div></div>
@@ -258,7 +260,7 @@ $(function() {
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedNodeBuilder_html_aa2b6c24aa14b97a5441b0c5546564f36"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedNodeBuilder.html#aa2b6c24aa14b97a5441b0c5546564f36">fpmas::api::graph::DistributedNodeBuilder::buildDistantNode</a></div><div class="ttdeci">virtual DistributedNode&lt; T &gt; * buildDistantNode(DistributedId id, int location, DistributedGraph&lt; T &gt; &amp;graph)=0</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1DistributedNode_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1DistributedNode.html">fpmas::api::graph::DistributedNode</a></div><div class="ttdef"><b>Definition:</b> distributed_node.h:28</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1GraphBuilder_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1GraphBuilder.html">fpmas::api::graph::GraphBuilder</a></div><div class="ttdef"><b>Definition:</b> graph_builder.h:54</div></div>
-<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1Graph_html_a6990e77d40a6cc04897139741e7d11e3"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1Graph.html#a6990e77d40a6cc04897139741e7d11e3">fpmas::api::graph::Graph::getNode</a></div><div class="ttdeci">virtual NodeType * getNode(NodeIdType id)=0</div></div>
+<div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1Graph_html_a3ddb49d719b6c08530a8430970626f72"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1Graph.html#a3ddb49d719b6c08530a8430970626f72">fpmas::api::graph::Graph::getNodes</a></div><div class="ttdeci">virtual const NodeMap &amp; getNodes() const =0</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1NodeBuilder_html"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1NodeBuilder.html">fpmas::api::graph::NodeBuilder</a></div><div class="ttdef"><b>Definition:</b> graph_builder.h:23</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1NodeBuilder_html_a68c7d29ebd39b4d5210803e98350c1b3"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1NodeBuilder.html#a68c7d29ebd39b4d5210803e98350c1b3">fpmas::api::graph::NodeBuilder::nodeCount</a></div><div class="ttdeci">virtual std::size_t nodeCount()=0</div></div>
 <div class="ttc" id="aclassfpmas_1_1api_1_1graph_1_1NodeBuilder_html_ae9d61b5184e5780c4ea5b7ad533f93f7"><div class="ttname"><a href="classfpmas_1_1api_1_1graph_1_1NodeBuilder.html#ae9d61b5184e5780c4ea5b7ad533f93f7">fpmas::api::graph::NodeBuilder::buildNode</a></div><div class="ttdeci">virtual DistributedNode&lt; T &gt; * buildNode(DistributedGraph&lt; T &gt; &amp;graph)=0</div></div>
@@ -277,11 +279,11 @@ $(function() {
 <div class="ttc" id="aclassfpmas_1_1random_1_1Distribution_html"><div class="ttname"><a href="classfpmas_1_1random_1_1Distribution.html">fpmas::random::Distribution</a></div><div class="ttdef"><b>Definition:</b> distribution.h:24</div></div>
 <div class="ttc" id="afunctional_8h_html"><div class="ttname"><a href="functional_8h.html">functional.h</a></div></div>
 <div class="ttc" id="anamespacefpmas_1_1api_1_1graph_html_a6ad1b60906b20514825a6f77b7fdc750"><div class="ttname"><a href="namespacefpmas_1_1api_1_1graph.html#a6ad1b60906b20514825a6f77b7fdc750">fpmas::api::graph::LayerId</a></div><div class="ttdeci">int LayerId</div><div class="ttdef"><b>Definition:</b> edge.h:13</div></div>
-<div class="ttc" id="anamespacefpmas_1_1communication_html_a995d226e4db6370704028965091c62ec"><div class="ttname"><a href="namespacefpmas_1_1communication.html#a995d226e4db6370704028965091c62ec">fpmas::communication::all_reduce</a></div><div class="ttdeci">T all_reduce(api::communication::TypedMpi&lt; T &gt; &amp;mpi, const T &amp;data, BinaryOp binary_op=BinaryOp())</div><div class="ttdef"><b>Definition:</b> communication.h:639</div></div>
-<div class="ttc" id="anamespacefpmas_1_1graph_html_a5ee94b462bf91fce59f56359f84bcf88"><div class="ttname"><a href="namespacefpmas_1_1graph.html#a5ee94b462bf91fce59f56359f84bcf88">fpmas::graph::edge_count</a></div><div class="ttdeci">std::size_t edge_count(api::graph::DistributedGraph&lt; T &gt; &amp;graph)</div><div class="ttdef"><b>Definition:</b> analysis.h:27</div></div>
+<div class="ttc" id="anamespacefpmas_1_1communication_html_a995d226e4db6370704028965091c62ec"><div class="ttname"><a href="namespacefpmas_1_1communication.html#a995d226e4db6370704028965091c62ec">fpmas::communication::all_reduce</a></div><div class="ttdeci">T all_reduce(api::communication::TypedMpi&lt; T &gt; &amp;mpi, const T &amp;data, BinaryOp binary_op=BinaryOp())</div><div class="ttdef"><b>Definition:</b> communication.h:634</div></div>
+<div class="ttc" id="anamespacefpmas_1_1graph_html_a5ee94b462bf91fce59f56359f84bcf88"><div class="ttname"><a href="namespacefpmas_1_1graph.html#a5ee94b462bf91fce59f56359f84bcf88">fpmas::graph::edge_count</a></div><div class="ttdeci">std::size_t edge_count(api::graph::DistributedGraph&lt; T &gt; &amp;graph)</div><div class="ttdef"><b>Definition:</b> analysis.h:41</div></div>
 <div class="ttc" id="anamespacefpmas_html"><div class="ttname"><a href="namespacefpmas.html">fpmas</a></div><div class="ttdef"><b>Definition:</b> fpmas.cpp:3</div></div>
 <div class="ttc" id="arandom__graph__builder_8h_html"><div class="ttname"><a href="random__graph__builder_8h.html">random_graph_builder.h</a></div></div>
-<div class="ttc" id="astructfpmas_1_1communication_1_1TypedMpi_html"><div class="ttname"><a href="structfpmas_1_1communication_1_1TypedMpi.html">fpmas::communication::TypedMpi</a></div><div class="ttdef"><b>Definition:</b> communication.h:590</div></div>
+<div class="ttc" id="astructfpmas_1_1communication_1_1TypedMpi_html"><div class="ttname"><a href="structfpmas_1_1communication_1_1TypedMpi.html">fpmas::communication::TypedMpi</a></div><div class="ttdef"><b>Definition:</b> communication.h:585</div></div>
 <div class="ttc" id="astructfpmas_1_1utils_1_1Concat_html"><div class="ttname"><a href="structfpmas_1_1utils_1_1Concat.html">fpmas::utils::Concat</a></div><div class="ttdef"><b>Definition:</b> functional.h:94</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

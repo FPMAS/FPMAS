@@ -108,8 +108,12 @@ Public Types</h2></td></tr>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a285207a7b74869a40576423d4c323fd2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#a285207a7b74869a40576423d4c323fd2">DistributedGenerator</a> ()</td></tr>
 <tr class="separator:a285207a7b74869a40576423d4c323fd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7281be4f638ebbf11c35b3c21b516bd5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#a7281be4f638ebbf11c35b3c21b516bd5">DistributedGenerator</a> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;comm)</td></tr>
+<tr class="separator:a7281be4f638ebbf11c35b3c21b516bd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0c14b8645eb1570dcf9b98afa343abd9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#a0c14b8645eb1570dcf9b98afa343abd9">DistributedGenerator</a> (<a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#ac6cad7d2d743f3f00f47bd0326a7da4a">result_type</a> <a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#a2ece1165a00a337b910dd482c17642a1">seed</a>)</td></tr>
 <tr class="separator:a0c14b8645eb1570dcf9b98afa343abd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae0786b4513694450c52b69021676580"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#aae0786b4513694450c52b69021676580">DistributedGenerator</a> (<a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;comm, <a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#ac6cad7d2d743f3f00f47bd0326a7da4a">result_type</a> <a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#a2ece1165a00a337b910dd482c17642a1">seed</a>)</td></tr>
+<tr class="separator:aae0786b4513694450c52b69021676580"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace59c13f208ae1806962d9911375c956"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#ac6cad7d2d743f3f00f47bd0326a7da4a">result_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#ace59c13f208ae1806962d9911375c956">operator()</a> () override</td></tr>
 <tr class="separator:ace59c13f208ae1806962d9911375c956"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2ece1165a00a337b910dd482c17642a1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#a2ece1165a00a337b910dd482c17642a1">seed</a> (<a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#ac6cad7d2d743f3f00f47bd0326a7da4a">result_type</a> seed) override</td></tr>
@@ -162,7 +166,7 @@ template&lt;typename Generator_t  = mt19937_64&gt; </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a285207a7b74869a40576423d4c323fd2" name="a285207a7b74869a40576423d4c323fd2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a285207a7b74869a40576423d4c323fd2">&#9670;&nbsp;</a></span>DistributedGenerator() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a285207a7b74869a40576423d4c323fd2">&#9670;&nbsp;</a></span>DistributedGenerator() <span class="overload">[1/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -185,12 +189,49 @@ template&lt;typename Generator_t  = mt19937_64&gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
-<p >Default <a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html">DistributedGenerator</a> constructor from a default seed. </p>
+<p >Default <a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html">DistributedGenerator</a> constructor.</p>
+<p >The <a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html">DistributedGenerator</a> is initialized with a default seed, within the <a class="el" href="namespacefpmas_1_1communication.html#a0cd77ee61dd8f7c45cc7d1e98e36bae8">fpmas::communication::WORLD</a> communicator. </p>
+
+</div>
+</div>
+<a id="a7281be4f638ebbf11c35b3c21b516bd5" name="a7281be4f638ebbf11c35b3c21b516bd5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7281be4f638ebbf11c35b3c21b516bd5">&#9670;&nbsp;</a></span>DistributedGenerator() <span class="overload">[2/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Generator_t  = mt19937_64&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html">fpmas::random::DistributedGenerator</a>&lt; Generator_t &gt;::DistributedGenerator </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;&#160;</td>
+          <td class="paramname"><em>comm</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p ><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html">DistributedGenerator</a> constructor.</p>
+<p >The <a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html">DistributedGenerator</a> is initialized with a default seed, within the specified communicator.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">comm</td><td>MPI communicator </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
 <a id="a0c14b8645eb1570dcf9b98afa343abd9" name="a0c14b8645eb1570dcf9b98afa343abd9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0c14b8645eb1570dcf9b98afa343abd9">&#9670;&nbsp;</a></span>DistributedGenerator() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c14b8645eb1570dcf9b98afa343abd9">&#9670;&nbsp;</a></span>DistributedGenerator() <span class="overload">[3/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -215,11 +256,57 @@ template&lt;typename Generator_t  = mt19937_64&gt; </div>
 </table>
 </div><div class="memdoc">
 <p ><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html">DistributedGenerator</a> constructor.</p>
-<p >The <a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html">DistributedGenerator</a> is initialized using the provided seed.</p>
-<p >More particularly, the <code>seed</code> is used to seed an internal pseudo-random number generator that is itself used to seed the internal <code>GeneratorType</code> instance: it is still ensured that this last generator is seeded differently on each process.</p>
+<p >The <a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html">DistributedGenerator</a> is initialized using the provided seed, within the <a class="el" href="namespacefpmas_1_1communication.html#a0cd77ee61dd8f7c45cc7d1e98e36bae8">fpmas::communication::WORLD</a> communicator.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">seed</td><td><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html">DistributedGenerator</a> seed </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aae0786b4513694450c52b69021676580" name="aae0786b4513694450c52b69021676580"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae0786b4513694450c52b69021676580">&#9670;&nbsp;</a></span>DistributedGenerator() <span class="overload">[4/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename Generator_t  = mt19937_64&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html">fpmas::random::DistributedGenerator</a>&lt; Generator_t &gt;::DistributedGenerator </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1api_1_1communication_1_1MpiCommunicator.html">api::communication::MpiCommunicator</a> &amp;&#160;</td>
+          <td class="paramname"><em>comm</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html#ac6cad7d2d743f3f00f47bd0326a7da4a">result_type</a>&#160;</td>
+          <td class="paramname"><em>seed</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p ><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html">DistributedGenerator</a> constructor.</p>
+<p >The <a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html">DistributedGenerator</a> is initialized using the provided seed, within the specified communicator.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">seed</td><td><a class="el" href="classfpmas_1_1random_1_1DistributedGenerator.html">DistributedGenerator</a> seed </td></tr>
+    <tr><td class="paramname">comm</td><td>MPI communicator </td></tr>
   </table>
   </dd>
 </dl>

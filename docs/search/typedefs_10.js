@@ -8,5 +8,6 @@ var searchData=
   ['setdistantnodecallback_5',['SetDistantNodeCallback',['../classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#a612d62a4dc12cd6080250a21a57c95ee',1,'fpmas::api::graph::DistributedGraph']]],
   ['setlocalnodecallback_6',['SetLocalNodeCallback',['../classfpmas_1_1api_1_1graph_1_1DistributedGraph.html#aed786edc6522005381176cd77667fb98',1,'fpmas::api::graph::DistributedGraph']]],
   ['smallworldgraphbuilder_7',['SmallWorldGraphBuilder',['../namespacefpmas_1_1model.html#a660af206510ce02d40b6dbd82b02b0a4',1,'fpmas::model']]],
-  ['subtimestep_8',['SubTimeStep',['../namespacefpmas_1_1api_1_1scheduler.html#a77af02d3aacc514067e2762f0d021261',1,'fpmas::api::scheduler']]]
+  ['staticloadbalancing_8',['StaticLoadBalancing',['../namespacefpmas_1_1model.html#a28b78243af85ce08d3a9dfe5154efb3b',1,'fpmas::model']]],
+  ['subtimestep_9',['SubTimeStep',['../namespacefpmas_1_1api_1_1scheduler.html#a77af02d3aacc514067e2762f0d021261',1,'fpmas::api::scheduler']]]
 ];
