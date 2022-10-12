@@ -321,6 +321,7 @@ namespace fpmas { namespace random {
 	template<typename Generator_t = mt19937_64>
 		class DistributedGenerator : public api::random::Generator<typename Generator_t::result_type> {
 			private:
+				api::communication::MpiCommunicator* comm;
 				Generator_t local_generator;
 				std::mt19937 seeder;
 
@@ -330,41 +331,77 @@ namespace fpmas { namespace random {
 				 * the generator is called.
 				 */
 				void init() {
-					int rank = communication::WORLD.getRank();
-					// Generates a different seed on each process
-					result_type local_seed = seeder() + rank;
+					int rank = comm->getRank();
+					int size = comm->getSize();
+					std::vector<std::mt19937::result_type> seed_sequence(size);
+					// Generate a different seed for each process, but poorly
+					// distributed
+					seed_sequence[0] = seeder();
+					for(int i = 1; i < size; i++)
+						seed_sequence[i]=seed_sequence[i-1]+1;
+					std::seed_seq gen(seed_sequence.begin(), seed_sequence.end());
+					// Generates an unbiased seed sequence
+					gen.generate(seed_sequence.begin(), seed_sequence.end());
+
+					// Seed for the current process
+					result_type local_seed = seed_sequence[rank];
+
 					// Seeds the local generator with the generated seed
 					local_generator.seed(local_seed);
 					_init = true;
 				}
 
 			public:
+
 				/**
 				 * Integer type used by the generator.
 				 */
 				typedef typename Generator_t::result_type result_type;
 
 				/**
-				 * Default DistributedGenerator constructor from a default
-				 * seed.
+				 * Default DistributedGenerator constructor.
+				 *
+				 * The DistributedGenerator is initialized with a default seed,
+				 * within the fpmas::communication::WORLD communicator.
 				 */
-				DistributedGenerator() {}
+				DistributedGenerator()
+					: comm(&communication::WORLD) {}
+
+				/**
+				 * DistributedGenerator constructor.
+				 *
+				 * The DistributedGenerator is initialized with a default seed,
+				 * within the specified communicator.
+				 *
+				 * @param comm MPI communicator
+				 */
+				DistributedGenerator(api::communication::MpiCommunicator& comm)
+					: comm(&comm) {
+					}
+
 				/**
 				 * DistributedGenerator constructor.
 				 *
 				 * The DistributedGenerator is initialized using the provided
-				 * seed.
-				 *
-				 * More particularly, the `seed` is used to seed an internal
-				 * pseudo-random number generator that is itself used to seed
-				 * the internal `GeneratorType` instance: it is still ensured
-				 * that this last generator is seeded differently on each
-				 * process.
+				 * seed, within the fpmas::communication::WORLD communicator.
 				 *
 				 * @param seed DistributedGenerator seed
 				 */
 				DistributedGenerator(result_type seed)
-					: seeder(seed) {}
+					: comm(&communication::WORLD), seeder(seed) {}
+
+				/**
+				 * DistributedGenerator constructor.
+				 *
+				 * The DistributedGenerator is initialized using the provided
+				 * seed, within the specified communicator.
+				 *
+				 * @param seed DistributedGenerator seed
+				 * @param comm MPI communicator
+				 */
+				DistributedGenerator(
+						api::communication::MpiCommunicator& comm, result_type seed)
+					: comm(&comm), seeder(seed) {}
 
 				result_type operator()() override {
 					if(!_init)
@@ -374,7 +411,7 @@ namespace fpmas { namespace random {
 
 				void seed(result_type seed) override {
 					seeder.seed(seed);
-					init();
+					_init = false;
 				}
 
 				void discard(unsigned long long z) override {

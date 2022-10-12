@@ -3,7 +3,7 @@
 namespace fpmas { namespace runtime {
 
 	// Initializes DistributedGenerator with a default seed
-	random::DistributedGenerator<> Runtime::rd;
+	random::DistributedGenerator<> Runtime::distributed_rd;
 
 	void Runtime::run(Date start, Date end) {
 		for(Date time = start; time < end; time++) {
@@ -22,7 +22,7 @@ namespace fpmas { namespace runtime {
 	void Runtime::execute(const api::scheduler::Job &job) {
 		job.getBeginTask().run();
 		std::vector<api::scheduler::Task*> tasks = {job.begin(), job.end()};
-		std::shuffle(tasks.begin(), tasks.end(), rd);
+		std::shuffle(tasks.begin(), tasks.end(), distributed_rd);
 		for(api::scheduler::Task* task : tasks) {
 			task->run();
 		}
@@ -35,6 +35,6 @@ namespace fpmas { namespace runtime {
 	}
 
 	void Runtime::seed(random::DistributedGenerator<>::result_type seed) {
-		Runtime::rd.seed(seed);
+		Runtime::distributed_rd.seed(seed);
 	}
 }}

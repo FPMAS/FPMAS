@@ -1,5 +1,6 @@
 #include "scheduler/mock_scheduler.h"
 #include "fpmas.h"
+#include "../mocks/communication/mock_communication.h"
 
 using namespace testing;
 
@@ -10,6 +11,7 @@ class RuntimeTest : public ::testing::Test {
 	protected:
 		MockScheduler scheduler;
 		Runtime runtime {scheduler};
+		MockMpiCommunicator<3, 8> mock_comm;
 		std::array<MockTask, 4> mock_tasks;
 		std::array<MockJob, 3> mock_jobs;
 		std::list<fpmas::api::scheduler::Task*> job_0_tasks;
@@ -21,6 +23,9 @@ class RuntimeTest : public ::testing::Test {
 		std::vector<MockJob*> epoch_2_jobs;
 
 		void SetUp() override {
+			// Overrides the default DistributedGenerator that can only be used
+			// in a properly initialized MPI environment
+			Runtime::distributed_rd = {mock_comm};
 
 			for(MockJob& job : mock_jobs) {
 				EXPECT_CALL(job, getBeginTask)
@@ -56,6 +61,10 @@ class RuntimeTest : public ::testing::Test {
 			epoch_2_jobs.push_back(&mock_jobs[0]);
 			epoch_2_jobs.push_back(&mock_jobs[2]);
 		}
+		void TearDown() override {
+			Runtime::distributed_rd = {};
+		}
+
 		void expectTasks(
 				Sequence& sequence,
 				std::list<fpmas::api::scheduler::Task*> job_tasks,
@@ -173,7 +182,7 @@ TEST_F(RuntimeTest, seed) {
 
 
 	// Base seed
-	fpmas::seed(0);
+	Runtime::seed(0);
 
 	Sequence seq1;
 	std::vector<fpmas::api::scheduler::Task*> call_order_1;
@@ -184,7 +193,7 @@ TEST_F(RuntimeTest, seed) {
 	runtime.execute(job_list);
 
 	// Seed update: should produce a different execution order
-	fpmas::seed(1);
+	Runtime::seed(1);
 	Sequence seq2;
 	std::vector<fpmas::api::scheduler::Task*> call_order_2;
 	expectTasks(seq2, job_0_tasks, call_order_2);
@@ -197,7 +206,7 @@ TEST_F(RuntimeTest, seed) {
 
 
 	// Get back to base seed: should ensure reproducibility
-	fpmas::seed(0);
+	Runtime::seed(0);
 	Sequence seq3;
 	std::vector<fpmas::api::scheduler::Task*> call_order_3;
 	expectTasks(seq3, job_0_tasks, call_order_3);

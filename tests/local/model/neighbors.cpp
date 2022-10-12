@@ -1,4 +1,6 @@
+#include "communication/mock_communication.h"
 #include "fpmas.h"
+#include "fpmas/model/model.h"
 #include "model/mock_model.h"
 #include "gmock/gmock.h"
 #include <gmock/gmock-matchers.h>
@@ -24,13 +26,19 @@ class NeighborsTest : public Test {
 				{&agents[5], &edges[5]}
 		};
 		fpmas::model::Neighbors<MockAgent<>> neighbors;
+		MockMpiCommunicator<4, 10> mock_comm;
 
 		void SetUp() override {
+			fpmas::model::RandomNeighbors::rd = {mock_comm};
 			for(std::size_t i = 0; i < NUM_AGENTS; i++) {
 				ON_CALL(*((MockAgent<>*) agents[i].get()), getField)
 					.WillByDefault(Return(i));
 			}
 			reset_neighbors();
+		}
+		
+		void TearDown() override {
+			fpmas::model::RandomNeighbors::rd = {};
 		}
 
 		void reset_neighbors() {
@@ -45,7 +53,7 @@ TEST_F(NeighborsTest, seed) {
 	// Base seed
 	std::vector<std::pair<fpmas::api::model::Agent*, fpmas::model::AgentEdge*>> items1;
 	{
-		fpmas::seed(0);
+		fpmas::model::RandomNeighbors::seed(0);
 		neighbors.shuffle();
 		for(auto neighbor : neighbors)
 			items1.push_back({neighbor.agent(), neighbor.edge()});
@@ -54,7 +62,7 @@ TEST_F(NeighborsTest, seed) {
 	// New seed
 	std::vector<std::pair<fpmas::api::model::Agent*, fpmas::model::AgentEdge*>> items2;
 	{
-		fpmas::seed(1);
+		fpmas::model::RandomNeighbors::seed(1);
 		reset_neighbors();
 		neighbors.shuffle();
 		for(auto neighbor : neighbors)
@@ -67,7 +75,7 @@ TEST_F(NeighborsTest, seed) {
 	// Get back to new seed
 	std::vector<std::pair<fpmas::api::model::Agent*, fpmas::model::AgentEdge*>> items3;
 	{
-		fpmas::seed(0);
+		fpmas::model::RandomNeighbors::seed(0);
 		reset_neighbors();
 		neighbors.shuffle();
 		for(auto neighbor : neighbors)

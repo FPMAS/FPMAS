@@ -21,9 +21,15 @@ namespace fpmas { namespace runtime {
 			api::scheduler::Scheduler& scheduler;
 			scheduler::Epoch epoch;
 			Date date = 0;
-			static random::DistributedGenerator<> rd;
 
 		public:
+			/**
+			 * Static and distributed random number generator used to determine
+			 * the execution order of Tasks within each Job. It can be be seeded
+			 * with the seed() method.
+			 */
+			static random::DistributedGenerator<> distributed_rd;
+
 			/**
 			 * Runtime constructor.
 			 *

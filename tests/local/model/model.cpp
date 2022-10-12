@@ -255,6 +255,7 @@ class AgentGroupTest : public ::testing::Test {
 			AgentPtr, MockDistributedNode<AgentPtr>, MockDistributedEdge<AgentPtr>,
 			NiceMock>
 			graph;
+		// Mock communicator for the Runtime
 		MockMpiCommunicator<4, 10> mock_comm;
 		MockDistributedNode<AgentPtr, NiceMock> node1 {fpmas::graph::DistributedId(0, 1)};
 		MockDistributedNode<AgentPtr, NiceMock> node2 {fpmas::graph::DistributedId(0, 2)};
@@ -286,6 +287,7 @@ class AgentGroupTest : public ::testing::Test {
 		fpmas::runtime::Runtime runtime {scheduler};
 
 		void SetUp() override {
+			fpmas::runtime::Runtime::distributed_rd = {mock_comm};
 			// In case of LOG
 			ON_CALL(model, graph())
 				.WillByDefault(ReturnRef(graph));
@@ -478,6 +480,7 @@ class AgentGroupTest : public ::testing::Test {
 		}
 
 		void TearDown() override {
+			fpmas::runtime::Runtime::distributed_rd = {};
 			agent1_ptr.release();
 			agent2_ptr.release();
 		}
