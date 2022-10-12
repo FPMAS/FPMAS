@@ -1,7 +1,8 @@
 include(FetchContent)
 FetchContent_Declare(
   googletest
-  URL https://github.com/google/googletest/archive/e2239ee6043f73722e7aa812a459f54a28552929.zip
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG d9bb8412d60b993365abb53f00b6dad9b2c01b62
 )
 # For Windows: Prevent overriding the parent project's compiler/linker settings
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
