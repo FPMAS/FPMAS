@@ -13,12 +13,21 @@
 namespace fpmas { namespace model {
 
 	/**
-	 * FPMAS reserved api::model::GroupId used by the SpatialGraphBuilder.
+	 * FPMAS reserved api::model::GroupId used by the CellNetworkBuilder.
 	 */
 	static const api::model::GroupId GRAPH_CELL_GROUP_ID = -2;
 
+	/**
+	 * An fpmas::api::model::CellNetworkBuilder implementation.
+	 *
+	 * The algorithm takes as input a generic
+	 * fpmas::api::graph::DistributedGraphBuilder instance, and builds a \Cell
+	 * network from it with appropriate \AgentGroups and CELL_SUCCESSOR links.
+	 *
+	 * @tparam CellType type of cells to build
+	 */
 	template<typename CellType>
-		class SpatialGraphBuilder
+		class CellNetworkBuilder
 		: public api::model::CellNetworkBuilder<CellType>{
 			private:
 				fpmas::api::graph::DistributedGraphBuilder<fpmas::model::AgentPtr>&
@@ -29,7 +38,20 @@ namespace fpmas { namespace model {
 				std::function<CellType*()> distant_cell_allocator;
 
 			public:
-				SpatialGraphBuilder(
+				/**
+				 * CellNetworkBuilder constructor.
+				 *
+				 * @param graph_builder DistributedGraphBuilder used to build
+				 * the Cell graph
+				 * @param cell_count size of the Cell network to build. The
+				 * global network size should be provided on all processes,
+				 * independently from the distribution.
+				 * @param cell_allocator function used to dynamically allocate
+				 * \LOCAL CellType instances
+				 * @param distant_cell_allocator function used to dynamically
+				 * allocate \DISTANT CellType instances
+				 */
+				CellNetworkBuilder(
 						api::graph::DistributedGraphBuilder<model::AgentPtr>& graph_builder,
 						std::size_t cell_count,
 						std::function<CellType*()> cell_allocator,
@@ -39,18 +61,41 @@ namespace fpmas { namespace model {
 					distant_cell_allocator(distant_cell_allocator) {
 					}
 
-				SpatialGraphBuilder(
+				/**
+				 * CellNetworkBuilder constructor.
+				 *
+				 * @param graph_builder DistributedGraphBuilder used to build
+				 * the Cell graph
+				 * @param cell_count size of the Cell network to build. The
+				 * global network size should be provided on all processes,
+				 * independently from the distribution.
+				 * @param cell_allocator function used to dynamically allocate
+				 * \LOCAL and \DISTANT CellType instances
+				 */
+				CellNetworkBuilder(
 						api::graph::DistributedGraphBuilder<model::AgentPtr>& graph_builder,
 						std::size_t cell_count,
 						std::function<CellType*()> cell_allocator)
-					: SpatialGraphBuilder(
+					: CellNetworkBuilder(
 							graph_builder, cell_count, cell_allocator, cell_allocator) {
 					}
 
-				SpatialGraphBuilder(
+				/**
+				 * CellNetworkBuilder constructor.
+				 *
+				 * \LOCAL and \DISTANT CellType instances are allocated using
+				 * the `new CellType` instruction.
+				 *
+				 * @param graph_builder DistributedGraphBuilder used to build
+				 * the Cell graph
+				 * @param cell_count size of the Cell network to build. The
+				 * global network size should be provided on all processes,
+				 * independently from the distribution.
+				 */
+				CellNetworkBuilder(
 						api::graph::DistributedGraphBuilder<model::AgentPtr>& graph_builder,
 						std::size_t cell_count)
-					: SpatialGraphBuilder(graph_builder, cell_count, [] () {return new CellType;}) {
+					: CellNetworkBuilder(graph_builder, cell_count, [] () {return new CellType;}) {
 					}
 
 				std::vector<CellType*> build(
@@ -64,7 +109,7 @@ namespace fpmas { namespace model {
 		};
 
 	template<typename CellType>
-		std::vector<CellType*> SpatialGraphBuilder<CellType>::build(
+		std::vector<CellType*> CellNetworkBuilder<CellType>::build(
 				api::model::SpatialModel<CellType>& model,
 				api::model::GroupList groups) const {
 			groups.push_back(model.cellGroup());
