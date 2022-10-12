@@ -23,7 +23,7 @@ struct MockGraphCellAllocator {
 	MOCK_METHOD(fpmas::model::GraphCell*, call, (), ());
 };
 
-TEST(SpatialGraphBuilder, build) {
+TEST(CellNetworkBuilder, build) {
 	MockGraphBuilder mock_graph_builder;
 	EXPECT_CALL(mock_graph_builder, build(_, fpmas::api::model::CELL_SUCCESSOR, _))
 		.WillOnce(Invoke([] (
@@ -83,7 +83,7 @@ TEST(SpatialGraphBuilder, build) {
 			});
 
 	const std::size_t expected_num_cell = 4*fpmas::communication::WORLD.getSize();
-	fpmas::model::SpatialGraphBuilder<fpmas::model::GraphCell> spatial_graph_builder(
+	fpmas::model::CellNetworkBuilder<fpmas::model::GraphCell> cell_network_builder(
 			mock_graph_builder, expected_num_cell,
 			cell_allocator, distant_cell_allocator
 			);
@@ -91,7 +91,7 @@ TEST(SpatialGraphBuilder, build) {
 	fpmas::model::SpatialModel<fpmas::synchro::GhostMode, fpmas::model::GraphCell> model;
 	auto& group1 = model.buildGroup(1);
 	auto& group2 = model.buildGroup(2);
-	spatial_graph_builder.build(model, {group1, group2});
+	cell_network_builder.build(model, {group1, group2});
 
 	fpmas::communication::TypedMpi<std::size_t> int_mpi(model.getMpiCommunicator());
 	std::size_t num_cell = fpmas::communication::all_reduce(int_mpi, model.cells().size());
@@ -110,10 +110,10 @@ TEST(SpatialGraphBuilder, build) {
 	ASSERT_EQ(num_distant_alloc, model.getMpiCommunicator().getSize());
 }
 
-TEST(SpatialGraphBuilder, small_world_graph_builder_integration) {
+TEST(CellNetworkBuilder, small_world_graph_builder_integration) {
 	std::size_t expected_num_cell = 4*fpmas::communication::WORLD.getSize();
 	fpmas::model::SmallWorldGraphBuilder graph_builder(0.1, 4);
-	fpmas::model::SpatialGraphBuilder<fpmas::model::GraphCell> model_builder(
+	fpmas::model::CellNetworkBuilder<fpmas::model::GraphCell> model_builder(
 			graph_builder, expected_num_cell
 			);
 
