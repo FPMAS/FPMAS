@@ -20,7 +20,6 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
-  <td id="projectlogo"><img alt="Logo" src="fpmas_logo_small.png"/></td>
   <td id="projectalign">
    <div id="projectname">fpmas<span id="projectnumber">&#160;1.5.3</span>
    </div>
@@ -107,24 +106,29 @@ Public Member Functions</h2></td></tr>
 <div class="textblock"><div class="compoundTemplParams">template&lt;typename T&gt;<br />
 class fpmas::graph::SmallWorldGraphBuilder&lt; T &gt;</div><p >A distributed procedure to build <a href="https://en.wikipedia.org/wiki/Small-world_network">Small World graphs</a>, inspired from the work of Duncan J. Watts and Steven H. Strogatz. The <a href="https://en.wikipedia.org/wiki/Watts%E2%80%93Strogatz_model">original procedure</a> as been adapted to support directed graphs.</p>
 <p >We consider a node count <code>N</code>, a mean output degree <code>K</code> (supposed to be even), and a probability <code>p</code>.</p><ol type="1">
-<li>Build <code>N</code> nodes, and connect them in a CYCLE as specicfied in the <a class="el" href="classfpmas_1_1graph_1_1RingGraphBuilder.html">RingGraphBuilder</a>. <code>K/2</code> is used as a parameter for the <a class="el" href="classfpmas_1_1graph_1_1RingGraphBuilder.html">RingGraphBuilder</a>, so that each node as <code>K</code> outgoing neighbors in total (<code>K/2</code> on each side).</li>
-<li>Consider the outgoing edges of each node, and rewire it with a probability <code>p/2</code> to a node chosen among all the possible nodes. If the current node is selected or a link from the current node to the chosen node already exists, nothing is done. The outgoing edge rewiring procedure consists in changing the target node of the edge.</li>
-<li>Do exactly the same but with incoming edges, changing source nodes of incoming edges with a probability <code>p/2</code>. Edges considered are only incoming edges from the original CYCLE: incoming edges resulting of rewiring from the previous step are not considered, so that edges cannot be rewired twice.</li>
+<li>Build <code>N</code> nodes, and connect them in a CYCLE as specified in the <a class="el" href="classfpmas_1_1graph_1_1RingGraphBuilder.html">RingGraphBuilder</a>. <code>K/2</code> is used as a parameter for the <a class="el" href="classfpmas_1_1graph_1_1RingGraphBuilder.html">RingGraphBuilder</a>, so that each node as <code>K</code> outgoing neighbors in total (<code>K/2</code> on each side).</li>
+<li>Consider each edge, and select it for rewiring with a probability <code>p</code>. If selected, chose if target or source will be rewired with a probability <code>0.5</code>.</li>
+<li>Rewires all edges that need a new target. The new target is chosen randomly among all the nodes. Nothing is done if the randomly selected new target corresponds to the current source, of if an edge already exists from the current source to the selected target.</li>
+<li>Synchronization barrier</li>
+<li>Analog procedure for all edges that need a new source.</li>
 </ol>
 <h1><a class="anchor" id="autotoc_md1"></a>
 Explanations</h1>
-<p >Each edge is considered twice (one time as incoming edge, and one time as outgoing) with a probability <code>p/2</code>, so each edge has finally a probability <code>p</code> to be rewired. It si required to do so to prevent the following issue: if edges where considered only once in the outgoing rewiring process (with a probability <code>p</code>), all nodes would necessarily have exactly <code>K</code> outgoing neighbors at the end of the process, what introduces a bias.</p>
+<ul>
+<li>It is necessary to randomly chose which side of each edge to rewire, to prevent all nodes to have exactly <code>K</code> outgoing neighbors at the end of the process.</li>
+<li>The synchronization barrier prevents concurrency issues. For example, during step 3, it is not possible for any process other that the current one to build a new outgoing edge from the current source, since only new targets are selected, so that it is safe to check for existing outgoing edges.</li>
+</ul>
 <h1><a class="anchor" id="autotoc_md2"></a>
 Example</h1>
 <table class="markdownTable">
 <tr class="markdownTableHead">
 <th class="markdownTableHeadCenter"></th><th class="markdownTableHeadNone" colspan="2">n=16, k=4, p=0.1    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyCenter">Global   </td><td class="markdownTableBodyNone" colspan="2"><img src="small_world_n16_k4_p01.png" alt="" class="inline" title="n=16, k=4"/>      </td></tr>
+<td class="markdownTableBodyCenter">Global   </td><td class="markdownTableBodyNone" colspan="2"><img src="small_world_n16_k4_p01.png" alt="n=16, k=4" class="inline"/>    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyCenter" rowspan="2">Distributed   </td><td class="markdownTableBodyNone"><img src="small_world_n16_k4_p01_0.png" alt="" class="inline" title="n=16, k=4, 0"/>     </td><td class="markdownTableBodyNone"><img src="small_world_n16_k4_p01_1.png" alt="" class="inline" title="n=16, k=4, 1"/>      </td></tr>
+<td class="markdownTableBodyCenter" rowspan="2">Distributed   </td><td class="markdownTableBodyNone"><img src="small_world_n16_k4_p01_0.png" alt="n=16, k=4, 0" class="inline"/>   </td><td class="markdownTableBodyNone"><img src="small_world_n16_k4_p01_1.png" alt="n=16, k=4, 1" class="inline"/>    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><img src="small_world_n16_k4_p01_2.png" alt="" class="inline" title="n=16, k=4, 2"/>     </td><td class="markdownTableBodyNone"><img src="small_world_n16_k4_p01_3.png" alt="" class="inline" title="n=16, k=4, 3"/>     </td></tr>
+<td class="markdownTableBodyNone"><img src="small_world_n16_k4_p01_2.png" alt="n=16, k=4, 2" class="inline"/>   </td><td class="markdownTableBodyNone"><img src="small_world_n16_k4_p01_3.png" alt="n=16, k=4, 3" class="inline"/>   </td></tr>
 </table>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ab84d2e27407a7fa5d8fb51f0e5b0e97c" name="ab84d2e27407a7fa5d8fb51f0e5b0e97c"></a>

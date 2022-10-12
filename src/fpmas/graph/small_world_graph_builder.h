@@ -9,6 +9,11 @@
 #include <fpmas/api/graph/location_state.h>
 #include <fpmas/communication/communication.h>
 
+
+/** \file src/fpmas/graph/small_world_graph_builder.h
+ * Algorithms to build Small World graphs.
+ */
+
 namespace fpmas { namespace graph {
 
 	/**

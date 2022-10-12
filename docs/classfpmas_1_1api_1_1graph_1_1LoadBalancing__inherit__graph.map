@@ -1,6 +1,7 @@
 <map id="fpmas::api::graph::LoadBalancing&lt; T &gt;" name="fpmas::api::graph::LoadBalancing&lt; T &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="5,71,144,112"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,104,144,145"/>
 <area shape="rect" id="node2" href="$classfpmas_1_1graph_1_1RandomLoadBalancing.html" title=" " alt="" coords="198,5,381,47"/>
 <area shape="rect" id="node3" href="$classfpmas_1_1graph_1_1ScheduledLoadBalancing.html" title=" " alt="" coords="192,71,387,112"/>
-<area shape="rect" id="node4" href="$classfpmas_1_1graph_1_1ZoltanLoadBalancing.html" title=" " alt="" coords="204,136,375,177"/>
+<area shape="rect" id="node4" href="$classfpmas_1_1graph_1_1StaticLoadBalancing.html" title=" " alt="" coords="205,136,373,177"/>
+<area shape="rect" id="node5" href="$classfpmas_1_1graph_1_1ZoltanLoadBalancing.html" title=" " alt="" coords="204,201,375,243"/>
 </map>

@@ -185,8 +185,6 @@ namespace fpmas { namespace api { namespace graph {
 			 *
 			 * If the two ranks are equal, return the result of the comparison
 			 * of the local ids.
-			 *
-			 * @return comparison result
 			 */
 			bool operator<(const DistributedId& other) const {
 				if(this->_rank==other._rank)
@@ -196,6 +194,10 @@ namespace fpmas { namespace api { namespace graph {
 				return false;
 			}
 
+			/**
+			 * DistributedId comparison function, consistent with the
+			 * operator==() and operator<() definitions.
+			 */
 			bool operator<=(const DistributedId& other) const {
 				if(*this == other)
 					return true;

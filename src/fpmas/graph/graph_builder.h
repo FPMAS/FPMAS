@@ -18,7 +18,7 @@ namespace fpmas { namespace graph {
 	 * This is not a final implementation: this class must be extended to
 	 * implement buildNode() and buildDistantNode().
 	 *
-	 * @tparam T graph datatype
+	 * @tparam T graph data type
 	 */
 	template<typename T>
 	class DistributedNodeBuilder : public api::graph::DistributedNodeBuilder<T> {
@@ -64,17 +64,30 @@ namespace fpmas { namespace graph {
 			}
 	};
 
+	/**
+	 * A default DistributedNodeBuilder instance that builds
+	 * fpmas::graph::DistributedNode instance containing default initialized T
+	 * instances.
+	 *
+	 * @tparam T node data type
+	 */
 	template<typename T>
 		class DefaultDistributedNodeBuilder : public DistributedNodeBuilder<int> {
 			public:
 				using fpmas::graph::DistributedNodeBuilder<int>::DistributedNodeBuilder;
 
+				/**
+				 * \copydoc fpmas::api::graph::DistributedNodeBuilder::buildNode()
+				 */
 				fpmas::api::graph::DistributedNode<int>* buildNode(
 						fpmas::api::graph::DistributedGraph<int>& graph) override {
 					this->local_node_count--;
 					return graph.buildNode(T());
 				}
 
+				/**
+				 * \copydoc fpmas::api::graph::DistributedNodeBuilder::buildDistantNode()
+				 */
 				fpmas::api::graph::DistributedNode<int>* buildDistantNode(
 						fpmas::api::graph::DistributedId id,
 						int location,

@@ -4,7 +4,7 @@
 #include "fpmas/random/random.h"
 
 /** \file src/fpmas/graph/random_graph_builder.h
- * Utilities for random graph builder algorithms.
+ * Algorithms to build random graphs.
  */
 
 namespace fpmas { namespace graph {

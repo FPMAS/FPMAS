@@ -20,7 +20,6 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
-  <td id="projectlogo"><img alt="Logo" src="fpmas_logo_small.png"/></td>
   <td id="projectalign">
    <div id="projectname">fpmas<span id="projectnumber">&#160;1.5.3</span>
    </div>
@@ -103,6 +102,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a8baaa58631744d67268d6846e191232c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adcf615339123c6ac13811948bd591095"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#adcf615339123c6ac13811948bd591095">ZoltanLoadBalancing</a> (<a class="el" href="classfpmas_1_1communication_1_1MpiCommunicatorBase.html">communication::MpiCommunicatorBase</a> &amp;comm, int lb_period)</td></tr>
 <tr class="separator:adcf615339123c6ac13811948bd591095"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46ded0e19cfc17c1812bf101677b570b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a46ded0e19cfc17c1812bf101677b570b">ZoltanLoadBalancing</a> (<a class="el" href="classfpmas_1_1communication_1_1MpiCommunicatorBase.html">communication::MpiCommunicatorBase</a> &amp;comm, int lb_period, float imbalance_tol)</td></tr>
+<tr class="separator:a46ded0e19cfc17c1812bf101677b570b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a74432b066e543d84d7577e0a6535c538"><td class="memItemLeft" align="right" valign="top">PartitionMap&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a74432b066e543d84d7577e0a6535c538">balance</a> (<a class="el" href="namespacefpmas_1_1api_1_1graph.html#acc7eb1311839a21b24362b472d3ea887">api::graph::NodeMap</a>&lt; T &gt; nodes, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">api::graph::PartitionMap</a> fixed_vertices) override</td></tr>
 <tr class="separator:a74432b066e543d84d7577e0a6535c538"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5f7e07d562fe6163e2ed697343f74fc6"><td class="memItemLeft" align="right" valign="top">PartitionMap&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html#a5f7e07d562fe6163e2ed697343f74fc6">balance</a> (<a class="el" href="namespacefpmas_1_1api_1_1graph.html#acc7eb1311839a21b24362b472d3ea887">api::graph::NodeMap</a>&lt; T &gt; nodes, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a3b8d45dcdede19e41beff03c30a0671d">api::graph::PartitionMap</a> fixed_vertices, <a class="el" href="namespacefpmas_1_1api_1_1graph.html#a97accfb690a253ad0fd7a741cb41891c">api::graph::PartitionMode</a> partition_mode) override</td></tr>
@@ -127,7 +128,7 @@ Public Member Functions</h2></td></tr>
 class fpmas::graph::ZoltanLoadBalancing&lt; T &gt;</div><p >api::load_balancing::FixedVerticesLoadBalancing implementation based on the <a href="https://cs.sandia.gov/Zoltan/Zoltan.html">Zoltan library</a>. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a8baaa58631744d67268d6846e191232c" name="a8baaa58631744d67268d6846e191232c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8baaa58631744d67268d6846e191232c">&#9670;&nbsp;</a></span>ZoltanLoadBalancing() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8baaa58631744d67268d6846e191232c">&#9670;&nbsp;</a></span>ZoltanLoadBalancing() <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -152,7 +153,11 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 <p ><a class="el" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html">ZoltanLoadBalancing</a> constructor.</p>
-<p >A default <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/sandialabs/zoltan/master/doc/Zoltan_html/ug_html/ug_alg_phg.html">PHG_REPART_MULTIPLIER</a> value of 100 is used, what corresponds to the default Zoltan value.</p>
+<dl class="section user"><dt>Default values</dt><dd></dd></dl>
+<ul>
+<li><a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/sandialabs/zoltan/master/doc/Zoltan_html/ug_html/ug_alg_phg.html">PHG_REPART_MULTIPLIER</a>: 100</li>
+<li><a href="https://sandialabs.github.io/Zoltan/ug_html/ug_alg.html#LB%20Parameters">IMBALANCE_TOL</a>: 1.1</li>
+</ul>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">comm</td><td>MpiCommunicator implementation </td></tr>
@@ -163,7 +168,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="adcf615339123c6ac13811948bd591095" name="adcf615339123c6ac13811948bd591095"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adcf615339123c6ac13811948bd591095">&#9670;&nbsp;</a></span>ZoltanLoadBalancing() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#adcf615339123c6ac13811948bd591095">&#9670;&nbsp;</a></span>ZoltanLoadBalancing() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -199,10 +204,68 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <p ><a class="el" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html">ZoltanLoadBalancing</a> constructor.</p>
 <p ><code>10*lb_period</code> is used as the Zoltan <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/sandialabs/zoltan/master/doc/Zoltan_html/ug_html/ug_alg_phg.html">PHG_REPART_MULTIPLIER</a> value.</p>
+<dl class="section user"><dt>Default values</dt><dd></dd></dl>
+<ul>
+<li><a href="https://sandialabs.github.io/Zoltan/ug_html/ug_alg.html#LB%20Parameters">IMBALANCE_TOL</a>: 1.1</li>
+</ul>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">comm</td><td>MpiCommunicator implementation </td></tr>
     <tr><td class="paramname">lb_period</td><td>Number of iterations between each load balancing (used as a Zoltan algorithm parameter, does not need to correspond to the actual load balancing period) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a46ded0e19cfc17c1812bf101677b570b" name="a46ded0e19cfc17c1812bf101677b570b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46ded0e19cfc17c1812bf101677b570b">&#9670;&nbsp;</a></span>ZoltanLoadBalancing() <span class="overload">[3/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html">fpmas::graph::ZoltanLoadBalancing</a>&lt; T &gt;::ZoltanLoadBalancing </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classfpmas_1_1communication_1_1MpiCommunicatorBase.html">communication::MpiCommunicatorBase</a> &amp;&#160;</td>
+          <td class="paramname"><em>comm</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>lb_period</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>imbalance_tol</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p ><a class="el" href="classfpmas_1_1graph_1_1ZoltanLoadBalancing.html">ZoltanLoadBalancing</a> constructor.</p>
+<p ><code>10*lb_period</code> is used as the Zoltan <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/sandialabs/zoltan/master/doc/Zoltan_html/ug_html/ug_alg_phg.html">PHG_REPART_MULTIPLIER</a> value.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">comm</td><td>MpiCommunicator implementation </td></tr>
+    <tr><td class="paramname">lb_period</td><td>Number of iterations between each load balancing (used as a Zoltan algorithm parameter, does not need to correspond to the actual load balancing period) </td></tr>
+    <tr><td class="paramname">imbalance_tol</td><td>Acceptable imbalance tolerance, computed as the maximum load divided by the average load. </td></tr>
   </table>
   </dd>
 </dl>
@@ -384,7 +447,7 @@ template&lt;typename T &gt; </div>
 <p></p>
 <p >Computes a node partition from the input nodes.</p>
 <p >This functions is synchronous and blocks until all processes call it.</p>
-<p >Each process calls the functions with its own node map, so that the global set of nodes to balance correspond to the union of all the local node maps specified as arguments.</p>
+<p >Each process calls the functions with its own node map, so that the global set of nodes to balance corresponds to the union of all the local node maps specified as arguments.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">nodes</td><td>local nodes to balance </td></tr>

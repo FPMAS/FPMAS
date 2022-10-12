@@ -20,7 +20,6 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
-  <td id="projectlogo"><img alt="Logo" src="fpmas_logo_small.png"/></td>
   <td id="projectalign">
    <div id="projectname">fpmas<span id="projectnumber">&#160;1.5.3</span>
    </div>
@@ -111,7 +110,10 @@ Public Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p >A load balancing algorithm for <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialModel.html">SpatialModels</a>.</p>
 <p >A regular <a class="el" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html">LoadBalancing</a> algorithm is applied <b>only</b> to the <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> network. Each <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgent</a> is then assigned to the same process as its LOCATION <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a>.</p>
-<p >This can significantly reduce the <a class="el" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html">LoadBalancing</a> algorithm execution time compared to an application to the global graph, while still providing an efficient partitioning. </p>
+<p >This can significantly reduce the <a class="el" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html">LoadBalancing</a> algorithm execution time compared to an application to the global graph, while still providing an efficient partitioning.</p>
+<p >When the <a class="el" href="classfpmas_1_1api_1_1graph_1_1LoadBalancing.html">LoadBalancing</a> algorithm is applied, the weight of each <a class="el" href="classfpmas_1_1api_1_1model_1_1Cell.html">Cell</a> is incremented with the weight of all <a class="el" href="classfpmas_1_1api_1_1model_1_1SpatialAgent.html">SpatialAgents</a> located within it in order to take into account the agent distribution.</p>
+<p >The usage of this algorithm is recommend when the Cell network is dynamic or the agent distribution is not uniform. Otherwise, the <a class="el" href="classfpmas_1_1model_1_1StaticCellLoadBalancing.html">StaticCellLoadBalancing</a> is much more efficient in most of the case.</p>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="classfpmas_1_1model_1_1StaticCellLoadBalancing.html">StaticCellLoadBalancing</a> </dd></dl>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a8202e87fe96492a32abc4ff462bdde92" name="a8202e87fe96492a32abc4ff462bdde92"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8202e87fe96492a32abc4ff462bdde92">&#9670;&nbsp;</a></span>CellLoadBalancing()</h2>

@@ -3,6 +3,10 @@
 
 #include "fpmas/api/synchro/sync_mode.h"
 
+/** \file src/fpmas/synchro/ghost/single_thread_mutex.h
+ * Defines a Mutex class with no concurrency requirement.
+ */
+
 namespace fpmas { namespace synchro { namespace ghost {
 	
 	/**

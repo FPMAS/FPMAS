@@ -20,7 +20,6 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr id="projectrow">
-  <td id="projectlogo"><img alt="Logo" src="fpmas_logo_small.png"/></td>
   <td id="projectalign">
    <div id="projectname">fpmas<span id="projectnumber">&#160;1.5.3</span>
    </div>
@@ -95,6 +94,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1948ef62f00cb4e9951faa92e57d9b7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a044cc6d16e097b0ff87df3b390e78068"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html#a044cc6d16e097b0ff87df3b390e78068">operator&lt;</a> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &amp;other) const</td></tr>
 <tr class="separator:a044cc6d16e097b0ff87df3b390e78068"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a62f2a8f553fd3b2c3322a12bf8303617"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html#a62f2a8f553fd3b2c3322a12bf8303617">operator&lt;=</a> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &amp;other) const</td></tr>
+<tr class="separator:a62f2a8f553fd3b2c3322a12bf8303617"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abb2a1130a07b9bce785c8882c722a0b3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html#abb2a1130a07b9bce785c8882c722a0b3">operator==</a> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &amp;other) const</td></tr>
 <tr class="separator:abb2a1130a07b9bce785c8882c722a0b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6dd1527b19d4aaf29705f0f5f1d3c944"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html#a6dd1527b19d4aaf29705f0f5f1d3c944">operator!=</a> (const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &amp;other) const</td></tr>
@@ -364,8 +365,34 @@ Static Public Attributes</h2></td></tr>
 </div><div class="memdoc">
 <p >Comparison function that allows <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> usage in std::set.</p>
 <p >First, perform a comparison on the <code>rank</code> of the two instances, and return the result if one is less or greater than the other.</p>
-<p >If the two ranks are equal, return the result of the comparison of the local ids.</p>
-<dl class="section return"><dt>Returns</dt><dd>comparison result </dd></dl>
+<p >If the two ranks are equal, return the result of the comparison of the local ids. </p>
+
+</div>
+</div>
+<a id="a62f2a8f553fd3b2c3322a12bf8303617" name="a62f2a8f553fd3b2c3322a12bf8303617"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a62f2a8f553fd3b2c3322a12bf8303617">&#9670;&nbsp;</a></span>operator&lt;=()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool fpmas::api::graph::DistributedId::operator&lt;= </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> &amp;&#160;</td>
+          <td class="paramname"><em>other</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p ><a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html">DistributedId</a> comparison function, consistent with the <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html#abb2a1130a07b9bce785c8882c722a0b3">operator==()</a> and <a class="el" href="classfpmas_1_1api_1_1graph_1_1DistributedId.html#a044cc6d16e097b0ff87df3b390e78068">operator&lt;()</a> definitions. </p>
 
 </div>
 </div>
