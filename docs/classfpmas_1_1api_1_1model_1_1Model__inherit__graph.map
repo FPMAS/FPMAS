@@ -1,9 +1,10 @@
 <map id="fpmas::api::model::Model" name="fpmas::api::model::Model">
-<area shape="rect" id="node1" title=" " alt="" coords="5,86,140,127"/>
-<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1model_1_1SpatialModel.html" title=" " alt="" coords="189,5,359,61"/>
-<area shape="rect" id="node4" href="$classfpmas_1_1api_1_1model_1_1SpatialModel.html" title=" " alt="" coords="188,86,360,127"/>
-<area shape="rect" id="node5" href="$classfpmas_1_1model_1_1detail_1_1Model.html" title=" " alt="" coords="204,151,344,193"/>
-<area shape="rect" id="node3" href="$classfpmas_1_1model_1_1SpatialModel.html" title=" " alt="" coords="408,13,661,54"/>
-<area shape="rect" id="node6" href="$classfpmas_1_1model_1_1detail_1_1DefaultModel.html" title=" " alt="" coords="438,151,631,193"/>
-<area shape="rect" id="node7" href="$classfpmas_1_1model_1_1SpatialModel.html" title=" " alt="" coords="709,151,963,193"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,119,140,161"/>
+<area shape="rect" id="node2" href="$classfpmas_1_1api_1_1model_1_1SpatialModel.html" title=" " alt="" coords="193,5,362,61"/>
+<area shape="rect" id="node4" href="$classfpmas_1_1api_1_1model_1_1SpatialModel.html" title=" " alt="" coords="191,86,363,127"/>
+<area shape="rect" id="node5" href="$classfpmas_1_1api_1_1model_1_1SpatialModel.html" title=" " alt="" coords="188,151,367,193"/>
+<area shape="rect" id="node6" href="$classfpmas_1_1model_1_1detail_1_1Model.html" title=" " alt="" coords="207,217,347,258"/>
+<area shape="rect" id="node3" href="$classfpmas_1_1model_1_1SpatialModel.html" title=" " alt="" coords="415,13,668,54"/>
+<area shape="rect" id="node7" href="$classfpmas_1_1model_1_1detail_1_1DefaultModel.html" title=" " alt="" coords="445,217,638,258"/>
+<area shape="rect" id="node8" href="$classfpmas_1_1model_1_1SpatialModel.html" title=" " alt="" coords="716,217,969,258"/>
 </map>
