@@ -475,9 +475,14 @@ namespace fpmas { namespace api { namespace model {
 	/**
 	 * Model API extension to handle \SpatialAgents.
 	 */
-	template<typename CellType>
+	template<typename _CellType>
 	class SpatialModel : public virtual Model {
 		public:
+			/**
+			 * Type of Cell on which \SpatialAgents are moving.
+			 */
+			typedef _CellType CellType;
+
 			/**
 			 * Adds a Cell to this model.
 			 *
