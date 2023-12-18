@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.10)
 
 project(fpmas VERSION 1.6)
 
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # Custom modules directory
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
@@ -20,7 +23,7 @@ find_package(Zoltan 3.81 REQUIRED)
 find_package(nlohmann_json 3.7 REQUIRED)
 
 set(CMAKE_CXX_FLAGS_DEBUG "\
-${CMAKE_CXX_FLAGS_DEBUG} -std=c++11 \
+${CMAKE_CXX_FLAGS_DEBUG} \
 -Wall -Wextra -Wpedantic -Werror -Wno-error=pedantic \
 -Woverloaded-virtual -Wnon-virtual-dtor\
 ")
