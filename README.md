@@ -124,7 +124,7 @@ FPMAS can be built and installed using CMake :
 ```
 mkdir FPMAS/build
 cd FPMAS/build
-cmake --DCMAKE_BUILD_TYPE=Release -DINSTALL_GTEST=NO ..
+cmake -DCMAKE_BUILD_TYPE=Release -DINSTALL_GTEST=NO ..
 cmake --build . -t fpmas
 sudo cmake --install .
 ```
