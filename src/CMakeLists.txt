@@ -54,10 +54,6 @@ target_compile_definitions(fpmas PUBLIC FPMAS_TYPE_INDEX=${FPMAS_TYPE_INDEX})
 target_compile_definitions(fpmas PUBLIC FPMAS_AGENT_RNG=${FPMAS_AGENT_RNG})
 target_link_libraries(fpmas PUBLIC MPI::MPI_CXX Zoltan::Zoltan
 	nlohmann_json::nlohmann_json)
-get_property(FPMAS_INCLUDE_DIRS TARGET fpmas PROPERTY INCLUDE_DIRECTORIES)
-get_property(ZOLTAN_INCLUDE_DIRS TARGET Zoltan::Zoltan PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
-message("FPMAS include dirs: ${FPMAS_INCLUDE_DIRS}")
-message("Zoltan include dirs: ${ZOLTAN_INCLUDE_DIRS}")
 
 target_include_directories(fpmas PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
