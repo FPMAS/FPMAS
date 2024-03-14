@@ -26,10 +26,6 @@ find_package_handle_standard_args(nlohmann_json
 		nlohmann_json_INCLUDE_DIR
 	VERSION_VAR nlohmann_json_VERSION)
 
-if(nlohmann_json_FOUND)
-	set(nlohmann_json_INCLUDE_DIRS ${Zoltan_INCLUDE_DIR})
-endif()
-
 if(nlohmann_json_FOUND AND NOT TARGET nlohmann_json::nlohmann_json)
 	add_library(nlohmann_json::nlohmann_json INTERFACE IMPORTED)
 	set_target_properties(nlohmann_json::nlohmann_json PROPERTIES
